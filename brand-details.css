@@ -1,0 +1,328 @@
+/* Tod's violet, blue and yellow identity, carried into the work itself.
+   Screen-only styling keeps the existing printable resume unchanged. */
+@media screen {
+  .beyond-intro > .eyebrow,
+  .contact-section .eyebrow {
+    color: var(--violet);
+    font-weight: 700;
+  }
+
+  .beyond-intro h2,
+  .contact-section h2 {
+    font-weight: 700;
+    letter-spacing: -1.6px;
+    line-height: 1.12;
+  }
+
+  .beyond-intro h2 em,
+  .contact-section h2 em {
+    font-family: var(--font);
+    font-style: normal;
+    font-weight: inherit;
+    color: var(--violet);
+  }
+
+  .beyond-intro > p:not(.eyebrow),
+  .experience-preview-item > span:nth-child(2) > span {
+    color: var(--muted);
+  }
+
+  .text-link {
+    color: var(--violet);
+    border-color: #b9a0e6;
+    font-weight: 600;
+  }
+
+  .text-link:hover {
+    color: var(--blue);
+    border-color: var(--blue);
+  }
+
+  .experience-mark {
+    border-color: #dbcef3;
+    border-radius: 8px;
+    background: #ede5fb;
+    color: var(--violet);
+  }
+
+  .experience-preview-item:nth-child(2) .experience-mark {
+    background: #e8edff;
+    border-color: #cfd9fb;
+    color: var(--blue);
+  }
+
+  .experience-preview-item:nth-child(3) .experience-mark {
+    background: #faf0b8;
+    border-color: #ecda7a;
+    color: #62521a;
+  }
+
+  .experience-preview-item small {
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .experience-preview-item strong {
+    font-weight: 650;
+  }
+
+  .experience-arrow,
+  .experience-preview-item:hover strong {
+    color: var(--violet);
+  }
+
+  .experience-preview-item:hover .experience-arrow {
+    color: var(--blue);
+  }
+
+  .contact-section {
+    background: #271641;
+    border-color: #271641;
+    border-radius: 12px;
+    color: #fff;
+  }
+
+  .contact-section .eyebrow,
+  .contact-section h2 em {
+    color: var(--yellow);
+  }
+
+  .contact-section p:not(.eyebrow) {
+    color: #d9cde9;
+  }
+
+  .email-link {
+    border-color: #786293;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .email-link > span {
+    color: var(--yellow);
+  }
+
+  .contact-links > div a {
+    color: #e6dcf5;
+  }
+
+  .contact-links a:hover {
+    color: var(--yellow);
+  }
+
+  .contact-section a:focus-visible {
+    outline-color: var(--yellow);
+  }
+
+  .project-dialog {
+    border-color: #d4c6e8;
+    background: #fff;
+    box-shadow: 0 30px 100px #21173540;
+  }
+
+  .project-dialog::backdrop {
+    background: #20113388;
+  }
+
+  .dialog-topbar {
+    background: #f7f3fdf5;
+  }
+
+  .dialog-topbar .eyebrow,
+  .dialog-tools > button:not(.close-button) {
+    color: #635174;
+  }
+
+  .dialog-tools > button:hover {
+    color: var(--violet);
+  }
+
+  .close-button {
+    color: #49305f;
+    background: #eae0f7;
+  }
+
+  .close-button:hover {
+    background: #dac8f1;
+  }
+
+  .project-kicker {
+    color: var(--violet);
+    font-weight: 700;
+    letter-spacing: 1.3px;
+  }
+
+  .dialog-content h2 {
+    font-family: var(--font);
+    font-size: 43px;
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -1.8px;
+  }
+
+  .dialog-content h3 {
+    font-weight: 700;
+  }
+
+  .dialog-lead,
+  .dialog-content p:not(.dialog-lead):not(.project-kicker):not(.source-note) {
+    color: #655b72;
+  }
+
+  .portrait-photo {
+    border-color: #fff;
+    outline-color: #d7c7ed;
+    box-shadow: 0 7px 20px #3e1b6814;
+    transform: none;
+  }
+
+  .project-meta dt,
+  .source-note {
+    color: var(--muted);
+  }
+
+  .project-meta dd {
+    color: var(--ink);
+  }
+
+  .metric {
+    background: #f1ebfc;
+    border-color: #e1d5f5;
+    border-radius: 8px;
+  }
+
+  .metric:nth-child(even) {
+    background: #edf1ff;
+    border-color: #dce3fb;
+  }
+
+  .metric strong {
+    color: var(--violet);
+    font-weight: 650;
+  }
+
+  .metric:nth-child(even) strong {
+    color: var(--blue);
+  }
+
+  .metric span {
+    color: #635574;
+  }
+
+  .external-link {
+    background: var(--violet);
+    color: #fff;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  .external-link:hover {
+    background: #5123ad;
+  }
+
+  .project-links a,
+  .resume-contact {
+    color: var(--violet);
+  }
+
+  .project-links .external-link {
+    color: #fff;
+  }
+
+  .pending-note {
+    border-color: #c9b5e7;
+    background: #faf7ff;
+    color: #6d5883;
+  }
+
+  .project-tags span,
+  .skills-list li {
+    color: #59416f;
+    background: #f3edf9;
+    border-color: #e3d8ef;
+  }
+
+  .video-card {
+    border-color: var(--line);
+    background: #fff;
+  }
+
+  .video-card:hover {
+    box-shadow: 0 5px 15px #3a1b6214;
+    border-color: #c8afea;
+  }
+
+  .video-thumbnail {
+    background: #ece4f7;
+  }
+
+  .video-card-copy h4,
+  .video-card-copy strong {
+    color: var(--ink);
+    font-weight: 650;
+  }
+
+  .video-card-copy .video-meta,
+  .video-card-copy small,
+  .video-format {
+    color: var(--muted);
+  }
+
+  .video-card-copy .video-metric {
+    color: var(--violet) !important;
+  }
+
+  .video-card-copy .video-action {
+    color: var(--violet);
+    font-weight: 600;
+  }
+
+  .experience-item .experience-date,
+  .education-item .education-date,
+  .experience-item time,
+  .education-item time {
+    color: var(--muted);
+  }
+
+  .experience-company {
+    color: var(--violet) !important;
+  }
+
+  #share-feedback {
+    background: #eee7fa;
+    color: #573880;
+  }
+
+  .permalink-input {
+    border-color: #c5b0e2;
+    color: var(--ink);
+    background: #fff;
+  }
+
+  .featured-quote {
+    font-family: var(--font);
+    font-weight: 600;
+    font-size: 25px;
+    letter-spacing: -.6px;
+  }
+
+  .draft-label {
+    background: #fbf1bf;
+    color: #685714;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .dialog-content h2 {
+    font-size: 34px;
+    letter-spacing: -1.2px;
+  }
+
+  .beyond-intro h2,
+  .contact-section h2 {
+    letter-spacing: -1.2px;
+  }
+
+  .featured-quote {
+    font-size: 22px;
+  }
+}

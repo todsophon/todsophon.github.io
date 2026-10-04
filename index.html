@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#362051">
+  <meta name="description" content="Step inside Tod Yansomboon's little world of content, community, and AI companions. Explore YouTube, TikTok, and Oto at Frisson Labs.">
+  <title>Todsophon — Tod Yansomboon · Creator & builder</title>
+  <link rel="icon" type="image/png" href="assets/tod-mascot.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="room.css?v=19">
+  <link rel="stylesheet" href="portfolio.css">
+  <link rel="stylesheet" href="brand.css">
+  <link rel="stylesheet" href="brand-details.css">
+  <link rel="stylesheet" href="room-experience.css?v=32">
+  <link rel="stylesheet" href="gallery.css">
+  <link rel="stylesheet" href="room-first.css?v=32">
+  <link rel="stylesheet" href="room-reveal.css?v=32">
+  <link rel="stylesheet" href="pinboard.css?v=19">
+  <link rel="stylesheet" href="portfolio-update.css?v=37">
+  <script src="content.js?v=33" defer></script>
+  <script src="app.js?v=33" defer></script>
+  <script type="module" src="pinboard.js?v=19"></script>
+  <script type="module" src="room.js?v=37-intro"></script>
+  <script type="module" src="room-experience.js?v=32"></script>
+</head>
+<body>
+  <a class="skip-link" href="#scene-section">Skip to the room</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Todsophon — Tod Yansomboon, home"><img class="brand-mascot" src="assets/tod-mascot.png" alt="" width="600" height="600"><span class="brand-caption">todsophon<span>TOD YANSOMBOON · CREATOR & BUILDER</span></span></a>
+    <nav aria-label="Main navigation">
+      <button class="nav-link active" id="room-nav" aria-current="page">The room</button>
+      <button class="nav-link" id="work-nav">My work</button>
+      <a class="nav-link" data-open="about" href="#about">About me</a>
+    </nav>
+    <div class="header-links"><a href="#resume" data-open="resume">Résumé <span aria-hidden="true">↗</span></a><a href="mailto:todsopon@hotmail.com">Say hello <span aria-hidden="true">↗</span></a></div>
+  </header>
+
+  <main id="main">
+    <section class="world" aria-labelledby="welcome-heading">
+      <div class="intro">
+        <p class="eyebrow"><span class="tiny-star" aria-hidden="true">✦</span> CONTENT. COMMUNITY. PRODUCT.</p>
+        <h1 id="welcome-heading">A little world<br>of things<br> I <em>make.</em></h1>
+        <div class="intro-person">
+          <a class="portrait-print" data-open="about" href="#about" aria-label="Meet Tod — read my story">
+            <img src="assets/tod-portrait.png" alt="Tod Yansomboon" width="200" height="200" decoding="async">
+            <span class="portrait-caption" aria-hidden="true">that's me <span>↗</span></span>
+          </a>
+          <p class="intro-copy"><strong>Hey, I'm Tod.</strong>I turn audience insights into content and product experiences.</p>
+        </div>
+        <div class="intro-actions"><button class="tour-button" id="tour-button">Explore my work <span aria-hidden="true">↗</span></button><button class="watch-reel" data-screening aria-label="Open my video gallery" title="Watch my videos"><span aria-hidden="true">▶</span></button></div>
+        <a class="current-role" data-open="oto" href="#work/oto"><span aria-hidden="true"></span> Currently at <strong>Frisson Labs / Oto</strong></a>
+      </div>
+
+      <div class="scene-section" id="scene-section">
+        <div class="scene-topline"><div class="room-heading"><span class="room-caption">TODSOPHON'S ROOM</span><span class="room-hint-top" id="room-hint">Drag furniture · tap the floor to guide Fibi</span><span class="reveal-progress" id="room-reveal-progress" role="status" aria-live="polite" hidden></span></div><div class="scene-actions"><button class="reveal-toggle" id="room-reveal-toggle" type="button">Replay reveal</button><button class="arrange-toggle" id="arrange-toggle" aria-pressed="false" aria-controls="scene room-editor"><span aria-hidden="true">⤧</span> Arrange room</button><button class="view-toggle" id="view-toggle" aria-pressed="false"><span aria-hidden="true">☷</span> List view</button></div></div>
+        <div class="scene cozy-room" id="scene" role="group" aria-label="Cozy illustrated studio with movable furniture" aria-describedby="room-instructions">
+          <img class="room-art" src="assets/studio-background-awards-clean.png" alt="A warm creative studio with wooden floors, plants, and silver and gold play-button awards hanging on the wall" width="1536" height="1024" draggable="false" fetchpriority="high">
+          <div class="wall-awards" aria-label="Todsophon's YouTube milestones">
+            <button class="wall-award wall-award-silver" data-open="youtube" data-milestone="silver" aria-label="Silver YouTube award: the first 100,000 subscribers. Read the story"><span class="award-open" aria-hidden="true">↗</span><span class="award-tooltip" aria-hidden="true">The first 100K ↗</span></button>
+            <button class="wall-award wall-award-gold" data-open="youtube" data-milestone="gold" aria-label="Gold YouTube award: one million subscribers. Read the story"><span class="award-open" aria-hidden="true">↗</span><span class="award-tooltip" aria-hidden="true">One million ↗</span></button>
+          </div>
+          <button class="wall-portrait" data-open="about" aria-label="Meet Tod Yansomboon. Drag the portrait along the wall, or click to explore" aria-describedby="wall-portrait-instructions" title="Drag to move the portrait, or click to meet Tod"><img src="assets/tod-wall-frame-v2.png" alt="" width="1186" height="1326" draggable="false"><span>Meet Tod ↗</span><i class="portrait-drag-hint" aria-hidden="true">☷</i></button>
+          <div class="wall-pinboard" aria-label="Oto project pinboard">
+            <button class="board-note board-note-product" type="button" data-note="product" data-open="oto" aria-label="Oto app project: drag this note on the board or click to explore"><span aria-hidden="true">APP</span></button>
+            <button class="board-note board-note-community" type="button" data-note="community" data-open="oto" aria-label="Oto game projects: drag this note or click to explore"><span aria-hidden="true">GAMES</span></button>
+            <button class="board-note board-note-films" type="button" data-note="films" data-open="oto" aria-label="Oto AI video projects: drag this note or click to explore"><span aria-hidden="true">FILMS</span></button>
+          </div>
+          <svg class="tile-room" id="tile-room" viewBox="0 0 1000 666.6667" aria-hidden="true">
+            <g id="floor-tiles"></g>
+            <g id="placement-preview" pointer-events="none"></g>
+          </svg>
+          <div id="furniture-layer" class="furniture-layer"></div>
+          <nav class="contact-ledge" aria-label="Continue with Tod">
+            <a class="ledge-build" href="mailto:todsopon@hotmail.com" aria-label="Email Tod"><span class="ledge-icon" aria-hidden="true">✦</span><span>Contact me</span></a>
+            <a class="ledge-instagram" href="https://www.instagram.com/tod_desu/" target="_blank" rel="noopener noreferrer"><svg class="social-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2.2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg><span>Instagram</span></a>
+            <a class="ledge-linkedin" href="https://www.linkedin.com/in/todsophon" target="_blank" rel="noopener noreferrer"><svg class="social-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="4.5" cy="5" r="2"/><path d="M3 9h3v12H3zm7 0h3v1.6c.9-1.2 2.1-1.9 3.7-1.9 3.1 0 4.3 2 4.3 5.2V21h-3v-6.7c0-1.8-.5-2.7-2-2.7-1.8 0-3 1.3-3 3.1V21h-3z"/></svg><span>LinkedIn</span></a>
+          </nav>
+          <span id="fibi-destination" class="fibi-destination" aria-hidden="true" hidden></span>
+          <div class="speech-bubble" id="speech-bubble" role="status"><span id="speech-message">Hi, I'm Fibi! Make yourself at home.</span><button class="guide-next" id="guide-next" type="button" hidden>Show me around →</button></div>
+          <div class="character" id="character">
+            <button class="character-button" id="fibi-button" aria-label="Say hello to Fibi" aria-describedby="fibi-instructions"><span class="character-sprite" id="character-image" role="img" aria-label="Fibi, your little room guide"></span></button>
+            <span class="character-name">Fibi <span>your guide</span></span>
+          </div>
+        </div>
+        <div class="room-editor" id="room-editor" hidden>
+          <div class="editor-heading"><strong id="selected-furniture">Make it yours</strong><div class="history-buttons"><button id="undo-room" disabled>Undo</button><button id="reset-room">Reset room</button></div></div>
+          <p id="room-instructions">Drag to snap into place. Select a piece and tap the floor to move it there. Arrow keys move; Enter places; Escape cancels.</p>
+          <div class="placement-controls" id="placement-controls" hidden>
+            <div class="nudge-buttons" role="group" aria-label="Move selected furniture one step"><button data-nudge="-1,0" aria-label="Move one step back left">↖</button><button data-nudge="0,-1" aria-label="Move one step back right">↗</button><button data-nudge="0,1" aria-label="Move one step front left">↙</button><button data-nudge="1,0" aria-label="Move one step front right">↘</button></div>
+            <button id="place-furniture">Place here</button><button id="cancel-placement">Cancel</button>
+          </div>
+          <p id="placement-feedback" class="placement-feedback" role="status" aria-live="polite" aria-atomic="true">Choose a piece to start.</p>
+        </div>
+        <div class="list-view" id="list-view" hidden>
+          <a class="list-item" data-open="oto" href="#work/oto"><span class="list-number">01</span><span><strong>Oto / Frisson Labs</strong><small>Current role · Product, content & audience insights</small></span><span class="list-arrow">↗</span></a>
+          <a class="list-item" data-open="youtube" href="#work/youtube"><span class="list-number">02</span><span><strong>YouTube</strong><small>1.81M subscribers · September 2026</small></span><span class="list-arrow">↗</span></a>
+          <a class="list-item" data-open="tiktok" href="#work/tiktok"><span class="list-number">03</span><span><strong>TikTok & short-form</strong><small>Hooks, formats & creative experiments</small></span><span class="list-arrow">↗</span></a>
+          <a class="list-item" data-open="analytics" href="#work/analytics"><span class="list-number">04</span><span><strong>A head for the numbers</strong><small>Applied analytics & predictive modeling projects</small></span><span class="list-arrow">↗</span></a>
+          <a class="list-item" data-open="about" href="#about"><span class="list-number">05</span><span><strong>The person behind the room</strong><small>From Thailand to Seattle, with a camera along the way</small></span><span class="list-arrow">↗</span></a>
+        </div>
+        <span class="visually-hidden room-save-status" id="room-save-status" role="status"></span>
+        <span class="visually-hidden" id="fibi-instructions">Fibi wanders around the room. Click a spot on the floor to guide her, or focus Fibi and use the arrow keys.</span>
+        <span class="visually-hidden" id="wall-portrait-instructions">Drag the portrait around the teal wall or use arrow keys while focused. Click to meet Tod. Its position is saved in this browser.</span>
+        <span class="visually-hidden" id="board-instructions">The three pinned notes can be dragged around the Oto board and saved in this browser. Click a note to explore its subject.</span>
+        <span class="visually-hidden" id="fibi-status" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <section class="work-strip" id="work-navigation" aria-label="Explore my work">
+      <div class="strip-intro"><span class="eyebrow">SELECTED WORK</span><span>A few things<br>I've put into the world.</span></div>
+      <a class="work-button" data-open="oto" href="#work/oto"><span class="work-number">01</span><span class="work-copy"><strong>Oto <span class="work-company">/ Frisson Labs</span></strong><small>Current role · Product & content</small></span><span class="work-arrow" aria-hidden="true">↗</span></a>
+      <a class="work-button" data-open="youtube" href="#work/youtube"><span class="work-number">02</span><span class="work-copy"><strong>YouTube</strong><small>1.81M subscribers · September 2026</small></span><span class="work-arrow" aria-hidden="true">↗</span></a>
+      <a class="work-button" data-open="tiktok" href="#work/tiktok"><span class="work-number">03</span><span class="work-copy"><strong>TikTok</strong><small>Short-form & creative testing</small></span><span class="work-arrow" aria-hidden="true">↗</span></a>
+    </section>
+
+    <section class="beyond-room" aria-labelledby="beyond-heading">
+      <div class="beyond-intro"><p class="eyebrow">THE PERSON BEHIND TODSOPHON</p><h2 id="beyond-heading">Creative instincts.<br><em>Analytical thinking.</em></h2><p>Making things is one half of my work. Understanding how people respond is the other.</p><div class="creator-signature"><img src="assets/tod-mascot.png" width="600" height="600" alt="My Todsophon mascot: a white cat warrior in a navy jacket with purple and blue flames" loading="lazy"><a class="text-link" data-open="resume" href="#resume">The full résumé <span aria-hidden="true">↗</span></a></div></div>
+      <div class="experience-preview">
+        <a class="experience-preview-item" href="#work/oto" data-open="oto"><span class="experience-mark" aria-hidden="true">✳</span><span><small>FRISSON LABS · SOCIAL MEDIA ANALYST</small><strong>From audience signals to product decisions.</strong><span>Web and iOS iteration, short-form video, and experiments in hooks and calls to action.</span></span><span class="experience-arrow" aria-hidden="true">↗</span></a>
+        <a class="experience-preview-item" href="#work/analytics" data-open="analytics"><span class="experience-mark" aria-hidden="true">↗</span><span><small>GROWTH & APPLIED ANALYTICS</small><strong>Following the story in the data.</strong><span>Growth work at Spotly, a Salesforce capstone, and customer churn modeling.</span></span><span class="experience-arrow" aria-hidden="true">↗</span></a>
+        <a class="experience-preview-item" href="#about" data-open="about"><span class="experience-mark" aria-hidden="true">☼</span><span><small>THE PERSON BEHIND IT ALL</small><strong>A creator, a builder, and a curious person.</strong><span>My path through content, community, and business analytics.</span></span><span class="experience-arrow" aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact" aria-labelledby="contact-heading">
+      <div><p class="eyebrow">LEAVE A LITTLE NOTE</p><h2 id="contact-heading">Got something in mind?<br><em>Let's make it happen.</em></h2><p>For creative collaborations, product ideas, or a good conversation.</p></div>
+      <div class="contact-links"><a class="email-link" href="mailto:todsopon@hotmail.com">todsopon@hotmail.com <span aria-hidden="true">↗</span></a><div><a href="https://www.linkedin.com/in/todsophon" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://www.youtube.com/@Todsophon" target="_blank" rel="noopener noreferrer">YouTube ↗</a></div></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><span>Made with curiosity, and a little chaos.</span><span class="footer-right">A world in progress <span aria-hidden="true">✳</span> <span>© <span id="year">2026</span> Tod Yansomboon</span></span></footer>
+
+  <dialog class="project-dialog" id="project-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-topbar"><span id="dialog-label" class="eyebrow">A CHAPTER FROM MY WORLD</span><div class="dialog-tools"><button id="dialog-copy-link" aria-label="Copy link to this chapter">Copy link <span aria-hidden="true">↗</span></button><button id="dialog-print" hidden>Print résumé</button><button class="close-button" id="dialog-close" aria-label="Close project details">✕</button></div></div>
+    <div id="share-feedback" role="status" aria-live="polite"></div>
+    <div class="dialog-content" id="dialog-content"></div>
+    <div class="dialog-footer"><button class="back-button" id="dialog-back">← Back to the room</button><button class="next-button" id="dialog-next">Next chapter →</button></div>
+  </dialog>
+  <noscript><p class="no-script">This room uses JavaScript for its interactive details. You can also explore <a href="https://www.oto.chat/">Oto</a> and <a href="https://stories.spu.edu/articles/a-virtual-place-to-belong-with-tod-yansomboon-24">Tod's creator story</a>.</p></noscript>
+</body>
+</html>

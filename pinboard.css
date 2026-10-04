@@ -1,0 +1,11 @@
+.wall-pinboard{position:absolute;left:66.1%;top:13.3%;width:23.1%;aspect-ratio:3/2;z-index:4;background:url('assets/oto-corkboard-v2.png') center/100% 100% no-repeat;pointer-events:none}
+.board-note{position:absolute;width:34%;height:34%;padding:0;border:0;background:transparent url('assets/oto-paper-note-v2.png') center/100% 100% no-repeat;color:#4b3c43;display:grid;place-items:center;cursor:grab;touch-action:none;pointer-events:auto;user-select:none;-webkit-user-select:none;transition:scale .15s,filter .15s}
+.board-note span{display:block;transform:skewY(18deg);padding-top:13%;font-size:clamp(8px,.9vw,13px);line-height:1;font-weight:900;letter-spacing:-.035em;text-shadow:0 1px #fff9;pointer-events:none}
+.board-note:hover,.board-note:focus-visible{z-index:8;scale:1.08;filter:drop-shadow(0 2px 3px #402c3373);outline:2px solid #fff5c8;outline-offset:-11px}
+.board-note.is-dragging{z-index:10;scale:1.15;cursor:grabbing;transition:none;filter:drop-shadow(0 5px 5px #402c3373)}
+.board-note:after{content:attr(aria-label);position:absolute;left:50%;bottom:calc(100% - 7px);width:max-content;max-width:150px;transform:translateX(-50%);padding:5px 7px;border-radius:4px;background:#fffdf8;color:#443750;box-shadow:0 2px 8px #392a2640;font-size:10px;font-weight:700;letter-spacing:0;line-height:1.25;white-space:normal;opacity:0;visibility:hidden;pointer-events:none}
+.board-note:hover:after,.board-note:focus-visible:after{opacity:1;visibility:visible}
+.cozy-room.reveal-active .wall-pinboard:not(.is-painted){filter:grayscale(1) brightness(1.1) contrast(.97)}
+.cozy-room.reveal-active .wall-pinboard:not(.is-painted) .board-note span{opacity:0}
+.cozy-room.reveal-active .wall-pinboard:not(.is-painted) .board-note:after{display:none}
+@media(max-width:760px){.board-note span{font-size:clamp(7px,1.5vw,10px)}.board-note:after{font-size:8px;max-width:90px}}

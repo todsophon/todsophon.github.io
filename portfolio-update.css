@@ -1,0 +1,114 @@
+/* Keep room guidance beside the title instead of beneath the artwork. */
+.room-heading{display:flex;align-items:center;gap:14px;min-width:0}
+.room-hint-top{color:#756a80;font-size:11px;font-weight:600;letter-spacing:0;white-space:nowrap}
+.room-heading .reveal-progress{color:#6835a4;font-size:11px;font-weight:800;white-space:nowrap}
+.room-heading:has(.reveal-progress:not([hidden])) .room-hint-top{display:none}
+.scene-section:has(.scene[hidden]) .room-hint-top,.scene-section:has(.scene[hidden]) .reveal-progress{display:none}
+
+/* Social links follow the two sloping edges of the isometric floor. */
+.contact-ledge{position:absolute;z-index:150;inset:0;margin:0;display:block;pointer-events:none}
+.contact-ledge a{position:absolute;pointer-events:auto;text-decoration:none;white-space:nowrap}
+.contact-ledge a:focus-visible{outline:2px solid #6733cf;outline-offset:2px}
+.contact-ledge .ledge-build{left:50%;bottom:2.8%;translate:-50% 0;display:flex;align-items:center;gap:5px;min-height:32px;padding:4px 8px;border:1px solid #a77850;border-bottom-width:3px;border-radius:5px 5px 2px;background:#fff5dc;color:#503727;font-size:10px;font-weight:850;line-height:1.1;box-shadow:0 4px 0 #9b613e,0 7px 7px #603a2b4a;transition:transform .18s ease,background .18s ease}
+.contact-ledge .ledge-build:hover,.contact-ledge .ledge-build:focus-visible{transform:translateY(-5px);background:#fffdf2}
+.contact-ledge .ledge-instagram,.contact-ledge .ledge-linkedin{display:inline-flex;align-items:center;gap:5px;padding:7px 3px;border:0;background:transparent;color:#653d31;font-size:13px;font-weight:900;line-height:1;letter-spacing:.1em;text-transform:uppercase;text-shadow:0 1px 0 #fff1df;box-shadow:none;transition:color .18s ease,text-shadow .18s ease}
+.social-mark{display:block;width:15px;height:15px;flex:none}
+.contact-ledge .ledge-instagram{left:19%;top:75%;transform:rotate(28deg);transform-origin:left top}
+.contact-ledge .ledge-linkedin{right:18%;top:74%;transform:rotate(-28deg);transform-origin:right top}
+.contact-ledge .ledge-instagram:hover,.contact-ledge .ledge-linkedin:hover{color:#371a5e;text-decoration:underline;text-underline-offset:3px}
+.ledge-icon{display:grid;place-items:center;width:21px;height:21px;border-radius:3px;background:#153e58;color:#fff;font-size:12px;line-height:1;font-weight:950}
+
+.project-dialog[data-chapter="oto"]{background:#f5fafb;color:#143345;border-color:#142f42}
+.project-dialog[data-chapter="oto"] .dialog-topbar{background:#163c58;color:#fff;border-bottom:4px solid #53c5e9}
+.project-dialog[data-chapter="oto"] .dialog-topbar button{color:#fff}
+.project-dialog[data-chapter="oto"] .dialog-content{background:#f5fafb}
+.project-dialog[data-chapter="oto"] .project-kicker,.project-dialog[data-chapter="oto"] .case-eyebrow{color:#17799d}
+.project-dialog[data-chapter="oto"] .dialog-content h2{color:#143345}
+.project-dialog[data-chapter="oto"] .project-meta{border-color:#b8d7dd}
+.project-dialog[data-chapter="oto"] .metric{background:#e0f8fa;border:1px solid #8ccbd8;box-shadow:3px 3px 0 #1b63772b}
+.project-dialog[data-chapter="oto"] .metric strong{color:#126e8e}
+.project-dialog[data-chapter="oto"] .project-tags span{background:#dbf2f6;color:#194e63;border:1px solid #acd7df}
+.project-dialog[data-chapter="oto"] .external-link{background:#155570;color:#fff}
+.project-dialog[data-chapter="oto"] .external-link:hover{background:#0d384f}
+
+.oto-projects{margin:26px 0 38px;padding-top:20px;border-top:4px solid #133e58}
+.oto-projects-heading{display:grid;grid-template-columns:1fr auto;align-items:end;gap:4px 18px;margin-bottom:17px}
+.oto-projects-heading .case-eyebrow{grid-column:1/-1}
+.oto-projects-heading h3{font-size:clamp(24px,3vw,34px);line-height:1.04;letter-spacing:-.04em;margin:2px 0;color:#143345}
+#dialog-content .oto-projects-heading p{max-width:260px;margin:0;color:#436575;font-size:12px;line-height:1.5}
+.oto-project-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.oto-project-card{min-width:0;display:grid;grid-template-rows:190px 1fr;border:1px solid #a6c6ce;background:#fff;box-shadow:4px 4px 0 #143e5630;overflow:hidden;scroll-margin-top:125px}
+.oto-project-media{position:relative;overflow:hidden;background:#d7f2f8}
+.oto-project-media img{display:block;width:100%;height:100%;object-fit:cover}
+.oto-project-media.app{background:#206189}
+.oto-project-media.app img{object-fit:contain;object-position:center top}
+.oto-project-media.films{background:#e5e5ff}
+.oto-project-media.films img{object-fit:contain;object-position:center 42%;padding:7px}
+.oto-project-kind{position:absolute;left:0;top:0;padding:7px 9px;background:#143e58;color:#fff;font-size:10px;font-weight:900;letter-spacing:.12em}
+.oto-project-copy{display:flex;flex-direction:column;align-items:start;padding:15px 16px 17px}
+.oto-project-status{display:inline-flex;align-items:center;gap:6px;border:1px solid #8ac7d6;padding:4px 6px;color:#1b6a83;background:#effdff;font-size:9px;line-height:1.2;letter-spacing:.08em;font-weight:900}
+.oto-project-status i{display:block;width:7px;height:7px;border-radius:50%;background:#22a893}
+.oto-project-copy h4{font-size:19px;line-height:1.12;letter-spacing:-.03em;color:#12394f;margin:10px 0 7px}
+#dialog-content .oto-project-copy p{font-size:12px;line-height:1.5;margin:0 0 10px;color:#365766}
+.oto-project-copy small{display:block;font-size:11px;line-height:1.5;color:#58737e}
+.oto-project-link{margin-top:auto;padding-top:14px;font-size:11px;font-weight:850;color:#0d779e;text-underline-offset:3px}
+.oto-project-link:hover{color:#15415b}
+
+.project-dialog[data-chapter="oto"] .frisson-channel,.project-dialog[data-chapter="oto"] .frisson-product-layout,.project-dialog[data-chapter="oto"] .frisson-community{background:#fff;border-color:#a9cbd4;border-radius:2px;box-shadow:4px 4px 0 #163d5730}
+.project-dialog[data-chapter="oto"] .frisson-channel-mark{background:#185a79;border-radius:3px;transform:none}
+.project-dialog[data-chapter="oto"] .frisson-channel-stat strong,.project-dialog[data-chapter="oto"] .frisson-channel-stat a,.project-dialog[data-chapter="oto"] .frisson-case-links a,.project-dialog[data-chapter="oto"] .frisson-film-copy a{color:#0d7598}
+.project-dialog[data-chapter="oto"] .frisson-film{border-radius:2px;border-color:#a9cbd4;box-shadow:3px 3px 0 #163d5726}
+.project-dialog[data-chapter="oto"] .frisson-film-poster{background:#173b5a}
+.project-dialog[data-chapter="oto"] .frisson-film[data-film="2"] .frisson-film-poster{background:#197b93}
+.project-dialog[data-chapter="oto"] .frisson-film[data-film="3"] .frisson-film-poster{background:#544a80}
+.project-dialog[data-chapter="oto"] .frisson-film-poster .film-reel-art{opacity:.35}
+.project-dialog[data-chapter="oto"] .frisson-process span:nth-child(odd){background:#e2f5f7;border-color:#a9d5df;color:#0b657f}
+
+.project-dialog[data-chapter="oto"] .frisson-product-layout{grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:32px;align-items:center}
+.oto-device{width:min(100%,224px);margin:0 auto;border:5px solid #163348;border-radius:25px;background:#163348;box-shadow:8px 11px 0 #153a4c26;overflow:hidden;color:#f7fbff}
+.oto-device-top{padding:8px 9px;font-size:9px;letter-spacing:.07em;text-transform:uppercase}
+.oto-preview-live{color:#83e5f2}
+.oto-device-screen{position:relative;width:100%;aspect-ratio:314/610;overflow:hidden;background:#e5f5f8}
+.oto-device-screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;animation:oto-preview-cycle 16s steps(1,end) infinite;animation-delay:calc(var(--preview-index) * -12s)}
+.oto-device-screen img:first-child{opacity:1}
+.oto-device.is-paused .oto-device-screen img{animation-play-state:paused}
+.oto-device-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 9px;color:#d3edf3;font-size:8px;letter-spacing:.02em}
+.oto-device-bottom button{flex:0 0 auto;padding:3px 4px;border:1px solid #7bbecb;color:#fff;font-size:9px;line-height:1.1}
+.oto-device-bottom button:hover{background:#2c7184}
+@keyframes oto-preview-cycle{0%,24.9%{opacity:1}25%,100%{opacity:0}}
+.project-dialog[data-chapter="oto"] .oto-product-steps li{border-color:#bbd6dc}
+.project-dialog[data-chapter="oto"] .oto-product-steps li:before{color:#1783a3}
+.project-dialog[data-chapter="oto"] .oto-product-steps strong{color:#153d54}
+
+.cozy-room .character.is-celebrating .character-sprite{background-size:contain!important;background-position:center center!important;animation:fibi-celebrate 2.5s ease-in-out both}
+.cozy-room .character.is-celebrating:after{content:'✦  ✧  ✦';position:absolute;left:50%;top:-17%;transform:translateX(-50%);width:150%;text-align:center;color:#ffd551;font-size:25px;letter-spacing:4px;text-shadow:1px 2px #95576a;pointer-events:none;animation:fibi-sparkle 2.5s ease-out both}
+@keyframes fibi-celebrate{0%,100%{transform:scaleX(var(--fibi-facing,1)) translateY(0)}18%,51%{transform:scaleX(var(--fibi-facing,1)) translateY(-13%)}34%,70%{transform:scaleX(var(--fibi-facing,1)) translateY(0)}}
+@keyframes fibi-sparkle{0%{opacity:0;scale:.4}25%,75%{opacity:1;scale:1}100%{opacity:0;scale:1.3}}
+
+@media(max-width:760px){
+  .scene-actions{flex-wrap:wrap;justify-content:flex-end}
+  .room-heading{flex-wrap:wrap;gap:3px 8px}
+  .room-hint-top,.room-heading .reveal-progress{font-size:10px;white-space:normal}
+  .cozy-room.scene{margin-bottom:12px}
+  .contact-ledge .ledge-build{font-size:7px;padding:2px 4px;gap:2px;min-height:22px;bottom:2%}
+  .contact-ledge .ledge-instagram,.contact-ledge .ledge-linkedin{font-size:12px;letter-spacing:.04em;padding:4px 2px}
+  .social-mark{width:12px;height:12px}
+  .contact-ledge .ledge-instagram{left:17%;top:75%}
+  .contact-ledge .ledge-linkedin{right:16%;top:74%}
+  .ledge-icon{width:15px;height:15px;font-size:9px}
+  .oto-projects-heading{display:block}
+  #dialog-content .oto-projects-heading p{margin-top:7px}
+  .oto-project-grid{grid-template-columns:1fr}
+  .oto-project-card{grid-template-columns:40% minmax(0,1fr);grid-template-rows:auto;min-height:188px}
+  .oto-project-copy{padding:12px}
+  .oto-project-copy h4{font-size:16px}
+  #dialog-content .oto-project-copy p{font-size:11px}
+  .project-dialog[data-chapter="oto"] .frisson-product-layout{grid-template-columns:1fr}
+  .oto-device{margin:auto}
+}
+@media(prefers-reduced-motion:reduce){
+  .contact-ledge a,.cozy-room .character.is-celebrating .character-sprite,.cozy-room .character.is-celebrating:after{animation:none!important;transition:none!important}
+  .oto-device-screen img{animation:none!important;opacity:0}
+  .oto-device-screen img:first-child{opacity:1}
+  .oto-device-bottom button{display:none}
+}

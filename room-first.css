@@ -1,0 +1,155 @@
+/* The room is the whole portfolio. Details open from objects in the scene. */
+.site-header{display:none}
+main{max-width:none;padding:0 2.2%}
+.world{display:block;min-height:100dvh;padding-top:9px}
+.world>.intro,.work-strip,.beyond-room,.contact-section,.site-footer{display:none}
+.scene-section{margin:0;min-height:100dvh;justify-content:center}
+.scene-topline{width:min(100%,1240px);margin:0 auto;padding:2px 2% 0}
+.cozy-room.scene{width:min(100%,1240px,calc((100dvh - 95px)*1.5));max-width:1240px;margin:2px auto 5px}
+.scene-bottomline{width:min(100%,1240px);margin:0 auto;padding:0 2% 10px}
+.room-caption{color:#42216d;font-weight:800;letter-spacing:.11em}
+.wall-awards{position:absolute;inset:0;z-index:2;pointer-events:none}
+.wall-award{position:absolute;width:6%;height:16%;padding:0;background:transparent;pointer-events:auto;cursor:pointer;border-radius:3px}
+.wall-award-silver{left:12.6%;top:22.5%}
+.wall-award-gold{left:34.8%;top:7%}
+.wall-award:hover,.wall-award:focus-visible{outline:2px solid #f5d94e;outline-offset:2px;box-shadow:0 0 0 5px #6733cf33}
+.wall-award.is-awaiting-fibi,.wall-portrait.is-awaiting-fibi{outline:2px solid #f5d94e;outline-offset:3px;box-shadow:0 0 0 6px #f5d94e44}
+.award-open{position:absolute;right:-9px;top:-9px;display:grid;place-items:center;width:24px;height:24px;border:2px solid #fffdf8;border-radius:50%;background:#593186;color:#fff;font-size:15px;font-weight:800;line-height:1;box-shadow:0 3px 7px #2d193a55;transition:transform .18s,background .18s;pointer-events:auto}
+.wall-award:hover .award-open,.wall-award:focus-visible .award-open{transform:translateY(-3px) scale(1.08);background:#7843bb}
+.award-tooltip{position:absolute;left:50%;bottom:calc(100% + 11px);transform:translate(-50%,4px);padding:7px 10px;border:1px solid #d5c2e8;border-radius:6px;background:#fffdf9;color:#40245d;box-shadow:0 4px 10px #261a3a24;font-size:11px;font-weight:700;white-space:nowrap;opacity:0;visibility:hidden;transition:opacity .16s,transform .16s;pointer-events:none}
+.wall-award:hover .award-tooltip,.wall-award:focus-visible .award-tooltip{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.wall-portrait{position:absolute;left:84%;top:23%;z-index:3;width:11.3%;padding:0;background:transparent;border:0;box-shadow:none;transition:left .2s cubic-bezier(.2,.9,.3,1.1),top .2s cubic-bezier(.2,.9,.3,1.1),transform .2s ease;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.wall-portrait:hover,.wall-portrait:focus-visible{transform:translateY(-3px) scale(1.025)}
+.wall-portrait:focus-visible{outline:3px solid #f5d94e;outline-offset:3px}
+.wall-portrait.is-wall-dragging{z-index:1000;transition:none;transform:scale(1.07);cursor:grabbing}
+.wall-portrait img{display:block;width:100%;height:auto;pointer-events:none}
+.wall-portrait span{position:absolute;left:50%;bottom:-5%;transform:translateX(-50%);padding:3px 5px;border:1px solid #d6c0a2;border-radius:4px;background:#fffaf0;color:#4a365d;box-shadow:0 2px 4px #35252935;font-size:clamp(8px,.8vw,11px);font-weight:750;white-space:nowrap;pointer-events:none}
+.wall-portrait .portrait-drag-hint{position:absolute;right:6%;top:1%;display:grid;place-items:center;width:18%;aspect-ratio:1;border:2px solid #fffaf0;border-radius:50%;background:#593186;color:#fff;font-size:clamp(9px,1.1vw,14px);font-style:normal;line-height:1;box-shadow:0 2px 6px #321c484d;pointer-events:none}
+.oto-work-samples{margin:30px 0}
+.oto-work-samples>summary{display:flex;justify-content:space-between;align-items:center;gap:10px;list-style:none;cursor:pointer;padding:15px 18px;border:1px solid #d8c7e8;border-radius:8px;background:#f9f2ff;color:#422760;font-size:16px;font-weight:750;letter-spacing:-.025em}
+.oto-work-samples>summary::-webkit-details-marker{display:none}
+.oto-work-samples>summary span{font-size:21px;line-height:1;transition:transform .2s}
+.oto-work-samples[open]>summary span{transform:rotate(180deg)}
+.oto-work-samples>summary:focus-visible{outline:3px solid #f5d94e;outline-offset:3px}
+.oto-work-grid{display:grid;gap:12px}
+.oto-work-samples[open] .oto-work-grid{margin-top:12px}
+.oto-work-card{border:1px solid #ddd1ea;background:#fcf9ff;border-radius:9px;overflow:hidden}
+.oto-work-images{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;background:#2b1946}
+.oto-work-images img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.oto-work-copy{padding:18px 20px}
+.oto-work-eyebrow{font-size:10px;letter-spacing:.14em;font-weight:800;color:#6733cf}
+.oto-work-copy h4{margin:7px 0 7px;font-size:19px;letter-spacing:-.035em}
+.oto-work-copy p{margin:0 0 13px;line-height:1.6;color:#584b65;font-size:14px}
+.oto-work-copy small{font-size:11px;font-weight:700;color:#59436d}
+.case-eyebrow{display:block;color:#6833aa;font-size:10px;font-weight:800;letter-spacing:.14em;line-height:1.5}
+.frisson-channel{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:17px;align-items:center;margin:28px 0;padding:20px;border:1px solid #d8c8e9;border-radius:12px;background:linear-gradient(115deg,#f9f2ff,#fff9ec);box-shadow:0 6px 0 #4e2c7320}
+.frisson-channel-mark{display:grid;place-items:center;width:58px;height:58px;border-radius:17px;background:#532b8c;color:#fff5e9;font-family:Georgia,serif;font-size:41px;transform:rotate(-5deg)}
+.frisson-channel-copy h3{margin:4px 0 4px;font-size:23px;line-height:1.1;letter-spacing:-.04em}
+#dialog-content .frisson-channel-copy p{margin:0 0 5px;color:#51435d;font-size:13px;line-height:1.5}
+.frisson-channel-copy small{display:block;color:#786a82;font-size:10px;line-height:1.5}
+.frisson-channel-stat{text-align:right;white-space:nowrap}
+.frisson-channel-stat strong{display:block;font-size:27px;line-height:1;color:#522786;letter-spacing:-.06em}
+.frisson-channel-stat span{display:block;font-size:11px;color:#6c5b78;margin:4px 0 9px}
+.frisson-channel-stat a,.frisson-case-links a{color:#582b96;font-size:12px;font-weight:750;text-underline-offset:3px}
+.frisson-films,.frisson-product,.frisson-community{margin:39px 0 32px}
+.frisson-section-heading{max-width:650px;margin-bottom:17px}
+.frisson-section-heading h3{font-size:24px;line-height:1.2;letter-spacing:-.04em;margin:7px 0 8px}
+#dialog-content .frisson-section-heading p{font-size:14px;line-height:1.65;color:#5c5067;margin:0}
+.frisson-process{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:12px;color:#68438b;font-size:10px;font-weight:800}
+.frisson-process span:nth-child(odd){padding:6px 8px;border:1px solid #dbc8ec;border-radius:4px;background:#faf5ff}
+.frisson-film-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.frisson-film{min-width:0;border:1px solid #d8cce4;border-radius:9px;background:#fffdff;overflow:hidden;box-shadow:0 4px 0 #59407612}
+.frisson-film-poster,.frisson-film-player{display:block;width:100%;height:auto;aspect-ratio:9/15;border:0}
+.frisson-film-poster{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;text-align:left;text-decoration:none;padding:13px;background:radial-gradient(circle at 45% 42%,#bd94ec 0 12%,transparent 45%),linear-gradient(145deg,#2f1b50,#6842a6 54%,#d15a91);color:#fff;isolation:isolate;transition:filter .2s}
+.frisson-film[data-film="2"] .frisson-film-poster{background:radial-gradient(circle at 72% 38%,#62d6e5 0 10%,transparent 43%),linear-gradient(145deg,#142d55,#4e71b5 60%,#9b7cce)}
+.frisson-film[data-film="3"] .frisson-film-poster{background:radial-gradient(circle at 53% 50%,#ffd17d 0 11%,transparent 47%),linear-gradient(145deg,#59274e,#c56f71 62%,#efb372)}
+.frisson-film-poster:hover{filter:brightness(1.09)}
+.frisson-film-poster:focus-visible{outline:3px solid #f6ce4c;outline-offset:-5px}
+.film-reel-number,.film-poster-cta{position:relative;z-index:2;font-size:10px;font-weight:800;letter-spacing:.08em;line-height:1.4}
+.film-poster-cta{align-self:flex-start;background:#fff;color:#3b235d;border-radius:4px;padding:7px 9px;letter-spacing:0}
+.film-reel-art{position:absolute;inset:20% 12%;display:grid;place-items:center;transform:rotate(-9deg)}
+.film-reel-art span{position:absolute;width:75%;height:55%;border:2px solid #ffffffa0;border-radius:17px;box-shadow:0 8px 18px #1f103b42;transform:rotate(-12deg) translate(-8%,8%);background:#ffffff10}
+.film-reel-art span:nth-child(2){transform:rotate(7deg) translate(8%,-6%);background:#ffffff22}
+.film-reel-art span:nth-child(3){width:51%;height:41%;transform:rotate(-2deg);background:#ffffff35}
+.film-play{display:grid;place-items:center;position:relative;z-index:2;align-self:center;width:48px;height:48px;padding-left:3px;border:1px solid #fff9;border-radius:50%;background:#fff;color:#44236e;font-size:18px;box-shadow:0 8px 25px #2410368c}
+.frisson-film-player{background:#fff}
+.frisson-film-copy{padding:13px 13px 15px}
+.frisson-film-copy h4{font-size:15px;line-height:1.25;letter-spacing:-.025em;margin:0 0 7px}
+.film-result{display:block;color:#6d31b0;font-size:13px;margin-bottom:5px}
+#dialog-content .frisson-film-copy p{font-size:11px;line-height:1.5;color:#62586b;margin:0 0 9px}
+.frisson-film-copy a{font-size:11px;color:#5e2d9e;font-weight:750;text-underline-offset:3px}
+#dialog-content .frisson-source{font-size:10px;line-height:1.55;color:#7f7388;margin:12px 0 0}
+.frisson-product-layout{display:grid;grid-template-columns:minmax(230px,1fr) minmax(0,.85fr);gap:24px;align-items:center;border:1px solid #d7c8e6;border-radius:12px;padding:20px;background:linear-gradient(145deg,#f9f2ff,#fffdf8)}
+.oto-device{width:min(100%,350px);margin:auto;border:6px solid #342349;border-radius:19px;background:#342349;box-shadow:0 16px 30px #3621473b;overflow:hidden;color:#f7f0ff}
+.oto-device-top{display:flex;justify-content:space-between;padding:7px 10px;font-size:9px;font-weight:800;letter-spacing:.1em}
+.oto-device-room{position:relative;display:flex;justify-content:center;align-items:flex-end;height:190px;background:linear-gradient(180deg,#e9d6ff 0 65%,#d1b0e5 65%);overflow:hidden}
+.oto-device-room:after{content:'';position:absolute;bottom:20px;left:18%;width:64%;height:17px;background:#6d4d8f2e;border-radius:50%}
+.oto-device-sun{position:absolute;top:8px;right:17px;color:#ffca61;font-size:38px}
+.oto-device-fibi{position:relative;z-index:1;display:block;width:120px;height:120px;margin-bottom:20px;background:url('assets/fibi-idle.png') left center/1500% 100% no-repeat;filter:drop-shadow(0 5px 2px #30204438)}
+.oto-device-caption{position:absolute;z-index:2;left:12px;top:14px;background:#fff8ff;color:#492b71;border:1px solid #bca2d1;border-radius:6px;padding:6px 9px;font-size:11px;font-weight:700;transform:rotate(-3deg)}
+.oto-device-actions{display:flex;justify-content:space-around;padding:9px 5px;font-size:10px;font-weight:700}
+.oto-device>small{display:block;background:#fffdf8;color:#756783;font-size:9px;line-height:1.3;text-align:center;padding:6px}
+.oto-product-steps{list-style:none;padding:0;margin:0;counter-reset:otostep}
+.oto-product-steps li{display:grid;grid-template-columns:28px 1fr;gap:3px 8px;border-bottom:1px solid #d8c7e8;padding:15px 0;counter-increment:otostep}
+.oto-product-steps li:last-child{border:0}
+.oto-product-steps li:before{content:counter(otostep,decimal-leading-zero);grid-row:span 2;color:#7e4db8;font-size:10px;font-weight:800;align-self:start}
+.oto-product-steps strong{font-size:16px;line-height:1.2;color:#42285f}
+.oto-product-steps span{font-size:12px;line-height:1.5;color:#62566e}
+.frisson-case-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:13px}
+.frisson-case-links a{display:inline-flex;padding:10px 12px;border:1px solid #d6c2e9;border-radius:6px;background:#fff9ff;text-decoration:none}
+.frisson-case-links a:hover{background:#f2e9ff}
+.oto-app-gallery-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:20px 0 9px}
+.oto-app-gallery-heading strong{font-size:14px;color:#432861}
+.oto-app-gallery-heading span{font-size:10px;color:#776883}
+.oto-app-gallery{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 12px;scrollbar-color:#bba6d2 #f4edf9}
+.oto-app-gallery figure{flex:0 0 min(32%,215px);min-width:170px;margin:0;scroll-snap-align:start;border:1px solid #dacde8;border-radius:9px;overflow:hidden;background:#fffdf8;box-shadow:0 3px 0 #4c326719}
+.oto-app-gallery img{display:block;width:100%;height:auto;aspect-ratio:314/680;object-fit:cover}
+.oto-app-gallery figcaption{padding:8px 10px;font-size:10px;font-weight:750;color:#4c3367}
+.frisson-community{padding:22px;border:1px solid #ddc9e8;border-radius:12px;background:#fff9f0}
+.frisson-community-path{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:19px}
+.frisson-community-path span:nth-child(odd){padding:10px 12px;border-radius:6px;background:#f3e6ff;color:#4a296d;font-size:11px;font-weight:800}
+.frisson-community-path span:nth-child(even){color:#b57737;font-size:18px}
+.milestone-stories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:24px 0}
+.milestone-story{padding:19px 20px;border:1px solid #d9cde7;border-radius:8px;background:#fdfaff;transition:border-color .2s,box-shadow .2s}
+.milestone-story[data-metal=gold]{background:#fffaf0;border-color:#e7d8ab}
+.milestone-story .milestone-number{display:block;font-size:30px;font-weight:800;line-height:1;color:#6733cf;letter-spacing:-.055em}
+.milestone-story[data-metal=gold] .milestone-number{color:#a36a16}
+.milestone-story h3{font-size:17px;margin:12px 0 7px;letter-spacing:-.025em}
+.milestone-story p{font-size:13px;line-height:1.6;margin:0;color:#554b60}
+.project-dialog[data-award=silver] .milestone-story[data-metal=silver],.project-dialog[data-award=gold] .milestone-story[data-metal=gold]{border-color:#7844bf;box-shadow:0 0 0 3px #7844bf24}
+.milestone-source{font-size:11px;color:#71657d;margin:-12px 0 23px;line-height:1.55}
+.milestone-source a{color:#6733cf;text-underline-offset:2px}
+@media(max-width:760px){
+  main{padding:0 2%}
+  .world{padding-top:8px}
+  .scene-section{min-height:100dvh;margin:0}
+  .scene-topline{padding:0 3%;gap:5px}
+  .room-caption{font-size:8px;letter-spacing:.04em}
+  .scene-actions{width:auto;gap:5px;margin-left:auto}
+  .arrange-toggle,.view-toggle{min-height:34px;padding:6px;font-size:10px}
+  .cozy-room.scene{width:100%;margin:16px auto 56px}
+  .wall-award{width:10%;min-width:36px;height:18%}
+  .wall-award-silver{left:10.5%;top:21%}
+  .wall-award-gold{left:32.6%;top:5.5%}
+  .award-open{width:20px;height:20px;right:-5px;top:-5px;font-size:12px}
+  .milestone-stories{grid-template-columns:1fr}
+  .wall-portrait{width:10%;min-width:38px;padding:2px;border-width:1px}
+  .wall-portrait span{font-size:5px;margin-top:1px}
+  .scene-bottomline{padding:0 3% 12px}
+  .frisson-channel{grid-template-columns:44px minmax(0,1fr);padding:14px;gap:10px}
+  .frisson-channel-mark{width:40px;height:40px;font-size:29px;border-radius:12px}
+  .frisson-channel-stat{grid-column:2;text-align:left;display:flex;align-items:baseline;flex-wrap:wrap;gap:6px}
+  .frisson-channel-stat strong{font-size:21px}
+  .frisson-channel-stat span{margin:0 4px 0 0}
+  .frisson-film-grid{grid-template-columns:1fr}
+  .frisson-film{display:grid;grid-template-columns:44% 1fr}
+  .frisson-film-poster,.frisson-film-player{height:100%;min-height:220px;aspect-ratio:auto}
+  .frisson-film-copy{align-self:center}
+  .film-reel-number{font-size:9px;letter-spacing:.02em}
+  .film-poster-cta{font-size:9px;padding:6px}
+  #dialog-content .frisson-film-copy p{font-size:11px}
+  .frisson-product-layout{grid-template-columns:1fr;gap:14px;padding:15px}
+  .oto-app-gallery figure{flex-basis:48%;min-width:140px}
+  .frisson-community-path{gap:5px}
+  .frisson-community-path span:nth-child(odd){font-size:10px;padding:8px}
+}
