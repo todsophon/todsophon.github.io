@@ -1,6 +1,7 @@
-import { GRID_SIZE, STORAGE_KEY, LEGACY_STORAGE_KEY, FURNITURE, DEFAULT_LAYOUT, tileToScreen, screenToTile, snapPlacement, snapDraggedPlacement, canPlace, nearbyOpenPlacement, normalizeLayout, serializeLayout } from './room-layout.mjs?v=30';
-import { createRoomCompanion } from './fibi.js?v=37-intro';
-import { createRoomReveal } from './room-reveal.js?v=37-intro';
+import { GRID_SIZE, STORAGE_KEY, LEGACY_STORAGE_KEY, FURNITURE, DEFAULT_LAYOUT, tileToScreen, screenToTile, snapPlacement, snapDraggedPlacement, canPlace, nearbyOpenPlacement, normalizeLayout, serializeLayout } from './room-layout.mjs?v=40';
+import { createRoomCompanion } from './fibi.js?v=40';
+import { createGuidedTour } from './guided-tour.js?v=40';
+import { createFloorKeyboard } from './floor-keyboard.js?v=40';
 
 const stage = document.querySelector('#scene');
 const tiles = document.querySelector('#floor-tiles');
@@ -20,10 +21,10 @@ const WALL_STORAGE_KEY = 'todsophon.wall-portrait.v1';
 const DEFAULT_WALL_POSITION = { x: 84, y: 23 };
 const SCENE_WIDTH = 1000;
 const SCENE_HEIGHT = 2000 / 3;
-const artWidths = { youtube: 290, oto: 290, bookshelf: 180, plant: 112, chair: 165, tiktok: 87 };
+const artWidths = { youtube: 290, oto: 290, bookshelf: 180, plant: 98, chair: 165, tiktok: 60 };
 // The projected tile center meets the center of the feet, not the frontmost foot.
-const groundAnchors = { youtube: 78, oto: 77, bookshelf: 80, plant: 90, chair: 86, tiktok: 88.5 };
-const groundCenters = { youtube: 51.3, oto: 49.1, bookshelf: 56, plant: 51.3, chair: 50, tiktok: 50 };
+const groundAnchors = { youtube: 78, oto: 77, bookshelf: 80, plant: 95, chair: 86, tiktok: 96 };
+const groundCenters = { youtube: 51.3, oto: 49.1, bookshelf: 56, plant: 57, chair: 50, tiktok: 50 };
 // Match both ground-plane directions to the room's 2:1 projection while keeping
 // upright edges vertical. Each source illustration has a different camera angle.
 // y' = shear * x + scale * y; the origin stays pinned to the feet during a move.
@@ -35,15 +36,22 @@ const artPerspective = {
 // Measured atlas windows preserve each object's silhouette without editing the source.
 const atlasWindows = {
   youtube: [20, 40, 525, 491], oto: [548, 50, 510, 482], bookshelf: [1070, 50, 435, 455],
-  plant: [95, 532, 355, 435], chair: [330, 80, 880, 860], tiktok: [1145, 526, 250, 458],
+  plant: [0, 0, 494, 799], chair: [330, 80, 880, 860], tiktok: [0, 0, 259, 822],
 };
-const labels = { youtube: 'YouTube', oto: 'Oto / Frisson Labs', bookshelf: 'Creator archive', tiktok: 'TikTok', plant: 'Growth', chair: 'Watch films' };
+// Pieces drawn outside the shared furniture atlas: [image, width, height].
+const spriteSources = {
+  chair: ['assets/lounge-chair.png', 1536, 1024],
+  oto: ['assets/oto-furniture-atlas-v3.png', 1536, 1024],
+  plant: ['assets/chart-easel.webp', 494, 799],
+  tiktok: ['assets/ring-light.webp', 259, 822],
+};
+const labels = { youtube: 'YouTube', oto: 'Oto / Frisson Labs', bookshelf: 'Record cabinet', tiktok: 'TikTok', plant: 'Analytics', chair: 'Watch films' };
 const accessibleLabel = (item, arranging = false) => arranging ? `Move ${item.label}` : item.action === 'screening' ? 'Watch films from the screening chair' : `Explore ${item.label}`;
 const pieces = new Map();
 let layout = clone(DEFAULT_LAYOUT);
 let editing = false;
 let guide;
-let reveal;
+let tour;
 let selectedId = null;
 let pending = null;
 let pointer = null;
@@ -126,7 +134,7 @@ function save(message = 'Saved on this browser') {
 }
 function announce(message, invalid = false) { feedback.textContent = message; feedback.classList.toggle('invalid', invalid); }
 function setEditing(value) {
-  if (value) reveal?.finishAll();
+  if (value) tour?.pause();
   editing = value;
   stage.classList.toggle('is-arranging', value);
   arrangeButton.setAttribute('aria-pressed', String(value));
@@ -285,11 +293,12 @@ for (const item of FURNITURE) {
   const art = document.createElement('span'); art.className = 'furniture-art'; art.setAttribute('aria-hidden', 'true');
   // Keep perspective on a separate layer so dragging/landing never resets it.
   const sprite = document.createElement('span'); sprite.className = 'furniture-sprite';
-  if (item.id === 'chair') sprite.style.backgroundImage = "url('assets/lounge-chair.png')";
-  if (item.id === 'oto') sprite.style.backgroundImage = "url('assets/oto-furniture-atlas-v2.png')";
+  const [source, sourceWidth, sourceHeight] = spriteSources[item.id] || [null, 1536, 1024];
+  if (source) sprite.style.backgroundImage = `url('${source}')`;
   if (artPerspective[item.id]) piece.style.setProperty('--furniture-perspective', `matrix(${artPerspective[item.id].join(',')})`);
-  sprite.style.backgroundSize = `${1536 / cropWidth * 100}% ${1024 / cropHeight * 100}%`;
-  sprite.style.backgroundPosition = `${cropX / (1536 - cropWidth) * 100}% ${cropY / (1024 - cropHeight) * 100}%`;
+  sprite.style.backgroundSize = `${sourceWidth / cropWidth * 100}% ${sourceHeight / cropHeight * 100}%`;
+  const offset = (start, size, total) => total === size ? 0 : start / (total - size) * 100;
+  sprite.style.backgroundPosition = `${offset(cropX, cropWidth, sourceWidth)}% ${offset(cropY, cropHeight, sourceHeight)}%`;
   art.append(sprite);
   const label = document.createElement('span'); label.className = 'furniture-label'; label.textContent = labels[item.id]; label.setAttribute('aria-hidden', 'true');
   hit.append(label); piece.append(hit, art); layer.append(piece); pieces.set(item.id, piece);
@@ -426,7 +435,8 @@ window.addEventListener('storage', event => {
   history.length = 0; render(); status.textContent = 'Arrangement updated from another tab';
 });
 guide = createRoomCompanion({ stage, getLayout: () => layout, isEditing: () => editing });
-reveal = createRoomReveal({ stage, guide });
+const keyboard = createFloorKeyboard({ stage, guide });
+tour = createGuidedTour({ stage, guide, keyboard });
 let deliveringVisitClick = false;
 stage.addEventListener('click', event => {
   if (event.target.closest?.('.wall-portrait') && performance.now() < wallSuppressClickUntil) {
@@ -437,16 +447,12 @@ stage.addEventListener('click', event => {
   if (!target) return;
   const furnitureId = target.closest('.furniture-piece')?.dataset.furniture || null;
   if (furnitureId && suppressClick.id === furnitureId && performance.now() < suppressClick.until) return;
-  if (reveal.isLocked(target)) {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    guide.visitTarget({ target, furnitureId, onComplete: () => reveal.paint(target) });
-    return;
-  }
   if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   event.stopImmediatePropagation();
+  tour.leave();
   guide.visitTarget({ target, furnitureId, onComplete: () => {
+    tour.markSeen(target);
     deliveringVisitClick = true;
     try { target.click(); } finally { deliveringVisitClick = false; }
   } });

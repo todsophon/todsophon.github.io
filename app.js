@@ -366,13 +366,9 @@ document.querySelector('#work-nav').addEventListener('click', event => {
   document.querySelector('#scene-section').scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest' });
 });
 document.querySelector('#room-nav').addEventListener('click', event => { event.preventDefault(); setView(false); });
-document.querySelector('#fibi-button').addEventListener('click', () => {
-  const greetings = ["Try the camera. There are stories over there!", "That little lab? That's Oto's corner.", "Big ideas fit in little rooms.", "Go on, click something. I'm curious too!", `Hi, I'm ${config.character.name}! Make yourself at home.`];
-  document.querySelector('#speech-message').textContent = greetings[greetingIndex++ % greetings.length];
-});
 document.addEventListener('room:placed', () => {
   const reactions = ['A lovely spot!', 'Now it feels like home.', 'A little change. A little joy.'];
-  document.querySelector('#speech-message').textContent = reactions[greetingIndex++ % reactions.length];
+  document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: reactions[greetingIndex++ % reactions.length], holdMs: 2200 } }));
   clearTimeout(reactionTimer);
   character.classList.remove('is-delighted');
   requestAnimationFrame(() => character.classList.add('is-delighted'));

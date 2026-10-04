@@ -26,6 +26,8 @@ const frissonReels = [
   }
 ];
 
+const sheet = (name, frames, rows) => ({ fps: 24, ground: 84.5, pages: [{ image: `assets/fibi-${name}-sheet.webp`, frames, columns: 10, rows }] });
+
 window.PORTFOLIO = {
   name: 'Tod Yansomboon',
   portrait: 'assets/tod-portrait.png',
@@ -34,9 +36,18 @@ window.PORTFOLIO = {
     animations: {
       idle: { fps: 24, ground: 84.5, pages: Array.from({ length: 7 }, (_, index) => ({ image: index === 0 ? 'assets/fibi-idle.png' : `assets/fibi-idle-${index}.png`, frames: index === 6 ? 7 : 15 })) },
       walk: { fps: 24, ground: 84.5, pages: [{ image: 'assets/fibi-walk-0.png', frames: 15 }, { image: 'assets/fibi-walk-1.png', frames: 13 }] },
-      // A four-pose greeting drawn from Fibi's Oto character art.
-      hello: { fps: 5, ground: 84.5, heightScale: 133.33, yPosition: 50, pages: [{ image: 'assets/fibi-greeting-v2.png', frames: 4 }] },
-      celebrate: { fps: 1, ground: 87, pages: [{ image: 'assets/fibi-happy.webp', frames: 1 }] }
+      // Full 24 fps cycles from Fibi's Otomates character set, as 10-column sheets.
+      hello: sheet('hello', 80, 8),
+      talking: sheet('talking', 97, 10),
+      happy: sheet('happy', 45, 5),
+      jumping: sheet('jumping', 97, 10),
+      sitLoop: sheet('sitLoop', 97, 10),
+      thinking: sheet('thinking', 67, 7),
+      laugh: sheet('laugh', 82, 9),
+      pet: sheet('pet', 38, 4),
+      sleep: sheet('sleep', 97, 10),
+      dancing: sheet('dancing', 83, 9),
+      celebrate: sheet('dancing', 83, 9)
     }
   },
   contact: {

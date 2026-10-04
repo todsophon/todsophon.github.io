@@ -1,0 +1,171 @@
+/* The guided first visit: who Tod is up top, Fibi in the middle, numbered stops,
+   and a dock that shows tour progress. Loaded last so it settles earlier layers. */
+:root{--tour-ink:#211735;--tour-muted:#5d536c;--tour-line:#e2daef;--tour-deep:#362051;--tour-accent:#e8783f;--tour-accent-ink:#b4501f}
+
+/* Header: name, role and the two most useful links, always visible. */
+.site-header{display:flex;position:sticky;top:0;z-index:60;height:64px;max-width:none;margin:0;padding:0 max(16px,2.5%);gap:28px;background:#fffffff2;border-bottom:1px solid var(--tour-line);backdrop-filter:blur(8px)}
+.site-header .brand{gap:10px}
+.site-header .brand-mascot{width:44px;height:44px}
+.site-header .brand-caption{font-size:21px;line-height:1.1}
+.site-header .brand-caption>span{font-size:12px;letter-spacing:0;font-weight:550;margin-top:2px}
+.site-header nav{gap:26px}
+.site-header .nav-link{font-size:14px;padding:10px 0}
+.header-links{display:flex;align-items:center;gap:18px;font-size:14px;font-weight:600}
+.header-links a{color:var(--tour-deep);text-decoration:none;white-space:nowrap}
+.header-links a:hover{color:#6733cf}
+.header-role{display:inline-flex;align-items:center;gap:7px;color:var(--tour-muted)!important;font-weight:550}
+.header-role>span{width:8px;height:8px;border-radius:50%;background:#2f9e6b;box-shadow:0 0 0 3px #2f9e6b26}
+.header-links a.header-hello{display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;background:var(--tour-deep);color:#fff!important}
+.header-links a.header-hello:hover{background:#4a2c6e}
+
+/* The room fills the space between the header and the dock. */
+.world{min-height:0;padding-top:12px}
+.scene-section{position:relative;min-height:0;justify-content:flex-start}
+.cozy-room.scene{width:min(100%,1240px,calc((100dvh - 64px - 96px) * 1.5));margin:0 auto}
+.cozy-room .character{width:13.5%;max-width:150px}
+.cozy-room .furniture-label{display:none}
+.cozy-room .character:not(:hover):not(:focus-within) .character-name{opacity:0}
+.cozy-room.is-arranging .furniture-label{display:block}
+.room-art{filter:none!important}
+
+/* The numbered spots replace the older badges and name tags, except while arranging. */
+.cozy-room:not(.is-arranging) .award-open,.cozy-room:not(.is-arranging) .wall-portrait>span,.cozy-room:not(.is-arranging) .portrait-drag-hint{display:none}
+
+/* Awards now hang side by side above the YouTube desk. */
+.wall-award-silver{left:22.9%;top:17.8%;width:5.1%;height:14.1%}
+.wall-award-gold{left:28.6%;top:14.4%;width:4.7%;height:14.5%}
+
+/* Numbered spots on the objects. */
+.tour-spots{position:absolute;inset:0;z-index:1200;pointer-events:none}
+.tour-spot{position:absolute;display:flex;flex-direction:row-reverse;align-items:center;gap:6px;padding:0;border:0;background:none;transform:translate(-14px,-50%);pointer-events:auto;cursor:pointer;font-family:inherit}
+.tour-spot.is-left{flex-direction:row;transform:translate(calc(-100% + 14px),-50%)}
+.tour-spot-label{display:flex;align-items:baseline;gap:5px;padding:5px 11px;border:1px solid var(--tour-line);border-radius:999px;background:#fff;color:var(--tour-ink);font-size:12.5px;white-space:nowrap;box-shadow:0 6px 16px #2117352a;transition:transform .16s,border-color .16s}
+.tour-spot-label b{font-weight:750}
+.tour-spot-label span{color:var(--tour-muted)}
+.tour-spot-dot{display:grid;place-items:center;width:28px;height:28px;border:2px solid var(--tour-deep);border-radius:50%;background:#fff;color:var(--tour-deep);font-size:13px;font-weight:800;box-shadow:0 0 0 5px #ffbe7873,0 4px 10px #21173540;box-sizing:border-box}
+.tour-spot:hover .tour-spot-label,.tour-spot:focus-visible .tour-spot-label{border-color:#8f64ce;box-shadow:0 8px 20px #21173538}
+.tour-spot:focus-visible{outline:none}
+.tour-spot:focus-visible .tour-spot-dot{outline:3px solid #f5d94e;outline-offset:2px}
+.tour-spot.is-seen .tour-spot-dot,.dock-stop.is-seen .dock-stop-number{background:var(--tour-deep);color:#fff}
+.tour-spot.is-current .tour-spot-dot{background:var(--tour-accent);border-color:#fff;color:#fff;animation:tour-pulse 1.6s ease-out infinite}
+.tour-spot.is-current .tour-spot-label{border-color:var(--tour-accent)}
+.is-touring .tour-spot:not(.is-current){opacity:.6}
+.is-arranging .tour-spots,.is-screening .tour-spots{display:none}
+@keyframes tour-pulse{0%{box-shadow:0 0 0 0 #e8783f99,0 4px 10px #21173540}100%{box-shadow:0 0 0 14px #e8783f00,0 4px 10px #21173540}}
+
+/* Fibi's card: above her head on wide screens, below the room on phones. */
+.tour-card{position:absolute;z-index:70;width:min(400px,calc(100% - 24px));box-sizing:border-box;display:flex;flex-direction:column;gap:9px;padding:18px 20px 16px;border:1px solid var(--tour-line);border-radius:18px;background:#fff;color:var(--tour-ink);box-shadow:0 18px 44px #21173538;animation:tour-card-in .22s ease-out}
+.tour-card[hidden]{display:none}
+.tour-card-tail{position:absolute;left:calc(var(--tail-x,50%) - 8px);bottom:-9px;width:16px;height:16px;background:#fff;border-right:1px solid var(--tour-line);border-bottom:1px solid var(--tour-line);transform:rotate(45deg)}
+.tour-card[data-side=right] .tour-card-tail{left:-9px;top:calc(var(--tail-y,50%) - 8px);bottom:auto;transform:rotate(135deg)}
+.tour-card[data-side=left] .tour-card-tail{left:auto;right:-9px;top:calc(var(--tail-y,50%) - 8px);bottom:auto;transform:rotate(-45deg)}
+.tour-eyebrow{margin:0;color:var(--tour-accent-ink);font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.tour-title{margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:26px;font-weight:400;line-height:1.08;letter-spacing:0}
+.tour-body{margin:0;color:#3e3450;font-size:14.5px;line-height:1.5}
+.tour-stats{display:flex;gap:8px}
+.tour-stats>div{flex:1;padding:9px 11px;border-radius:11px;background:#f6f2fb}
+.tour-stats strong{display:block;color:var(--tour-deep);font-size:19px;line-height:1.1}
+.tour-stats span{display:block;color:var(--tour-muted);font-size:11.5px;line-height:1.35}
+.tour-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:3px}
+.guide-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 14px;white-space:nowrap;border:1px solid var(--tour-deep);border-radius:999px;background:var(--tour-deep);color:#fff;font:inherit;font-size:13.5px;font-weight:650;text-decoration:none;cursor:pointer;box-sizing:border-box}
+.guide-btn:hover{background:#4a2c6e;color:#fff}
+.guide-btn.is-ghost{background:#fff;color:var(--tour-deep);border-color:#d6cce6}
+.guide-btn.is-ghost:hover{background:#f4f0fa;color:var(--tour-deep)}
+.guide-btn.is-icon{width:44px;padding:0}
+.guide-btn.is-wide{flex:1}
+.guide-btn:focus-visible,.tour-link:focus-visible{outline:3px solid #f5d94e;outline-offset:2px}
+.guide-btn-note{font-weight:500;opacity:.85}
+.tour-note{margin:0;color:var(--tour-muted);font-size:13px;line-height:1.5}
+.tour-link{padding:0;border:0;background:none;color:var(--tour-deep);font:inherit;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+@keyframes tour-card-in{from{opacity:0;translate:0 6px}to{opacity:1;translate:0 0}}
+.tour-toast{position:absolute;left:50%;top:14px;z-index:1300;margin:0;padding:10px 16px;border-radius:999px;background:var(--tour-ink);color:#fff;font-size:14px;transform:translateX(-50%);box-shadow:0 8px 24px #21173540;white-space:nowrap}
+.tour-toast[hidden]{display:none}
+.cozy-room.scene:has(~.tour-card:not([hidden]))>.speech-bubble{opacity:0;visibility:hidden}
+
+/* The dock: progress, every stop, and the room's tools. */
+.tour-dock{display:flex;align-items:center;gap:14px;width:min(100%,1240px);box-sizing:border-box;margin:8px auto 12px;padding:8px 10px 8px 18px;border:1px solid var(--tour-line);border-radius:18px;background:#fff;box-shadow:0 8px 26px #21173512}
+.dock-progress{display:flex;flex-direction:column;gap:5px;flex:none;min-width:128px}
+.dock-progress strong{font-size:14px;color:var(--tour-ink)}
+.dock-progress>span{display:flex;align-items:center;gap:8px;color:var(--tour-muted);font-size:12px}
+.dock-bar{position:relative;display:inline-block;width:56px;height:6px;border-radius:3px;background:#ece6f4;overflow:hidden}
+.dock-bar i{position:absolute;inset:0 auto 0 0;width:0;border-radius:3px;background:var(--tour-accent);transition:width .4s}
+.dock-stops{display:flex;flex:1;flex-wrap:nowrap;gap:6px;margin:0;min-width:0;overflow-x:auto;scrollbar-width:none}
+.dock-stop{display:inline-flex;flex:none;align-items:center;gap:6px;min-height:40px;padding:0 12px 0 5px;border:1px solid var(--tour-line);border-radius:999px;background:#fff;color:var(--tour-ink);font:inherit;font-size:13px;font-weight:650;cursor:pointer}
+.dock-stop:hover{border-color:#8f64ce}
+.dock-stop:focus-visible{outline:3px solid #f5d94e;outline-offset:2px}
+.dock-stop-number{display:grid;place-items:center;width:28px;height:28px;border:1.5px solid var(--tour-deep);border-radius:50%;color:var(--tour-deep);font-size:12px;font-weight:800;box-sizing:border-box}
+.dock-stop.is-current{border-color:var(--tour-accent);background:#fff6ef}
+.dock-stop.is-current .dock-stop-number{background:var(--tour-accent);border-color:var(--tour-accent);color:#fff}
+.dock-tools{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:2px;padding-left:10px;border-left:1px solid var(--tour-line)}
+.tour-dock .dock-tool{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 10px;border:0;border-radius:10px;background:none;color:var(--tour-muted);font:inherit;font-size:13px;font-weight:550;box-shadow:none;cursor:pointer}
+.tour-dock .dock-tool:hover{background:#f4f0fa;color:var(--tour-deep)}
+.tour-dock .dock-tool:focus-visible{outline:3px solid #f5d94e;outline-offset:1px}
+.tour-dock .dock-tool[aria-pressed=true].arrange-toggle,.tour-dock .dock-tool[aria-pressed=true].view-toggle{background:#f4f0fa;color:var(--tour-deep)}
+#sound-toggle[aria-pressed=false] .sound-wave{opacity:0}
+#keys-play span:last-child,#sound-toggle span:last-child{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#keys-play,#sound-toggle{width:40px;justify-content:center;padding:0;font-size:16px}
+.scene-section:has(.scene[hidden]) .dock-progress,.scene-section:has(.scene[hidden]) .dock-stops,.scene-section:has(.scene[hidden]) #keys-play,.scene-section:has(.scene[hidden]) #sound-toggle,.scene-section:has(.scene[hidden]) .tour-card{display:none}
+
+/* Floor keyboard: real buttons laid flat in the room's floor projection. */
+.floor-keys-scene{position:absolute;left:0;top:0;z-index:1;width:1000px;height:666.667px;transform-origin:0 0;transform:scale(var(--scene-scale,1));pointer-events:none}
+.floor-keys{position:absolute;width:0;height:0;transform-origin:0 0;transform:matrix(1,.5,-1,.5,0,0)}
+.floor-key{--side:#d6c4a8;--edge:#ab977b;position:absolute;padding:0;border:0;border-radius:7px;background:#f6eedf;cursor:pointer;pointer-events:auto;box-shadow:1px 1px 0 var(--side),2px 2px 0 var(--side),3px 3px 0 var(--side),4px 4px 0 var(--side),5px 5px 0 var(--side),6px 6px 0 var(--side),7px 7px 0 var(--edge),9px 9px 6px #50200a40;transition:transform 70ms ease-out,box-shadow 70ms ease-out}
+.floor-key:before{content:'';position:absolute;inset:3px 4px 5px 3px;border-radius:5px;background:#ffffff4d;pointer-events:none}
+.floor-key.is-space{--side:#da8466;--edge:#b25b3f;background:#f4a283}
+.floor-key:hover{filter:brightness(1.04)}
+.floor-key.is-down{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--side),2px 2px 0 var(--edge),4px 4px 4px #50200a33}
+.floor-key:focus-visible{outline:2px solid var(--tour-deep);outline-offset:2px}
+.is-arranging .floor-keys-scene{opacity:.55}
+.is-arranging .floor-key{pointer-events:none}
+
+/* A mailbox at the front corner replaces the "Contact me" label. */
+.contact-ledge .room-mailbox{left:50%;bottom:3.6%;width:4.3%;min-height:0;padding:0;border:0;background:none;box-shadow:none;translate:-50% 0;display:block;transition:transform .18s ease}
+.contact-ledge .room-mailbox img{display:block;width:100%;height:auto;filter:drop-shadow(0 3px 2px #5a2e1e40)}
+.contact-ledge .room-mailbox span{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);padding:5px 9px;border:1px solid var(--tour-line);border-radius:999px;background:#fff;color:var(--tour-ink);font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 4px 12px #2117352a;opacity:0;transition:opacity .16s;pointer-events:none}
+.contact-ledge .room-mailbox:hover,.contact-ledge .room-mailbox:focus-visible{transform:translateY(-4px);background:none}
+.contact-ledge .room-mailbox:hover span,.contact-ledge .room-mailbox:focus-visible span{opacity:1}
+
+/* Pinboard notes are now polaroids of real work, lying on the wall's slope. */
+.board-note{width:22%;height:50%;background:none;cursor:grab}
+.board-note:hover,.board-note:focus-visible{outline:none}
+.board-note .note-photo{position:absolute;inset:0;display:flex;flex-direction:column;gap:4%;padding:7% 7% 0;box-sizing:border-box;background:#fbf8f1;box-shadow:1px 2px 3px #402c3359;transform:skewY(21deg) rotate(var(--tilt,0deg));transform-origin:50% 0;pointer-events:none}
+.board-note .note-photo img{display:block;width:100%;aspect-ratio:9/10;height:auto;object-fit:cover}
+.board-note .note-photo span{display:block;transform:none;padding:0;color:#4b3c43;font-size:clamp(6px,.62vw,9px);font-weight:900;letter-spacing:.06em;line-height:1;text-align:center;text-shadow:none}
+.board-note .note-photo:before{content:'';position:absolute;left:50%;top:-3%;width:11%;aspect-ratio:1;border-radius:50%;background:#d23a2c;box-shadow:0 1px 2px #0005;transform:translateX(-50%)}
+.board-note-product{--tilt:-3deg}.board-note-community{--tilt:2.5deg}.board-note-films{--tilt:-2deg}
+.board-note:focus-visible .note-photo{outline:3px solid #f5d94e;outline-offset:2px}
+
+@media(max-width:760px){
+  .site-header{height:56px;min-height:0;flex-wrap:nowrap;gap:10px;padding:0 12px}
+  .site-header .brand-mascot{width:36px;height:36px}
+  .site-header .brand-caption{font-size:18px}
+  .site-header .brand-caption>span{display:block;font-size:11px}
+  .site-header nav,.header-role,.header-links a[data-open=resume]{display:none}
+  .header-hello{min-height:38px;padding:0 14px;font-size:13px}
+  .world{padding-top:8px}
+  .cozy-room.scene{width:100%}
+  .cozy-room .character{width:17%;max-width:100px}
+  .tour-spot-label{display:none}
+  .tour-spot{transform:translate(-50%,-50%)}
+  .tour-spot-dot{width:24px;height:24px;font-size:11px;box-shadow:0 0 0 3px #ffbe7873,0 3px 8px #21173540}
+  .tour-card{position:static;width:auto;margin:10px 0 0;animation:none}
+  .tour-card-tail{display:none}
+  .tour-title{font-size:23px}
+  .tour-toast{white-space:normal;width:max-content;max-width:86%;text-align:center;font-size:13px}
+  .tour-dock{flex-wrap:wrap;gap:10px;padding:10px 12px}
+  .dock-progress{flex-direction:row;align-items:center;gap:10px}
+  .dock-stops{order:3;flex:0 0 100%;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+  .dock-stop{flex:none}
+  .dock-tools{margin-left:auto;padding-left:0;border:0}
+  .tour-dock .dock-tool{padding:0 8px;font-size:12px}
+  #keys-play span:last-child,#sound-toggle span:last-child{display:none}
+  .contact-ledge .room-mailbox{width:6%}
+  .wall-award{min-width:0}
+  .wall-award-silver{left:22.9%;top:17.8%;width:5.1%;height:14.1%}
+  .wall-award-gold{left:28.6%;top:14.4%;width:4.7%;height:14.5%}
+  .board-note .note-photo span{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .tour-card,.tour-spot.is-current .tour-spot-dot{animation:none}
+  .floor-key,.contact-ledge .room-mailbox,.tour-spot-label,.dock-bar i{transition:none}
+}

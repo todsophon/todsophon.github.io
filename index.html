@@ -18,22 +18,23 @@
   <link rel="stylesheet" href="room-reveal.css?v=32">
   <link rel="stylesheet" href="pinboard.css?v=19">
   <link rel="stylesheet" href="portfolio-update.css?v=37">
-  <script src="content.js?v=33" defer></script>
-  <script src="app.js?v=33" defer></script>
-  <script type="module" src="pinboard.js?v=19"></script>
-  <script type="module" src="room.js?v=37-intro"></script>
+  <link rel="stylesheet" href="guided-room.css?v=40">
+  <script src="content.js?v=40" defer></script>
+  <script src="app.js?v=40" defer></script>
+  <script type="module" src="pinboard.js?v=40"></script>
+  <script type="module" src="room.js?v=40"></script>
   <script type="module" src="room-experience.js?v=32"></script>
 </head>
 <body>
   <a class="skip-link" href="#scene-section">Skip to the room</a>
   <header class="site-header">
-    <a class="brand" href="./" aria-label="Todsophon — Tod Yansomboon, home"><img class="brand-mascot" src="assets/tod-mascot.png" alt="" width="600" height="600"><span class="brand-caption">todsophon<span>TOD YANSOMBOON · CREATOR & BUILDER</span></span></a>
+    <a class="brand" href="./" aria-label="Todsophon — Tod Yansomboon, home"><img class="brand-mascot" src="assets/tod-mascot.png" alt="" width="600" height="600"><span class="brand-caption">todsophon<span>Tod Yansomboon · Creator &amp; builder</span></span></a>
     <nav aria-label="Main navigation">
       <button class="nav-link active" id="room-nav" aria-current="page">The room</button>
       <button class="nav-link" id="work-nav">My work</button>
       <a class="nav-link" data-open="about" href="#about">About me</a>
     </nav>
-    <div class="header-links"><a href="#resume" data-open="resume">Résumé <span aria-hidden="true">↗</span></a><a href="mailto:todsopon@hotmail.com">Say hello <span aria-hidden="true">↗</span></a></div>
+    <div class="header-links"><a class="header-role" data-open="oto" href="#work/oto"><span aria-hidden="true"></span>Now at Frisson Labs / Oto</a><a href="#resume" data-open="resume">Résumé <span aria-hidden="true">↗</span></a><a class="header-hello" href="mailto:todsopon@hotmail.com">Say hello</a></div>
   </header>
 
   <main id="main">
@@ -53,18 +54,18 @@
       </div>
 
       <div class="scene-section" id="scene-section">
-        <div class="scene-topline"><div class="room-heading"><span class="room-caption">TODSOPHON'S ROOM</span><span class="room-hint-top" id="room-hint">Drag furniture · tap the floor to guide Fibi</span><span class="reveal-progress" id="room-reveal-progress" role="status" aria-live="polite" hidden></span></div><div class="scene-actions"><button class="reveal-toggle" id="room-reveal-toggle" type="button">Replay reveal</button><button class="arrange-toggle" id="arrange-toggle" aria-pressed="false" aria-controls="scene room-editor"><span aria-hidden="true">⤧</span> Arrange room</button><button class="view-toggle" id="view-toggle" aria-pressed="false"><span aria-hidden="true">☷</span> List view</button></div></div>
+        <span class="visually-hidden" id="room-hint"></span>
         <div class="scene cozy-room" id="scene" role="group" aria-label="Cozy illustrated studio with movable furniture" aria-describedby="room-instructions">
-          <img class="room-art" src="assets/studio-background-awards-clean.png" alt="A warm creative studio with wooden floors, plants, and silver and gold play-button awards hanging on the wall" width="1536" height="1024" draggable="false" fetchpriority="high">
+          <img class="room-art" src="assets/studio-background-guided.webp" alt="A warm creative studio with wooden floors, a bookcase, plants, and silver and gold play-button awards hanging side by side" width="1536" height="1024" draggable="false" fetchpriority="high">
           <div class="wall-awards" aria-label="Todsophon's YouTube milestones">
             <button class="wall-award wall-award-silver" data-open="youtube" data-milestone="silver" aria-label="Silver YouTube award: the first 100,000 subscribers. Read the story"><span class="award-open" aria-hidden="true">↗</span><span class="award-tooltip" aria-hidden="true">The first 100K ↗</span></button>
             <button class="wall-award wall-award-gold" data-open="youtube" data-milestone="gold" aria-label="Gold YouTube award: one million subscribers. Read the story"><span class="award-open" aria-hidden="true">↗</span><span class="award-tooltip" aria-hidden="true">One million ↗</span></button>
           </div>
           <button class="wall-portrait" data-open="about" aria-label="Meet Tod Yansomboon. Drag the portrait along the wall, or click to explore" aria-describedby="wall-portrait-instructions" title="Drag to move the portrait, or click to meet Tod"><img src="assets/tod-wall-frame-v2.png" alt="" width="1186" height="1326" draggable="false"><span>Meet Tod ↗</span><i class="portrait-drag-hint" aria-hidden="true">☷</i></button>
           <div class="wall-pinboard" aria-label="Oto project pinboard">
-            <button class="board-note board-note-product" type="button" data-note="product" data-open="oto" aria-label="Oto app project: drag this note on the board or click to explore"><span aria-hidden="true">APP</span></button>
-            <button class="board-note board-note-community" type="button" data-note="community" data-open="oto" aria-label="Oto game projects: drag this note or click to explore"><span aria-hidden="true">GAMES</span></button>
-            <button class="board-note board-note-films" type="button" data-note="films" data-open="oto" aria-label="Oto AI video projects: drag this note or click to explore"><span aria-hidden="true">FILMS</span></button>
+            <button class="board-note board-note-product" type="button" data-note="product" data-open="oto" aria-label="Oto app project: drag this photo on the board or click to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-app.webp" alt="" width="180" height="200" draggable="false"><span>APP</span></span></button>
+            <button class="board-note board-note-community" type="button" data-note="community" data-open="oto" aria-label="Oto game projects: drag this photo or click to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-games.webp" alt="" width="180" height="200" draggable="false"><span>GAMES</span></span></button>
+            <button class="board-note board-note-films" type="button" data-note="films" data-open="oto" aria-label="Oto AI video projects: drag this photo or click to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-films.webp" alt="" width="180" height="200" draggable="false"><span>FILMS</span></span></button>
           </div>
           <svg class="tile-room" id="tile-room" viewBox="0 0 1000 666.6667" aria-hidden="true">
             <g id="floor-tiles"></g>
@@ -72,7 +73,7 @@
           </svg>
           <div id="furniture-layer" class="furniture-layer"></div>
           <nav class="contact-ledge" aria-label="Continue with Tod">
-            <a class="ledge-build" href="mailto:todsopon@hotmail.com" aria-label="Email Tod"><span class="ledge-icon" aria-hidden="true">✦</span><span>Contact me</span></a>
+            <a class="ledge-build room-mailbox" href="mailto:todsopon@hotmail.com" aria-label="Email Tod"><img src="assets/mailbox.webp" alt="" width="460" height="663" draggable="false"><span>Say hello</span></a>
             <a class="ledge-instagram" href="https://www.instagram.com/tod_desu/" target="_blank" rel="noopener noreferrer"><svg class="social-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2.2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg><span>Instagram</span></a>
             <a class="ledge-linkedin" href="https://www.linkedin.com/in/todsophon" target="_blank" rel="noopener noreferrer"><svg class="social-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="4.5" cy="5" r="2"/><path d="M3 9h3v12H3zm7 0h3v1.6c.9-1.2 2.1-1.9 3.7-1.9 3.1 0 4.3 2 4.3 5.2V21h-3v-6.7c0-1.8-.5-2.7-2-2.7-1.8 0-3 1.3-3 3.1V21h-3z"/></svg><span>LinkedIn</span></a>
           </nav>
@@ -82,6 +83,11 @@
             <button class="character-button" id="fibi-button" aria-label="Say hello to Fibi" aria-describedby="fibi-instructions"><span class="character-sprite" id="character-image" role="img" aria-label="Fibi, your little room guide"></span></button>
             <span class="character-name">Fibi <span>your guide</span></span>
           </div>
+        </div>
+        <div class="tour-dock" id="tour-dock">
+          <div class="dock-progress"><strong>Fibi’s tour</strong><span><span class="dock-bar" aria-hidden="true"><i id="dock-bar-fill"></i></span><span id="dock-count">0 of 6 seen</span></span></div>
+          <nav class="dock-stops" id="dock-stops" aria-label="Tour stops"></nav>
+          <div class="dock-tools"><button class="dock-tool" id="keys-play" type="button" title="Let Fibi play the floor keyboard"><span aria-hidden="true">♪</span><span>Let Fibi play</span></button><button class="dock-tool" id="sound-toggle" type="button" aria-pressed="true" title="Keyboard sound"><svg class="sound-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5v14l-4.5-4.5H4z"/><path class="sound-wave" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>Sound on</span></button><button class="view-toggle dock-tool" id="view-toggle" aria-pressed="false"><span aria-hidden="true">☷</span> List view</button><button class="arrange-toggle dock-tool" id="arrange-toggle" aria-pressed="false" aria-controls="scene room-editor"><span aria-hidden="true">⤧</span> Arrange room</button></div>
         </div>
         <div class="room-editor" id="room-editor" hidden>
           <div class="editor-heading"><strong id="selected-furniture">Make it yours</strong><div class="history-buttons"><button id="undo-room" disabled>Undo</button><button id="reset-room">Reset room</button></div></div>

@@ -7,14 +7,18 @@ export const LEGACY_STORAGE_KEY = 'todsophon.room-layout.v2';
 export const RESERVED_AREAS = Object.freeze([
   Object.freeze({ x: 0, y: 0, width: 4, depth: 4 }),
 ]);
+// Things laid flat on the floor: furniture cannot cover them, but Fibi walks across.
+export const FLOOR_FEATURES = Object.freeze([
+  Object.freeze({ id: 'keyboard', x: 6, y: 5, width: 5, depth: 7 }),
+]);
 
 export const FURNITURE = Object.freeze([
   { id: 'youtube', label: 'Creator desk', width: 3, depth: 8, default: { x: 0, y: 4 }, chapter: 'youtube', sprite: { col: 0, row: 0 } },
   { id: 'oto', label: 'Oto AI desk', width: 8, depth: 3, default: { x: 6, y: 0 }, chapter: 'oto', sprite: { col: 1, row: 0 } },
-  { id: 'bookshelf', label: 'Creator archive', width: 2, depth: 4, default: { x: 0, y: 12 }, chapter: 'youtube', sprite: { col: 2, row: 0 } },
-  { id: 'plant', label: 'Growth plant', width: 2, depth: 2, default: { x: 14, y: 2 }, chapter: 'analytics', sprite: { col: 0, row: 1 } },
-  { id: 'chair', label: 'Screening chair', width: 4, depth: 4, default: { x: 6, y: 12 }, action: 'screening', sprite: { col: 1, row: 1 } },
-  { id: 'tiktok', label: 'TikTok stand', width: 2, depth: 2, default: { x: 2, y: 12 }, chapter: 'tiktok', sprite: { col: 2, row: 1 } },
+  { id: 'bookshelf', label: 'Record cabinet', width: 2, depth: 4, default: { x: 0, y: 12 }, chapter: 'youtube', sprite: { col: 2, row: 0 } },
+  { id: 'plant', label: 'Growth chart', width: 2, depth: 2, default: { x: 14, y: 2 }, chapter: 'analytics', sprite: { col: 0, row: 1 } },
+  { id: 'chair', label: 'Screening beanbag', width: 4, depth: 4, default: { x: 6, y: 12 }, action: 'screening', sprite: { col: 1, row: 1 } },
+  { id: 'tiktok', label: 'TikTok ring light', width: 2, depth: 2, default: { x: 2, y: 12 }, chapter: 'tiktok', sprite: { col: 2, row: 1 } },
 ].map(item => Object.freeze({
   ...item,
   default: Object.freeze(item.default),
@@ -111,7 +115,7 @@ export function canPlace(layout, id, x, y) {
   const item = furnitureById.get(id);
   const candidate = { x, y };
   if (!item || !validPosition(candidate, item) || !hasValidPositions(layout)) return false;
-  if (RESERVED_AREAS.some(area => overlaps(candidate, item, area, area))) return false;
+  if ([...RESERVED_AREAS, ...FLOOR_FEATURES].some(area => overlaps(candidate, item, area, area))) return false;
   return FURNITURE.every(other => other.id === id
     || !overlaps(candidate, item, layout[other.id], other));
 }
@@ -184,7 +188,7 @@ function migrateLegacy(layout) {
     }
     const distance = point => (point.x - desired.x) ** 2 + (point.y - desired.y) ** 2;
     candidates.sort((a, b) => distance(a) - distance(b) || a.y - b.y || a.x - b.x);
-    const next = candidates.find(candidate => RESERVED_AREAS.every(area => !overlaps(candidate, item, area, area))
+    const next = candidates.find(candidate => [...RESERVED_AREAS, ...FLOOR_FEATURES].every(area => !overlaps(candidate, item, area, area))
       && FURNITURE.every(other => !migrated[other.id]
         || !overlaps(candidate, item, migrated[other.id], other)));
     if (!next) return null;

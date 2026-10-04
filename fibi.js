@@ -4,6 +4,10 @@ import { isWalkable, nearestWalkable, findPath, reachableTiles } from './fibi-pa
 const WIDTH = 1000;
 const HEIGHT = 2000 / 3;
 const SPEED = 74;
+// Fibi dozes off when nobody has touched the page for a while.
+const SLEEP_AFTER = 45;
+// Arrival spot: the middle of the room, at the front corner of the floor keyboard.
+const HOME = { x: 10, y: 10 };
 
 /** A floor-anchored companion. Furniture remains the source of navigation geometry. */
 export function createRoomCompanion({ stage, getLayout, isEditing }) {
@@ -19,10 +23,9 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
   const walk = config.animations?.walk || idle;
   const hello = config.animations?.hello || idle;
   const celebrate = config.animations?.celebrate || hello;
-  const animations = { idle, walk, hello, celebrate };
+  const animations = { ...config.animations, idle, walk, hello, celebrate };
   const images = new Map();
-  // Start in the open center aisle, clear of the screening chair's artwork.
-  let position = nearestWalkable(getLayout(), { x: 6.5, y: 10.5 });
+  let position = nearestWalkable(getLayout(), HOME);
   let path = [];
   let layoutKey = '';
   let animation = 'idle';
@@ -42,36 +45,55 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
   let reactionName = 'hello';
   let pointerStart = null;
   let tourMode = false;
+  let lastActivity = 0;
+  let sleeping = false;
+  let pressTimer = 0;
+  let petted = false;
 
-  for (const sequence of Object.values(animations)) {
-    for (const page of sequence.pages) {
-      if (images.has(page.image)) continue;
-      const image = new Image();
-      images.set(page.image, image);
-      image.fetchPriority = sequence === walk || page === idle.pages[0] ? 'high' : 'low';
-      image.decoding = 'async';
-      image.src = page.image;
-      image.addEventListener('load', () => { displayedFrame = ''; schedule(); });
+  // Idle and walking load first; every other animation loads the first time it plays.
+  function preload(names) {
+    for (const name of names) {
+      for (const page of animations[name]?.pages || []) {
+        if (images.has(page.image)) continue;
+        const image = new Image();
+        images.set(page.image, image);
+        image.fetchPriority = name === 'walk' || page === idle.pages[0] ? 'high' : 'low';
+        image.decoding = 'async';
+        image.src = page.image;
+        image.addEventListener('load', () => { displayedFrame = ''; schedule(); });
+      }
     }
   }
+  preload(['idle', 'walk', 'hello']);
+  const ready = name => (animations[name]?.pages || []).every(page => images.get(page.image)?.complete && images.get(page.image).naturalWidth);
 
   function canAnimate() {
     return !!position && !document.hidden && inView && !listView && !dialog.open && !screeningOpen && !isEditing();
   }
-  function canWander() { return !tourMode && !visit && !reducedMotion.matches && elapsed >= greetingUntil; }
+  function canWander() { return !tourMode && !visit && !sleeping && !reducedMotion.matches && elapsed >= greetingUntil; }
   function setTourMode(active) {
     tourMode = active;
     if (active && !visit) stop();
-    if (!active) nextWander = elapsed + 2;
+    if (!active) { reactionUntil = Math.min(reactionUntil, elapsed); nextWander = elapsed + 2; }
     schedule();
   }
   function playReaction(name = 'hello', duration = 1.55) {
     if (!animations[name]) return;
+    preload([name]);
     reactionName = name;
     reactionUntil = elapsed + duration;
     nextWander = Math.max(nextWander, reactionUntil + .7);
     setAnimation(name);
     schedule();
+  }
+  // Hold an animation until something else plays (tour stops, sitting, sleeping).
+  const hold = name => playReaction(name, Infinity);
+  function wake() {
+    lastActivity = elapsed;
+    if (!sleeping) return;
+    sleeping = false;
+    character.classList.remove('is-sleeping');
+    playReaction('hello', 1.6);
   }
   function setAnimation(next) {
     if (next === animation) return;
@@ -92,10 +114,13 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     const key = `${animation}:${pageIndex}:${frame}`;
     if (key === displayedFrame) return;
     displayedFrame = key;
+    // Strips are one row; grid sheets wrap frames into `rows` rows of `columns`.
     const columns = page.columns || page.frames;
+    const rows = page.rows || 1;
+    const column = frame % columns, row = Math.floor(frame / columns);
     sprite.style.backgroundImage = `url("${page.image.replace(/["\\\n\r]/g, '')}")`;
-    sprite.style.backgroundSize = `${columns * 100}% ${sequence.heightScale || 100}%`;
-    sprite.style.backgroundPosition = `${columns <= 1 ? 0 : frame / (columns - 1) * 100}% ${sequence.yPosition || 0}%`;
+    sprite.style.backgroundSize = `${columns * 100}% ${rows > 1 ? rows * 100 : sequence.heightScale || 100}%`;
+    sprite.style.backgroundPosition = `${columns <= 1 ? 0 : column / (columns - 1) * 100}% ${rows > 1 ? row / (rows - 1) * 100 : sequence.yPosition || 0}%`;
     character.style.setProperty('--fibi-ground', `${sequence.ground ?? 89}%`);
     character.dataset.frame = String(frame);
     character.dataset.spritePage = String(pageIndex);
@@ -132,11 +157,12 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     character.style.zIndex = String(Math.max(lower, Math.min(upper, Math.round((position.x + position.y + .7) * 10))));
     character.dataset.floorX = position.x.toFixed(3);
     character.dataset.floorY = position.y.toFixed(3);
+    document.dispatchEvent(new CustomEvent('fibi:moved', { detail: { x: position.x, y: position.y, walking: path.length > 0 } }));
   }
   function clearDestination() { marker.hidden = true; }
   function cancelVisit() {
     if (!visit) return;
-    visit.targetElement.classList.remove('is-awaiting-fibi');
+    visit.targetElement?.classList.remove('is-awaiting-fibi');
     visit = null;
     character.classList.remove('is-interacting');
     stop();
@@ -144,7 +170,7 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
   function finishVisit() {
     if (!visit) return;
     const { onComplete, targetElement } = visit;
-    targetElement.classList.remove('is-awaiting-fibi');
+    targetElement?.classList.remove('is-awaiting-fibi');
     visit = null;
     character.classList.remove('is-interacting');
     feedback.textContent = `${config.name} made it!`;
@@ -155,16 +181,38 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     stop();
     const here = tileToScreen(position.x, position.y);
     sprite.style.setProperty('--fibi-facing', visit.target.x < here.x ? '1' : '-1');
-    character.style.setProperty('--impact-x', visit.target.x < here.x ? '18%' : '82%');
-    character.classList.add('is-interacting');
-    playReaction('hello', .9);
-    visit.interactUntil = elapsed + .9;
-    feedback.textContent = `${config.name} is opening it.`;
+    if (visit.targetElement) {
+      character.style.setProperty('--impact-x', visit.target.x < here.x ? '18%' : '82%');
+      character.classList.add('is-interacting');
+    }
+    playReaction(visit.reaction, visit.reactionTime);
+    visit.interactUntil = elapsed + visit.reactionTime;
+    feedback.textContent = visit.targetElement ? `${config.name} is opening it.` : `${config.name} is here.`;
     schedule();
   }
-  function visitTarget({ target, furnitureId = null, onComplete }) {
-    cancelVisit();
-    if (reducedMotion.matches || !canAnimate()) { onComplete(); return; }
+  function routeLength(route) {
+    let distance = 0;
+    for (let i = 1; i < route.length; i++) {
+      const from = tileToScreen(route[i - 1].x, route[i - 1].y);
+      const to = tileToScreen(route[i].x, route[i].y);
+      distance += Math.hypot(to.x - from.x, to.y - from.y);
+    }
+    return distance;
+  }
+  function beginVisit(route, details) {
+    visit = { interactUntil: null, speed: Math.min(460, Math.max(220, routeLength(route) / 1.55)), reaction: 'hello', reactionTime: .9, ...details };
+    visit.targetElement?.classList.add('is-awaiting-fibi');
+    path = route.slice(1);
+    manualTrip = false;
+    clearDestination();
+    if (path.length) { setAnimation('walk'); schedule(); }
+    else beginInteraction();
+  }
+  /** Walk up to an object in the room, play `reaction`, then call onComplete. */
+  function visitTarget({ target, furnitureId = null, onComplete, reaction = 'hello', reactionTime = .9, quiet = false }) {
+    cancelVisit(); wake();
+    if (reducedMotion.matches || !canAnimate()) { if (reaction !== 'hello') hold(reaction); onComplete(); return; }
+    preload([reaction]);
     const rect = target.getBoundingClientRect();
     const stageRect = stage.getBoundingClientRect();
     let sceneTarget = { x: (rect.left + rect.width / 2 - stageRect.left) / stageRect.width * WIDTH, y: (rect.top + rect.height / 2 - stageRect.top) / stageRect.height * HEIGHT };
@@ -184,21 +232,22 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     if (!destination) { onComplete(); return; }
     const route = findPath(getLayout(), position, destination);
     if (!route.length) { onComplete(); return; }
-    let distance = 0;
-    for (let i = 1; i < route.length; i++) {
-      const from = tileToScreen(route[i - 1].x, route[i - 1].y);
-      const to = tileToScreen(route[i].x, route[i].y);
-      distance += Math.hypot(to.x - from.x, to.y - from.y);
-    }
-    visit = { onComplete, targetElement: target, target: sceneTarget, interactUntil: null, speed: Math.min(460, Math.max(220, distance / 1.55)) };
-    target.classList.add('is-awaiting-fibi');
-    path = route.slice(1);
-    manualTrip = false;
-    clearDestination();
     feedback.textContent = `${config.name} is on the way to open this.`;
-    document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: 'On my way! ✦', holdMs: 1900 } }));
-    if (path.length) { setAnimation('walk'); schedule(); }
-    else beginInteraction();
+    if (!quiet) document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: 'On my way! ✦', holdMs: 1900 } }));
+    beginVisit(route, { onComplete, targetElement: target, target: sceneTarget, reaction, reactionTime });
+  }
+  /** Walk to a floor position (tile coordinates), play `reaction`, then call onComplete. */
+  function walkTo(point, { onComplete = () => {}, reaction = 'idle', reactionTime = .1 } = {}) {
+    cancelVisit(); wake();
+    const goal = nearestWalkable(getLayout(), point);
+    const route = goal && findPath(getLayout(), position, goal);
+    if (reducedMotion.matches || !canAnimate() || !route?.length) {
+      if (goal && reducedMotion.matches) { position = { ...goal }; drawPosition(); }
+      if (reaction !== 'idle') hold(reaction);
+      onComplete(); return;
+    }
+    preload([reaction]);
+    beginVisit(route, { onComplete, target: tileToScreen(goal.x, goal.y), reaction, reactionTime });
   }
   function stop() {
     path = []; manualTrip = false; clearDestination();
@@ -262,11 +311,14 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     if (!canAnimate()) { lastTime = null; return; }
     const seconds = lastTime === null ? 0 : Math.min((now - lastTime) / 1000, .5);
     lastTime = now; elapsed += seconds;
+    if (!sleeping && !tourMode && !visit && !path.length && !reducedMotion.matches && elapsed - lastActivity > SLEEP_AFTER) {
+      sleeping = true; character.classList.add('is-sleeping'); hold('sleep');
+      document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: 'Zzz… tap me to wake me up.', holdMs: 5000 } }));
+    }
     if (!path.length && canWander() && elapsed >= nextWander) wander();
-    const walkReady = walk.pages.every(page => images.get(page.image)?.complete && images.get(page.image).naturalWidth);
-    if (path.length && walkReady) { setAnimation('walk'); advance(seconds); }
-    else if (elapsed < reactionUntil) setAnimation(reactionName);
-    else setAnimation('idle');
+    if (path.length && ready('walk')) { setAnimation('walk'); advance(seconds); }
+    else if (elapsed < reactionUntil && ready(reactionName)) setAnimation(reactionName);
+    else if (elapsed >= reactionUntil) setAnimation('idle');
     if (visit && visit.interactUntil !== null && elapsed >= visit.interactUntil) finishVisit();
     if (!reducedMotion.matches) animationTime += seconds;
     drawSprite();
@@ -312,10 +364,26 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     if (point.x >= 0 && point.x <= GRID_SIZE && point.y >= 0 && point.y <= GRID_SIZE) { cancelVisit(); startTrip(point, true); }
   });
   stage.addEventListener('pointercancel', () => { pointerStart = null; });
-  button.addEventListener('click', () => {
-    cancelVisit(); stop(); greetingUntil = elapsed + 2; nextWander = elapsed + 3.5; playReaction('hello', 2.1);
-    document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: 'Hi! Pick something in the room and I’ll show you around. ✦', holdMs: 4400 } }));
+  // Tap: a laugh. Press and hold: she leans into a head pat.
+  button.addEventListener('pointerdown', event => {
+    if (event.button !== 0) return;
+    petted = false;
+    clearTimeout(pressTimer);
+    pressTimer = setTimeout(() => {
+      petted = true; cancelVisit(); stop(); wake(); greetingUntil = elapsed + 3; playReaction('pet', 2.4);
+      document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: 'Hehe, thank you! ♡', holdMs: 2600 } }));
+    }, 550);
   });
+  for (const type of ['pointerup', 'pointercancel', 'pointerleave']) button.addEventListener(type, () => clearTimeout(pressTimer));
+  button.addEventListener('contextmenu', event => event.preventDefault());
+  button.addEventListener('click', () => {
+    if (petted) { petted = false; return; }
+    const wasSleeping = sleeping;
+    cancelVisit(); stop(); wake(); greetingUntil = elapsed + 2; nextWander = elapsed + 3.5;
+    if (!wasSleeping) playReaction('laugh', 2.2);
+    if (!tourMode) document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: wasSleeping ? 'Oh! I’m up, I’m up. ✦' : 'Hehe! Pick a numbered spot and I’ll show you around. ✦', holdMs: 3600 } }));
+  });
+  for (const type of ['pointerdown', 'keydown', 'wheel']) document.addEventListener(type, () => { if (!sleeping) lastActivity = elapsed; }, { passive: true });
   button.addEventListener('keydown', event => {
     if (!canAnimate()) return;
     const directions = { ArrowLeft: [-1, 1], ArrowRight: [1, -1], ArrowUp: [-1, -1], ArrowDown: [1, 1] };
@@ -337,5 +405,13 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
   }, { threshold: .1 });
   observer.observe(stage);
   syncLayout(); drawSprite(); schedule();
-  return { syncLayout, editingChanged, visitTarget, setTourMode, cancelVisit, greet: () => playReaction('hello', 2.5), celebrate: () => playReaction('celebrate', 2.7) };
+  return {
+    syncLayout, editingChanged, visitTarget, walkTo, setTourMode, cancelVisit, preload, hold, wake,
+    play: playReaction,
+    home: () => ({ ...HOME }),
+    greet: () => playReaction('hello', 3.4),
+    celebrate: () => playReaction('celebrate', 2.7),
+    // Fibi's feet in scene coordinates (1000 × 666.67), for anchoring her speech card.
+    feet: () => position && tileToScreen(position.x, position.y),
+  };
 }
