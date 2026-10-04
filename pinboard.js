@@ -2,15 +2,15 @@
 const board = document.querySelector('.wall-pinboard');
 const notes = [...board.querySelectorAll('.board-note')];
 const saveStatus = document.querySelector('#room-save-status');
-const KEY = 'todsophon.pinboard.v2';
-// Polaroids are 22% × 50% of the board; positions keep them on the cork.
-const defaults = { product: { x: 10, y: 8 }, community: { x: 40, y: 22 }, films: { x: 70, y: 34 } };
+const KEY = 'todsophon.pinboard.v4';
+// Polaroids are 16% × 36% of the board, stepped down the cork's slope.
+const defaults = { product: { x: 24, y: 12 }, community: { x: 43, y: 20 }, films: { x: 62, y: 30 } };
 const positions = structuredClone(defaults);
 let pointer = null;
 let suppressClickUntil = 0;
 const clamp = (value, max) => Math.max(0, Math.min(max, Math.round(value / 2) * 2));
 function normalize(value) {
-  return { x: clamp(Number(value?.x) || 0, 76), y: clamp(Number(value?.y) || 0, 46) };
+  return { x: clamp(Number(value?.x) || 0, 78), y: clamp(Number(value?.y) || 0, 56) };
 }
 function render(note) {
   const { x, y } = positions[note.dataset.note];

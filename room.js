@@ -1,7 +1,7 @@
-import { GRID_SIZE, STORAGE_KEY, LEGACY_STORAGE_KEY, FURNITURE, DEFAULT_LAYOUT, tileToScreen, screenToTile, snapPlacement, snapDraggedPlacement, canPlace, nearbyOpenPlacement, normalizeLayout, serializeLayout } from './room-layout.mjs?v=40';
-import { createRoomCompanion } from './fibi.js?v=40';
-import { createGuidedTour } from './guided-tour.js?v=40';
-import { createFloorKeyboard } from './floor-keyboard.js?v=40';
+import { GRID_SIZE, STORAGE_KEY, LEGACY_STORAGE_KEY, FURNITURE, DEFAULT_LAYOUT, FLOOR_QUAD, tileToScreen, screenToTile, snapPlacement, snapDraggedPlacement, canPlace, nearbyOpenPlacement, normalizeLayout, serializeLayout, paintOrder } from './room-layout.mjs?v=41';
+import { createRoomCompanion } from './fibi.js?v=41';
+import { createGuidedTour } from './guided-tour.js?v=41';
+import { createFloorKeyboard } from './floor-keyboard.js?v=41';
 
 const stage = document.querySelector('#scene');
 const tiles = document.querySelector('#floor-tiles');
@@ -18,7 +18,7 @@ const undoButton = document.querySelector('#undo-room');
 const NS = 'http://www.w3.org/2000/svg';
 const clone = value => JSON.parse(JSON.stringify(value));
 const WALL_STORAGE_KEY = 'todsophon.wall-portrait.v1';
-const DEFAULT_WALL_POSITION = { x: 84, y: 23 };
+const DEFAULT_WALL_POSITION = { x: 83, y: 23.5 };
 const SCENE_WIDTH = 1000;
 const SCENE_HEIGHT = 2000 / 3;
 const artWidths = { youtube: 290, oto: 290, bookshelf: 180, plant: 98, chair: 165, tiktok: 60 };
@@ -64,8 +64,8 @@ const history = [];
 const snapWall = value => Math.round(value * 2) / 2;
 function normalizeWallPosition(value) {
   if (!Number.isFinite(value?.x) || !Number.isFinite(value?.y)) return { ...DEFAULT_WALL_POSITION };
-  // The clear strip beside the pinboard keeps the portrait visible after a drop.
-  const x = snapWall(Math.max(84, Math.min(89, value.x)));
+  // The clear strip between the pinboard and the wall's end keeps the portrait visible after a drop.
+  const x = snapWall(Math.max(82, Math.min(84.5, value.x)));
   const minY = 12 + (x - 70) * .5;
   const maxY = 26 - (x - 84) * .25;
   return { x, y: snapWall(Math.max(minY, Math.min(maxY, value.y))) };
@@ -113,11 +113,17 @@ function positionPiece(item, position) {
   const element = pieces.get(item.id);
   element.style.left = `${p.x / SCENE_WIDTH * 100}%`;
   element.style.top = `${p.y / SCENE_HEIGHT * 100}%`;
-  element.style.zIndex = String(Math.round((position.x + position.y + item.width + item.depth) * 10));
   element.dataset.x = layout[item.id].x;
   element.dataset.y = layout[item.id].y;
 }
+// Back-to-front order, spaced so Fibi can slot between any two pieces.
+function applyOrder() {
+  const positions = { ...layout };
+  if (selectedId && pending) positions[selectedId] = pending;
+  paintOrder(positions).forEach((id, index) => { pieces.get(id).style.zIndex = String(20 + index * 20); });
+}
 function render() {
+  applyOrder();
   for (const item of FURNITURE) {
     positionPiece(item, selectedId === item.id && pending ? pending : layout[item.id]);
     pieces.get(item.id).classList.toggle('is-selected', item.id === selectedId);
@@ -253,6 +259,7 @@ function movePointer(event, item) {
   // The furniture itself travels cell-by-cell, instead of floating between the
   // preview and its final position. Keep the original grab point under the hand.
   positionPiece(item, pending);
+  applyOrder();
   drawPreview();
 }
 function finishPointer(event, item, cancelled = false) {
@@ -391,7 +398,7 @@ tiles.addEventListener('click', event => {
 stage.addEventListener('click', event => {
   if (event.target !== stage || !editing || !selectedId) return;
   const point = pointInRoom(event);
-  const floor = [[594, 231], [944, 407], [488, 665], [60, 400]];
+  const floor = [FLOOR_QUAD.back, FLOOR_QUAD.right, FLOOR_QUAD.front, FLOOR_QUAD.left];
   const crosses = floor.map(([x, y], index) => {
     const [nextX, nextY] = floor[(index + 1) % floor.length];
     return (nextX - x) * (point.y - y) - (nextY - y) * (point.x - x);
@@ -399,6 +406,7 @@ stage.addEventListener('click', event => {
   if (crosses.every(value => value >= 0) || crosses.every(value => value <= 0)) placeSelectedOnFloor(event);
 });
 arrangeButton.addEventListener('click', () => setEditing(!editing));
+document.querySelector('#arrange-done')?.addEventListener('click', () => setEditing(false));
 placeButton.addEventListener('click', commit);
 document.querySelector('#cancel-placement').addEventListener('click', cancelSelection);
 document.querySelectorAll('[data-nudge]').forEach(button => button.addEventListener('click', () => nudge(...button.dataset.nudge.split(',').map(Number))));
@@ -447,6 +455,12 @@ stage.addEventListener('click', event => {
   if (!target) return;
   const furnitureId = target.closest('.furniture-piece')?.dataset.furniture || null;
   if (furnitureId && suppressClick.id === furnitureId && performance.now() < suppressClick.until) return;
+  if (tour.isAsleep(target)) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    guide.visitTarget({ target, furnitureId, quiet: true, onComplete: () => tour.wakeTarget(target) });
+    return;
+  }
   if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   event.stopImmediatePropagation();

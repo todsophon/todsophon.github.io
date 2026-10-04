@@ -1,14 +1,24 @@
-import { FLOOR_FEATURES, PROJECTION } from './room-layout.mjs?v=40';
+import { FLOOR_FEATURES, tileToScreen } from './room-layout.mjs?v=41';
 
-// Floor keys lie flat in the room's 2:1 projection: one tile is 25 scene units
-// along each floor axis, and matrix(1,.5,-1,.5) maps the plane onto the floor.
-const TILE = PROJECTION.tileWidth / 2;
+// Keys are measured in plane units (TILE per floor tile). Each key lies flat on the
+// floor: it gets the local affine slice of the room's floor mapping at its own centre.
+const TILE = 25;
 const KEY = 1.45 * TILE;
 const GAP = 0.3 * TILE;
 // C major pentatonic, low to high, so any run of taps sounds pleasant. The spacebar is a low C.
 const NOTES = [261.63, 293.66, 329.63, 392, 440, 523.25, 587.33, 659.25, 783.99];
 const TUNE = [3, 4, 5, 7, 6, 4, 5, 3, 0, 1, 2, 9];
 const SOUND_KEY = 'todsophon.keyboard-sound.v1';
+
+function floorMatrix(x, y, w, h) {
+  const cx = (x + w / 2) / TILE, cy = (y + h / 2) / TILE;
+  const right = tileToScreen(cx + .5, cy), left = tileToScreen(cx - .5, cy);
+  const down = tileToScreen(cx, cy + .5), up = tileToScreen(cx, cy - .5);
+  const ex = [(right.x - left.x) / TILE, (right.y - left.y) / TILE], ey = [(down.x - up.x) / TILE, (down.y - up.y) / TILE];
+  const corner = tileToScreen(x / TILE, y / TILE);
+  // The translation places the key's back corner; the centre then lands on the floor exactly.
+  return `matrix(${ex[0]},${ex[1]},${ey[0]},${ey[1]},${corner.x},${corner.y})`;
+}
 
 export function createFloorKeyboard({ stage, guide }) {
   const area = FLOOR_FEATURES.find(feature => feature.id === 'keyboard');
@@ -20,26 +30,20 @@ export function createFloorKeyboard({ stage, guide }) {
 
   const scene = document.createElement('div');
   scene.className = 'floor-keys-scene';
-  const plane = document.createElement('div');
-  plane.className = 'floor-keys';
-  plane.setAttribute('role', 'group');
-  plane.setAttribute('aria-label', 'Floor keyboard. Each key plays a soft click and a note.');
-  plane.style.left = `${PROJECTION.originX}px`;
-  plane.style.top = `${PROJECTION.originY}px`;
+  scene.setAttribute('role', 'group');
+  scene.setAttribute('aria-label', 'Floor keyboard. Each key plays a soft click and a note.');
   for (const key of keys) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = `floor-key${key.space ? ' is-space' : ''}`;
-    button.style.left = `${offset.x + key.x}px`;
-    button.style.top = `${offset.y + key.y}px`;
     button.style.width = `${key.w}px`;
     button.style.height = `${key.h}px`;
+    button.style.setProperty('--floor', floorMatrix(offset.x + key.x, offset.y + key.y, key.w, key.h));
     button.setAttribute('aria-label', key.space ? 'Spacebar' : `Key ${key.id + 1}`);
     button.addEventListener('click', () => press(key, true));
     key.button = button;
-    plane.append(button);
+    scene.append(button);
   }
-  scene.append(plane);
   stage.querySelector('#furniture-layer').before(scene);
 
   // The keys live in scene units; scale them with the room.

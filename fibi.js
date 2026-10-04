@@ -142,19 +142,22 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     stage.style.setProperty('--speech-x', `${bubbleX}px`);
     stage.style.setProperty('--speech-tail-offset', `${fibiX - bubbleX}px`);
     stage.style.setProperty('--speech-head-offset', `${Math.round(characterWidth * .72 + 9)}px`);
-    // Long desks need an explicit front/behind relation: their far front corner
-    // alone would hide Fibi even when she walks just in front of their near end.
-    let lower = 0, upper = 1000;
+    // Slot Fibi between the pieces she stands in front of and those in front of her,
+    // using the furniture's own drawing order (the same rule paintOrder uses).
+    let lower = 10, upper = Infinity;
     for (const item of FURNITURE) {
       const placed = getLayout()[item.id];
       const center = tileToScreen(placed.x + item.width / 2, placed.y + item.depth / 2);
       const halfWidth = (item.width + item.depth) * 12.5;
       if (Math.abs(center.x - point.x) > halfWidth + 22) continue;
-      const depth = (placed.x + placed.y + item.width + item.depth) * 10;
-      if (position.x > placed.x + item.width || position.y > placed.y + item.depth) lower = Math.max(lower, depth + 1);
-      else if (position.x < placed.x || position.y < placed.y) upper = Math.min(upper, depth - 1);
+      const z = Number(stage.querySelector(`[data-furniture="${item.id}"]`)?.style.zIndex) || 0;
+      const right = placed.x + item.width, front = placed.y + item.depth;
+      const inFront = (position.x >= right && position.y > placed.y) || (position.y >= front && position.x > placed.x);
+      const behind = (position.x <= placed.x && position.y < front) || (position.y <= placed.y && position.x < right);
+      if (inFront) lower = Math.max(lower, z);
+      else if (behind) upper = Math.min(upper, z);
     }
-    character.style.zIndex = String(Math.max(lower, Math.min(upper, Math.round((position.x + position.y + .7) * 10))));
+    character.style.zIndex = String(Math.round(lower + 10 < upper ? lower + 10 : (lower + Math.min(upper, lower + 20)) / 2));
     character.dataset.floorX = position.x.toFixed(3);
     character.dataset.floorY = position.y.toFixed(3);
     document.dispatchEvent(new CustomEvent('fibi:moved', { detail: { x: position.x, y: position.y, walking: path.length > 0 } }));

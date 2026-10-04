@@ -1,171 +1,132 @@
-/* The guided first visit: who Tod is up top, Fibi in the middle, numbered stops,
-   and a dock that shows tour progress. Loaded last so it settles earlier layers. */
-:root{--tour-ink:#211735;--tour-muted:#5d536c;--tour-line:#e2daef;--tour-deep:#362051;--tour-accent:#e8783f;--tour-accent-ink:#b4501f}
+/* A quiet frame around the room: Tod's name, one small menu, and Fibi's own bubble.
+   Loaded last so it settles earlier layers. */
+:root{--paper-warm:#faf6f0;--ink-warm:#3a2a2f;--muted-warm:#7a6560;--line-warm:#ead9c6;--clay:#a9492e;--clay-dark:#8a3a24}
+html,body,main,.world,.scene-section{background:var(--paper-warm)}
+body{min-height:100dvh}
 
-/* Header: name, role and the two most useful links, always visible. */
-.site-header{display:flex;position:sticky;top:0;z-index:60;height:64px;max-width:none;margin:0;padding:0 max(16px,2.5%);gap:28px;background:#fffffff2;border-bottom:1px solid var(--tour-line);backdrop-filter:blur(8px)}
+/* Header: the name in the corner and a menu for everything else. */
+.site-header{display:flex;position:relative;z-index:60;height:60px;min-height:0;max-width:none;margin:0;padding:0 max(16px,2.4%);gap:16px;align-items:center;justify-content:space-between;border:0;background:transparent}
 .site-header .brand{gap:10px}
-.site-header .brand-mascot{width:44px;height:44px}
-.site-header .brand-caption{font-size:21px;line-height:1.1}
-.site-header .brand-caption>span{font-size:12px;letter-spacing:0;font-weight:550;margin-top:2px}
-.site-header nav{gap:26px}
-.site-header .nav-link{font-size:14px;padding:10px 0}
-.header-links{display:flex;align-items:center;gap:18px;font-size:14px;font-weight:600}
-.header-links a{color:var(--tour-deep);text-decoration:none;white-space:nowrap}
-.header-links a:hover{color:#6733cf}
-.header-role{display:inline-flex;align-items:center;gap:7px;color:var(--tour-muted)!important;font-weight:550}
-.header-role>span{width:8px;height:8px;border-radius:50%;background:#2f9e6b;box-shadow:0 0 0 3px #2f9e6b26}
-.header-links a.header-hello{display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;background:var(--tour-deep);color:#fff!important}
-.header-links a.header-hello:hover{background:#4a2c6e}
+.site-header .brand-mascot{width:40px;height:40px}
+.site-header .brand-caption{font-size:20px;line-height:1.1;color:#4a2a63}
+.site-header .brand-caption>span{display:block;font-size:12px;letter-spacing:0;font-weight:550;margin-top:2px;color:var(--muted-warm)}
+.room-menu{position:relative}
+.room-menu-button{display:grid;place-items:center;width:42px;height:42px;padding:0;border:1px solid var(--line-warm);border-radius:50%;background:#fffaf3;color:var(--ink-warm);cursor:pointer;transition:background .15s}
+.room-menu-button:hover,.room-menu-button[aria-expanded=true]{background:#f6eadb}
+.room-menu-button:focus-visible{outline:3px solid #e9b44c;outline-offset:2px}
+.room-menu-list{position:absolute;right:0;top:calc(100% + 8px);z-index:80;display:flex;flex-direction:column;min-width:236px;padding:6px;border:1px solid var(--line-warm);border-radius:14px;background:#fffaf3;box-shadow:0 14px 34px #3a2a2f26}
+.room-menu-list[hidden]{display:none}
+.room-menu-list a,.room-menu-list button{display:block;width:100%;padding:10px 12px;border:0;border-radius:9px;background:none;color:var(--ink-warm);font:inherit;font-size:14px;font-weight:550;text-align:left;text-decoration:none;cursor:pointer;box-shadow:none;min-height:0;box-sizing:border-box}
+.room-menu-list a:hover,.room-menu-list button:hover,.room-menu-list a:focus-visible,.room-menu-list button:focus-visible{background:#f4e6d6;outline:none}
+.room-menu-list hr{width:100%;margin:5px 0;border:0;border-top:1px solid var(--line-warm)}
 
-/* The room fills the space between the header and the dock. */
-.world{min-height:0;padding-top:12px}
+/* The room fills the window below the name; nothing frames it. */
+.world{min-height:0;padding-top:0}
 .scene-section{position:relative;min-height:0;justify-content:flex-start}
-.cozy-room.scene{width:min(100%,1240px,calc((100dvh - 64px - 96px) * 1.5));margin:0 auto}
-.cozy-room .character{width:13.5%;max-width:150px}
-.cozy-room .furniture-label{display:none}
+.cozy-room.scene{width:min(100%,1240px,calc((100dvh - 60px - 20px) * 1.5));margin:0 auto 12px;background:transparent}
+.cozy-room .room-art{mix-blend-mode:normal}
+.cozy-room .character{width:13%;max-width:146px}
 .cozy-room .character:not(:hover):not(:focus-within) .character-name{opacity:0}
-.cozy-room.is-arranging .furniture-label{display:block}
-.room-art{filter:none!important}
+.cozy-room:not(.reveal-active):not(.is-arranging) .furniture-label,.cozy-room:not(.is-arranging) .furniture-piece.is-painted .furniture-label{display:none}
+.cozy-room:not(.is-arranging) .award-open,.cozy-room:not(.is-arranging) .portrait-drag-hint,.cozy-room:not(.is-arranging) .wall-portrait>span{display:none}
+.room-color-spot{background-image:url('assets/studio-background-guided.webp')}
 
-/* The numbered spots replace the older badges and name tags, except while arranging. */
-.cozy-room:not(.is-arranging) .award-open,.cozy-room:not(.is-arranging) .wall-portrait>span,.cozy-room:not(.is-arranging) .portrait-drag-hint{display:none}
+/* Asleep: one soft glow per story, named on hover. */
+.cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label{width:24px;height:24px;min-width:24px;border:0;border-radius:50%;background:#ffd9a3!important;box-shadow:0 0 0 5px #fff4e266,0 0 18px 7px #f7c27e99;animation:soft-glow 2.4s ease-in-out infinite}
+.cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label:after{color:#b25a2e!important;font-size:13px}
+.cozy-room.reveal-active .furniture-piece[data-furniture=bookshelf] .furniture-label,
+.cozy-room.reveal-active .wall-award .award-open{display:none!important}
+.cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label:before{content:attr(data-name);position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);padding:4px 9px;border:1px solid var(--line-warm);border-radius:999px;background:#fffaf3;color:var(--ink-warm);font-size:12px;font-weight:650;line-height:1.3;white-space:nowrap;opacity:0;transition:opacity .15s;pointer-events:none}
+.cozy-room.reveal-active .furniture-hit:hover .furniture-label:before,.cozy-room.reveal-active .furniture-hit:focus-visible .furniture-label:before{opacity:1}
+.cozy-room.reveal-active .wall-portrait:not(.is-painted){box-shadow:none}
+.cozy-room.reveal-active .wall-portrait:not(.is-painted) img{filter:grayscale(1) brightness(1.1) contrast(.97) drop-shadow(0 0 9px #f7c27e)}
+.cozy-room.reveal-active .wall-portrait:not(.is-painted):after{content:'✦';position:absolute;left:50%;top:44%;display:grid;place-items:center;width:24px;height:24px;transform:translate(-50%,-50%);border-radius:50%;background:#ffd9a3;color:#b25a2e;font-size:13px;box-shadow:0 0 0 5px #fff4e266,0 0 18px 7px #f7c27e99;animation:soft-glow 2.4s ease-in-out infinite;pointer-events:none}
+/* Each glow sits on the part people recognise: the screens, the ring, the seat, the chart. */
+.cozy-room.reveal-active .furniture-piece[data-furniture=oto] .furniture-label{left:56%;top:24%}
+.cozy-room.reveal-active .furniture-piece[data-furniture=youtube] .furniture-label{left:44%;top:22%}
+.cozy-room.reveal-active .furniture-piece[data-furniture=tiktok] .furniture-label{left:50%;top:13%}
+.cozy-room.reveal-active .furniture-piece[data-furniture=chair] .furniture-label{left:50%;top:44%}
+.cozy-room.reveal-active .furniture-piece[data-furniture=plant] .furniture-label{left:52%;top:30%}
+/* While asleep the board's photos stay visible, just without color. */
+.cozy-room.reveal-active .wall-pinboard .board-note span.note-photo,.cozy-room.reveal-active .wall-pinboard .board-note span.note-photo span{opacity:1!important}
+@keyframes soft-glow{50%{box-shadow:0 0 0 8px #fff4e244,0 0 26px 11px #f7c27e88}}
 
-/* Awards now hang side by side above the YouTube desk. */
-.wall-award-silver{left:22.9%;top:17.8%;width:5.1%;height:14.1%}
-.wall-award-gold{left:28.6%;top:14.4%;width:4.7%;height:14.5%}
+/* Fibi's bubble: a line from her, and at most two small buttons. */
+.cozy-room.scene>.speech-bubble{max-width:min(290px,calc(100% - 24px));padding:12px 15px;border:1px solid var(--line-warm);border-radius:16px;background:#fffaf3;color:var(--ink-warm);font-size:13.5px;line-height:1.5;box-shadow:0 10px 26px #3a2a2f24}
+.cozy-room.scene>.speech-bubble:after{background:#fffaf3;border-right-color:var(--line-warm);border-bottom-color:var(--line-warm)}
+#speech-message strong{display:block;margin-bottom:2px;color:#2e2128;font-size:14.5px}
+#speech-message small{display:block;margin-top:6px;color:var(--muted-warm);font-size:12px}
+.speech-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:10px}
+.speech-actions[hidden]{display:none}
+.speech-action{display:inline-flex;align-items:center;min-height:34px;padding:0 2px;border:0;background:none;color:var(--clay);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer;box-shadow:none}
+.speech-action.is-primary{padding:0 14px;border-radius:999px;background:var(--clay);color:#fff;text-decoration:none}
+.speech-action:hover{color:var(--clay-dark)}
+.speech-action.is-primary:hover{background:var(--clay-dark);color:#fff}
+.speech-action:focus-visible{outline:3px solid #e9b44c;outline-offset:2px}
 
-/* Numbered spots on the objects. */
-.tour-spots{position:absolute;inset:0;z-index:1200;pointer-events:none}
-.tour-spot{position:absolute;display:flex;flex-direction:row-reverse;align-items:center;gap:6px;padding:0;border:0;background:none;transform:translate(-14px,-50%);pointer-events:auto;cursor:pointer;font-family:inherit}
-.tour-spot.is-left{flex-direction:row;transform:translate(calc(-100% + 14px),-50%)}
-.tour-spot-label{display:flex;align-items:baseline;gap:5px;padding:5px 11px;border:1px solid var(--tour-line);border-radius:999px;background:#fff;color:var(--tour-ink);font-size:12.5px;white-space:nowrap;box-shadow:0 6px 16px #2117352a;transition:transform .16s,border-color .16s}
-.tour-spot-label b{font-weight:750}
-.tour-spot-label span{color:var(--tour-muted)}
-.tour-spot-dot{display:grid;place-items:center;width:28px;height:28px;border:2px solid var(--tour-deep);border-radius:50%;background:#fff;color:var(--tour-deep);font-size:13px;font-weight:800;box-shadow:0 0 0 5px #ffbe7873,0 4px 10px #21173540;box-sizing:border-box}
-.tour-spot:hover .tour-spot-label,.tour-spot:focus-visible .tour-spot-label{border-color:#8f64ce;box-shadow:0 8px 20px #21173538}
-.tour-spot:focus-visible{outline:none}
-.tour-spot:focus-visible .tour-spot-dot{outline:3px solid #f5d94e;outline-offset:2px}
-.tour-spot.is-seen .tour-spot-dot,.dock-stop.is-seen .dock-stop-number{background:var(--tour-deep);color:#fff}
-.tour-spot.is-current .tour-spot-dot{background:var(--tour-accent);border-color:#fff;color:#fff;animation:tour-pulse 1.6s ease-out infinite}
-.tour-spot.is-current .tour-spot-label{border-color:var(--tour-accent)}
-.is-touring .tour-spot:not(.is-current){opacity:.6}
-.is-arranging .tour-spots,.is-screening .tour-spots{display:none}
-@keyframes tour-pulse{0%{box-shadow:0 0 0 0 #e8783f99,0 4px 10px #21173540}100%{box-shadow:0 0 0 14px #e8783f00,0 4px 10px #21173540}}
-
-/* Fibi's card: above her head on wide screens, below the room on phones. */
-.tour-card{position:absolute;z-index:70;width:min(400px,calc(100% - 24px));box-sizing:border-box;display:flex;flex-direction:column;gap:9px;padding:18px 20px 16px;border:1px solid var(--tour-line);border-radius:18px;background:#fff;color:var(--tour-ink);box-shadow:0 18px 44px #21173538;animation:tour-card-in .22s ease-out}
-.tour-card[hidden]{display:none}
-.tour-card-tail{position:absolute;left:calc(var(--tail-x,50%) - 8px);bottom:-9px;width:16px;height:16px;background:#fff;border-right:1px solid var(--tour-line);border-bottom:1px solid var(--tour-line);transform:rotate(45deg)}
-.tour-card[data-side=right] .tour-card-tail{left:-9px;top:calc(var(--tail-y,50%) - 8px);bottom:auto;transform:rotate(135deg)}
-.tour-card[data-side=left] .tour-card-tail{left:auto;right:-9px;top:calc(var(--tail-y,50%) - 8px);bottom:auto;transform:rotate(-45deg)}
-.tour-eyebrow{margin:0;color:var(--tour-accent-ink);font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-.tour-title{margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:26px;font-weight:400;line-height:1.08;letter-spacing:0}
-.tour-body{margin:0;color:#3e3450;font-size:14.5px;line-height:1.5}
-.tour-stats{display:flex;gap:8px}
-.tour-stats>div{flex:1;padding:9px 11px;border-radius:11px;background:#f6f2fb}
-.tour-stats strong{display:block;color:var(--tour-deep);font-size:19px;line-height:1.1}
-.tour-stats span{display:block;color:var(--tour-muted);font-size:11.5px;line-height:1.35}
-.tour-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:3px}
-.guide-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 14px;white-space:nowrap;border:1px solid var(--tour-deep);border-radius:999px;background:var(--tour-deep);color:#fff;font:inherit;font-size:13.5px;font-weight:650;text-decoration:none;cursor:pointer;box-sizing:border-box}
-.guide-btn:hover{background:#4a2c6e;color:#fff}
-.guide-btn.is-ghost{background:#fff;color:var(--tour-deep);border-color:#d6cce6}
-.guide-btn.is-ghost:hover{background:#f4f0fa;color:var(--tour-deep)}
-.guide-btn.is-icon{width:44px;padding:0}
-.guide-btn.is-wide{flex:1}
-.guide-btn:focus-visible,.tour-link:focus-visible{outline:3px solid #f5d94e;outline-offset:2px}
-.guide-btn-note{font-weight:500;opacity:.85}
-.tour-note{margin:0;color:var(--tour-muted);font-size:13px;line-height:1.5}
-.tour-link{padding:0;border:0;background:none;color:var(--tour-deep);font:inherit;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
-@keyframes tour-card-in{from{opacity:0;translate:0 6px}to{opacity:1;translate:0 0}}
-.tour-toast{position:absolute;left:50%;top:14px;z-index:1300;margin:0;padding:10px 16px;border-radius:999px;background:var(--tour-ink);color:#fff;font-size:14px;transform:translateX(-50%);box-shadow:0 8px 24px #21173540;white-space:nowrap}
-.tour-toast[hidden]{display:none}
-.cozy-room.scene:has(~.tour-card:not([hidden]))>.speech-bubble{opacity:0;visibility:hidden}
-
-/* The dock: progress, every stop, and the room's tools. */
-.tour-dock{display:flex;align-items:center;gap:14px;width:min(100%,1240px);box-sizing:border-box;margin:8px auto 12px;padding:8px 10px 8px 18px;border:1px solid var(--tour-line);border-radius:18px;background:#fff;box-shadow:0 8px 26px #21173512}
-.dock-progress{display:flex;flex-direction:column;gap:5px;flex:none;min-width:128px}
-.dock-progress strong{font-size:14px;color:var(--tour-ink)}
-.dock-progress>span{display:flex;align-items:center;gap:8px;color:var(--tour-muted);font-size:12px}
-.dock-bar{position:relative;display:inline-block;width:56px;height:6px;border-radius:3px;background:#ece6f4;overflow:hidden}
-.dock-bar i{position:absolute;inset:0 auto 0 0;width:0;border-radius:3px;background:var(--tour-accent);transition:width .4s}
-.dock-stops{display:flex;flex:1;flex-wrap:nowrap;gap:6px;margin:0;min-width:0;overflow-x:auto;scrollbar-width:none}
-.dock-stop{display:inline-flex;flex:none;align-items:center;gap:6px;min-height:40px;padding:0 12px 0 5px;border:1px solid var(--tour-line);border-radius:999px;background:#fff;color:var(--tour-ink);font:inherit;font-size:13px;font-weight:650;cursor:pointer}
-.dock-stop:hover{border-color:#8f64ce}
-.dock-stop:focus-visible{outline:3px solid #f5d94e;outline-offset:2px}
-.dock-stop-number{display:grid;place-items:center;width:28px;height:28px;border:1.5px solid var(--tour-deep);border-radius:50%;color:var(--tour-deep);font-size:12px;font-weight:800;box-sizing:border-box}
-.dock-stop.is-current{border-color:var(--tour-accent);background:#fff6ef}
-.dock-stop.is-current .dock-stop-number{background:var(--tour-accent);border-color:var(--tour-accent);color:#fff}
-.dock-tools{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:2px;padding-left:10px;border-left:1px solid var(--tour-line)}
-.tour-dock .dock-tool{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 10px;border:0;border-radius:10px;background:none;color:var(--tour-muted);font:inherit;font-size:13px;font-weight:550;box-shadow:none;cursor:pointer}
-.tour-dock .dock-tool:hover{background:#f4f0fa;color:var(--tour-deep)}
-.tour-dock .dock-tool:focus-visible{outline:3px solid #f5d94e;outline-offset:1px}
-.tour-dock .dock-tool[aria-pressed=true].arrange-toggle,.tour-dock .dock-tool[aria-pressed=true].view-toggle{background:#f4f0fa;color:var(--tour-deep)}
-#sound-toggle[aria-pressed=false] .sound-wave{opacity:0}
-#keys-play span:last-child,#sound-toggle span:last-child{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-#keys-play,#sound-toggle{width:40px;justify-content:center;padding:0;font-size:16px}
-.scene-section:has(.scene[hidden]) .dock-progress,.scene-section:has(.scene[hidden]) .dock-stops,.scene-section:has(.scene[hidden]) #keys-play,.scene-section:has(.scene[hidden]) #sound-toggle,.scene-section:has(.scene[hidden]) .tour-card{display:none}
-
-/* Floor keyboard: real buttons laid flat in the room's floor projection. */
+/* Floor keyboard: each key carries its own slice of the floor mapping. */
 .floor-keys-scene{position:absolute;left:0;top:0;z-index:1;width:1000px;height:666.667px;transform-origin:0 0;transform:scale(var(--scene-scale,1));pointer-events:none}
-.floor-keys{position:absolute;width:0;height:0;transform-origin:0 0;transform:matrix(1,.5,-1,.5,0,0)}
-.floor-key{--side:#d6c4a8;--edge:#ab977b;position:absolute;padding:0;border:0;border-radius:7px;background:#f6eedf;cursor:pointer;pointer-events:auto;box-shadow:1px 1px 0 var(--side),2px 2px 0 var(--side),3px 3px 0 var(--side),4px 4px 0 var(--side),5px 5px 0 var(--side),6px 6px 0 var(--side),7px 7px 0 var(--edge),9px 9px 6px #50200a40;transition:transform 70ms ease-out,box-shadow 70ms ease-out}
+.floor-key{--side:#d6c4a8;--edge:#ab977b;position:absolute;left:0;top:0;padding:0;border:0;border-radius:7px;background:#f6eedf;transform-origin:0 0;transform:var(--floor);cursor:pointer;pointer-events:auto;box-shadow:1px 1px 0 var(--side),2px 2px 0 var(--side),3px 3px 0 var(--side),4px 4px 0 var(--side),5px 5px 0 var(--side),6px 6px 0 var(--side),7px 7px 0 var(--edge),9px 9px 6px #50200a40;transition:transform 70ms ease-out,box-shadow 70ms ease-out}
 .floor-key:before{content:'';position:absolute;inset:3px 4px 5px 3px;border-radius:5px;background:#ffffff4d;pointer-events:none}
 .floor-key.is-space{--side:#da8466;--edge:#b25b3f;background:#f4a283}
 .floor-key:hover{filter:brightness(1.04)}
-.floor-key.is-down{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--side),2px 2px 0 var(--edge),4px 4px 4px #50200a33}
-.floor-key:focus-visible{outline:2px solid var(--tour-deep);outline-offset:2px}
+.floor-key.is-down{transform:var(--floor) translate(4px,4px);box-shadow:1px 1px 0 var(--side),2px 2px 0 var(--edge),4px 4px 4px #50200a33}
+.floor-key:focus-visible{outline:2px solid #4a2a63;outline-offset:2px}
+.cozy-room.reveal-active .floor-key{filter:grayscale(1) brightness(1.06)}
 .is-arranging .floor-keys-scene{opacity:.55}
 .is-arranging .floor-key{pointer-events:none}
 
-/* A mailbox at the front corner replaces the "Contact me" label. */
+/* A mailbox at the front corner for email. */
 .contact-ledge .room-mailbox{left:50%;bottom:3.6%;width:4.3%;min-height:0;padding:0;border:0;background:none;box-shadow:none;translate:-50% 0;display:block;transition:transform .18s ease}
 .contact-ledge .room-mailbox img{display:block;width:100%;height:auto;filter:drop-shadow(0 3px 2px #5a2e1e40)}
-.contact-ledge .room-mailbox span{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);padding:5px 9px;border:1px solid var(--tour-line);border-radius:999px;background:#fff;color:var(--tour-ink);font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 4px 12px #2117352a;opacity:0;transition:opacity .16s;pointer-events:none}
+.contact-ledge .room-mailbox span{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);padding:4px 9px;border:1px solid var(--line-warm);border-radius:999px;background:#fffaf3;color:var(--ink-warm);font-size:12px;font-weight:650;white-space:nowrap;opacity:0;transition:opacity .16s;pointer-events:none}
 .contact-ledge .room-mailbox:hover,.contact-ledge .room-mailbox:focus-visible{transform:translateY(-4px);background:none}
 .contact-ledge .room-mailbox:hover span,.contact-ledge .room-mailbox:focus-visible span{opacity:1}
+.cozy-room.reveal-active .room-mailbox img{filter:grayscale(1) brightness(1.06) drop-shadow(0 3px 2px #5a2e1e40)}
 
-/* Pinboard notes are now polaroids of real work, lying on the wall's slope. */
-.board-note{width:22%;height:50%;background:none;cursor:grab}
+/* Awards hang side by side above the YouTube desk. */
+.wall-award-silver{left:22.9%;top:17.8%;width:5.1%;height:14.1%}
+.wall-award-gold{left:28.6%;top:14.4%;width:4.7%;height:14.5%}
+
+/* The teal wall slopes at about 0.44 where the board and portrait hang. The cork image is
+   drawn at 0.31 and the frame at 0.41, so each gets the difference as a vertical shear. */
+.wall-pinboard{left:60.5%;top:5.5%;width:21%;transform:skewY(7.4deg);transform-origin:0 0}
+.board-note{width:16%;height:36%;background:none;cursor:grab}
 .board-note:hover,.board-note:focus-visible{outline:none}
-.board-note .note-photo{position:absolute;inset:0;display:flex;flex-direction:column;gap:4%;padding:7% 7% 0;box-sizing:border-box;background:#fbf8f1;box-shadow:1px 2px 3px #402c3359;transform:skewY(21deg) rotate(var(--tilt,0deg));transform-origin:50% 0;pointer-events:none}
+.board-note .note-photo{position:absolute;inset:0;display:flex;flex-direction:column;gap:4%;padding:7% 7% 0;box-sizing:border-box;background:#fbf8f1;box-shadow:1px 2px 3px #402c3359;transform:skewY(17.2deg) rotate(var(--tilt,0deg));transform-origin:50% 0;pointer-events:none}
 .board-note .note-photo img{display:block;width:100%;aspect-ratio:9/10;height:auto;object-fit:cover}
-.board-note .note-photo span{display:block;transform:none;padding:0;color:#4b3c43;font-size:clamp(6px,.62vw,9px);font-weight:900;letter-spacing:.06em;line-height:1;text-align:center;text-shadow:none}
+.board-note .note-photo span{display:block;transform:none;padding:0;color:#4b3c43;font-size:clamp(6px,.6vw,9px);font-weight:900;letter-spacing:.06em;line-height:1;text-align:center;text-shadow:none}
 .board-note .note-photo:before{content:'';position:absolute;left:50%;top:-3%;width:11%;aspect-ratio:1;border-radius:50%;background:#d23a2c;box-shadow:0 1px 2px #0005;transform:translateX(-50%)}
-.board-note-product{--tilt:-3deg}.board-note-community{--tilt:2.5deg}.board-note-films{--tilt:-2deg}
-.board-note:focus-visible .note-photo{outline:3px solid #f5d94e;outline-offset:2px}
+.board-note-product{--tilt:-3deg}.board-note-community{--tilt:2deg}.board-note-films{--tilt:-2deg}
+.board-note:focus-visible .note-photo{outline:3px solid #e9b44c;outline-offset:2px}
+.wall-portrait{width:9.4%}
+.wall-portrait img{transform:skewY(2.9deg);transform-origin:0 0}
+.wall-portrait>span{bottom:-9%}
 
 @media(max-width:760px){
-  .site-header{height:56px;min-height:0;flex-wrap:nowrap;gap:10px;padding:0 12px}
-  .site-header .brand-mascot{width:36px;height:36px}
-  .site-header .brand-caption{font-size:18px}
-  .site-header .brand-caption>span{display:block;font-size:11px}
-  .site-header nav,.header-role,.header-links a[data-open=resume]{display:none}
-  .header-hello{min-height:38px;padding:0 14px;font-size:13px}
-  .world{padding-top:8px}
-  .cozy-room.scene{width:100%}
+  .site-header{height:54px;padding:0 12px}
+  .site-header .brand-mascot{width:34px;height:34px}
+  .site-header .brand-caption{font-size:17px}
+  .site-header .brand-caption>span{font-size:11px}
+  .room-menu-button{width:40px;height:40px}
+  .cozy-room.scene{width:100%;margin-top:8px}
   .cozy-room .character{width:17%;max-width:100px}
-  .tour-spot-label{display:none}
-  .tour-spot{transform:translate(-50%,-50%)}
-  .tour-spot-dot{width:24px;height:24px;font-size:11px;box-shadow:0 0 0 3px #ffbe7873,0 3px 8px #21173540}
-  .tour-card{position:static;width:auto;margin:10px 0 0;animation:none}
-  .tour-card-tail{display:none}
-  .tour-title{font-size:23px}
-  .tour-toast{white-space:normal;width:max-content;max-width:86%;text-align:center;font-size:13px}
-  .tour-dock{flex-wrap:wrap;gap:10px;padding:10px 12px}
-  .dock-progress{flex-direction:row;align-items:center;gap:10px}
-  .dock-stops{order:3;flex:0 0 100%;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
-  .dock-stop{flex:none}
-  .dock-tools{margin-left:auto;padding-left:0;border:0}
-  .tour-dock .dock-tool{padding:0 8px;font-size:12px}
-  #keys-play span:last-child,#sound-toggle span:last-child{display:none}
+  .world{padding-top:6vh}
+  .cozy-room.scene{margin-bottom:190px}
+  /* Below the room, so it never covers the header or the art. */
+  .cozy-room.scene>.speech-bubble,.cozy-room.scene>.speech-bubble.is-visible{left:50%;top:calc(100% + 14px);width:calc(100% - 16px);max-width:none;box-sizing:border-box;padding:12px 14px;font-size:13px;transform:translateX(-50%)}
+  .cozy-room.scene>.speech-bubble:after{top:-8px;bottom:auto;left:clamp(15px,calc(50% + var(--speech-tail-offset,0px)),calc(100% - 15px));transform:translateX(-50%) rotate(225deg)}
+  #speech-message strong{font-size:13px}
+  .speech-action{font-size:12px;min-height:32px}
   .contact-ledge .room-mailbox{width:6%}
+  .cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label,.cozy-room.reveal-active .wall-portrait:not(.is-painted):after{width:17px;height:17px;min-width:17px;font-size:10px;box-shadow:0 0 0 3px #fff4e266,0 0 12px 4px #f7c27e99}
+  .cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label:after{font-size:10px}
   .wall-award{min-width:0}
   .wall-award-silver{left:22.9%;top:17.8%;width:5.1%;height:14.1%}
   .wall-award-gold{left:28.6%;top:14.4%;width:4.7%;height:14.5%}
   .board-note .note-photo span{display:none}
 }
 @media(prefers-reduced-motion:reduce){
-  .tour-card,.tour-spot.is-current .tour-spot-dot{animation:none}
-  .floor-key,.contact-ledge .room-mailbox,.tour-spot-label,.dock-bar i{transition:none}
+  .cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label{animation:none}
+  .floor-key,.contact-ledge .room-mailbox{transition:none}
 }

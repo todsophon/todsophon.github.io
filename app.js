@@ -281,12 +281,7 @@ function setView(showList) {
   scene.hidden = showList;
   listView.hidden = !showList;
   viewToggle.setAttribute('aria-pressed', String(showList));
-  viewToggle.innerHTML = `<span aria-hidden="true">${showList ? '◇' : '☷'}</span> ${showList ? 'Room view' : 'List view'}`;
-  document.querySelector('#room-nav').classList.toggle('active', !showList);
-  document.querySelector('#work-nav').classList.toggle('active', showList);
-  document.querySelector('#room-nav').removeAttribute('aria-current');
-  document.querySelector('#work-nav').removeAttribute('aria-current');
-  document.querySelector(showList ? '#work-nav' : '#room-nav').setAttribute('aria-current', 'page');
+  viewToggle.textContent = showList ? 'Back to the room' : 'List view';
 }
 
 document.addEventListener('click', event => {
@@ -322,7 +317,7 @@ document.addEventListener('portfolio:hide-case-for-screening', () => {
   hideChapter();
 });
 document.addEventListener('portfolio:show-video-case', () => openChapter('youtube', { source: document.querySelector('[data-furniture="chair"] .furniture-hit') }));
-document.querySelector('#tour-button').addEventListener('click', event => { event.preventDefault(); openChapter('oto', { source: event.currentTarget }); });
+document.querySelector('#tour-button')?.addEventListener('click', event => { event.preventDefault(); openChapter('oto', { source: event.currentTarget }); });
 document.querySelector('#dialog-close').addEventListener('click', closeChapter);
 document.querySelector('#dialog-back').addEventListener('click', closeChapter);
 document.querySelector('#dialog-next').addEventListener('click', () => openChapter(chapterOrder[(chapterOrder.indexOf(currentChapter) + 1) % chapterOrder.length], { replace: true }));
@@ -361,11 +356,18 @@ document.querySelector('#dialog-copy-link')?.addEventListener('click', async () 
 });
 document.querySelector('#dialog-print')?.addEventListener('click', () => { if (currentChapter === 'resume') window.print(); });
 viewToggle.addEventListener('click', () => setView(!scene.hidden));
-document.querySelector('#work-nav').addEventListener('click', event => {
-  event.preventDefault(); setView(true);
-  document.querySelector('#scene-section').scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest' });
-});
-document.querySelector('#room-nav').addEventListener('click', event => { event.preventDefault(); setView(false); });
+// One small menu holds everything that is not part of the room itself.
+const menuButton = document.querySelector('#room-menu-button');
+const menu = document.querySelector('#room-menu');
+function setMenu(open) {
+  menu.hidden = !open;
+  menuButton.setAttribute('aria-expanded', String(open));
+  if (open) menu.querySelector('a, button')?.focus({ preventScroll: true });
+}
+menuButton.addEventListener('click', () => setMenu(menu.hidden));
+menu.addEventListener('click', event => { if (event.target.closest('a, button')) setMenu(false); });
+document.addEventListener('click', event => { if (!menu.hidden && !event.target.closest('.room-menu')) setMenu(false); });
+document.addEventListener('keydown', event => { if (event.key === 'Escape' && !menu.hidden) { setMenu(false); menuButton.focus(); } });
 document.addEventListener('room:placed', () => {
   const reactions = ['A lovely spot!', 'Now it feels like home.', 'A little change. A little joy.'];
   document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: reactions[greetingIndex++ % reactions.length], holdMs: 2200 } }));

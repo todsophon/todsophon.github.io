@@ -30,9 +30,27 @@ export const DEFAULT_LAYOUT = Object.freeze(Object.fromEntries(
 ));
 
 // Scene coordinates use a 1000 × 666.6667 canvas matching the illustrated room.
-export const PROJECTION = Object.freeze({ originX: 500, originY: 225, tileWidth: 50, tileHeight: 25 });
-const projectionDefaults = PROJECTION;
+// The painted floor is not a perfect 2:1 diamond: its back corner hides behind the
+// bookcase and its front edges fall more steeply than the wall lines. These corners
+// were measured along the baseboards and the top of the floor's front edge.
+export const FLOOR_QUAD = Object.freeze({
+  back: Object.freeze([500, 196]), right: Object.freeze([937.5, 409]),
+  front: Object.freeze([485, 649]), left: Object.freeze([62.5, 394.5]),
+});
 const furnitureById = new Map(FURNITURE.map(item => [item.id, item]));
+
+/** Projective map from the unit square onto a floor quad, so grid lines stay straight. */
+function homography({ back, right, front, left }) {
+  const [x0, y0] = back, [x1, y1] = right, [x2, y2] = front, [x3, y3] = left;
+  const dx1 = x1 - x2, dx2 = x3 - x2, dx3 = x0 - x1 + x2 - x3;
+  const dy1 = y1 - y2, dy2 = y3 - y2, dy3 = y0 - y1 + y2 - y3;
+  const det = dx1 * dy2 - dx2 * dy1;
+  const g = (dx3 * dy2 - dx2 * dy3) / det;
+  const h = (dx1 * dy3 - dx3 * dy1) / det;
+  return { a: x1 - x0 + g * x1, b: x3 - x0 + h * x3, c: x0, d: y1 - y0 + g * y1, e: y3 - y0 + h * y3, f: y0, g, h };
+}
+const floorMap = homography(FLOOR_QUAD);
+const mapFor = quad => quad === FLOOR_QUAD ? floorMap : homography(quad);
 const legacyFurniture = [
   { id: 'youtube', width: 2, depth: 3, default: { x: 0, y: 2 } },
   { id: 'oto', width: 3, depth: 2, default: { x: 3, y: 0 } },
@@ -44,20 +62,20 @@ const legacyFurniture = [
 const legacyReserved = [{ x: 0, y: 0, width: 2, depth: 2 }];
 
 /** Convert a tile corner (including fractional positions) to scene coordinates. */
-export function tileToScreen(x, y, projection = projectionDefaults) {
-  const { originX, originY, tileWidth, tileHeight } = { ...projectionDefaults, ...projection };
-  return {
-    x: originX + (x - y) * tileWidth / 2,
-    y: originY + (x + y) * tileHeight / 2,
-  };
+export function tileToScreen(x, y, quad = FLOOR_QUAD) {
+  const { a, b, c, d, e, f, g, h } = mapFor(quad);
+  const u = x / GRID_SIZE, v = y / GRID_SIZE, w = g * u + h * v + 1;
+  return { x: (a * u + b * v + c) / w, y: (d * u + e * v + f) / w };
 }
 
 /** Return fractional tile coordinates; snapping is the caller's decision. */
-export function screenToTile(x, y, projection = projectionDefaults) {
-  const { originX, originY, tileWidth, tileHeight } = { ...projectionDefaults, ...projection };
-  const across = (x - originX) / (tileWidth / 2);
-  const down = (y - originY) / (tileHeight / 2);
-  return { x: (across + down) / 2, y: (down - across) / 2 };
+export function screenToTile(x, y, quad = FLOOR_QUAD) {
+  const { a, b, c, d, e, f, g, h } = mapFor(quad);
+  // Solve (a − gx)u + (b − hx)v = x − c and (d − gy)u + (e − hy)v = y − f.
+  const p = a - g * x, q = b - h * x, r = d - g * y, s = e - h * y;
+  const det = p * s - q * r;
+  const u = ((x - c) * s - q * (y - f)) / det, v = (p * (y - f) - (x - c) * r) / det;
+  return { x: u * GRID_SIZE, y: v * GRID_SIZE };
 }
 
 function isRecord(value) {
@@ -212,6 +230,33 @@ export function normalizeLayout(input) {
     return input.items[item.id].x === previous.x && input.items[item.id].y === previous.y;
   })) return cloneLayout(DEFAULT_LAYOUT);
   return cloneLayout(input.items);
+}
+
+/**
+ * Back-to-front drawing order. A piece is behind another when it lies entirely on the
+ * far side of it along one floor axis (and not on the near side along the other).
+ * Summing corners alone fails for long desks beside small objects.
+ */
+export function paintOrder(layout, furniture = FURNITURE) {
+  const boxes = furniture.filter(item => layout[item.id]).map(item => ({ id: item.id, x: layout[item.id].x, y: layout[item.id].y, w: item.width, d: item.depth }));
+  const behind = (a, b) => {
+    const xBehind = a.x + a.w <= b.x, yBehind = a.y + a.d <= b.y;
+    const xFront = b.x + b.w <= a.x, yFront = b.y + b.d <= a.y;
+    return (xBehind && !yFront) || (yBehind && !xFront);
+  };
+  const depth = box => box.x + box.w / 2 + box.y + box.d / 2;
+  const before = new Map(boxes.map(box => [box.id, new Set()]));
+  for (const a of boxes) for (const b of boxes) if (a !== b && behind(a, b)) before.get(b.id).add(a.id);
+  const order = [];
+  const placed = new Set();
+  while (order.length < boxes.length) {
+    // Draw the farthest piece whose dependencies are all drawn; break any cycle by depth.
+    const ready = boxes.filter(box => !placed.has(box.id) && [...before.get(box.id)].every(id => placed.has(id)));
+    const pool = ready.length ? ready : boxes.filter(box => !placed.has(box.id));
+    const next = pool.reduce((best, box) => depth(box) < depth(best) ? box : best);
+    order.push(next.id); placed.add(next.id);
+  }
+  return order;
 }
 
 /** Serialize only validated positions in the versioned browser-storage format. */

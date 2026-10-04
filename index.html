@@ -15,26 +15,34 @@
   <link rel="stylesheet" href="room-experience.css?v=32">
   <link rel="stylesheet" href="gallery.css">
   <link rel="stylesheet" href="room-first.css?v=32">
-  <link rel="stylesheet" href="room-reveal.css?v=32">
+  <link rel="stylesheet" href="room-reveal.css?v=41">
   <link rel="stylesheet" href="pinboard.css?v=19">
   <link rel="stylesheet" href="portfolio-update.css?v=37">
-  <link rel="stylesheet" href="guided-room.css?v=40">
-  <script src="content.js?v=40" defer></script>
-  <script src="app.js?v=40" defer></script>
-  <script type="module" src="pinboard.js?v=40"></script>
-  <script type="module" src="room.js?v=40"></script>
+  <link rel="stylesheet" href="guided-room.css?v=41">
+  <script src="content.js?v=41" defer></script>
+  <script src="app.js?v=41" defer></script>
+  <script type="module" src="pinboard.js?v=41"></script>
+  <script type="module" src="room.js?v=41"></script>
   <script type="module" src="room-experience.js?v=32"></script>
 </head>
 <body>
   <a class="skip-link" href="#scene-section">Skip to the room</a>
   <header class="site-header">
     <a class="brand" href="./" aria-label="Todsophon — Tod Yansomboon, home"><img class="brand-mascot" src="assets/tod-mascot.png" alt="" width="600" height="600"><span class="brand-caption">todsophon<span>Tod Yansomboon · Creator &amp; builder</span></span></a>
-    <nav aria-label="Main navigation">
-      <button class="nav-link active" id="room-nav" aria-current="page">The room</button>
-      <button class="nav-link" id="work-nav">My work</button>
-      <a class="nav-link" data-open="about" href="#about">About me</a>
-    </nav>
-    <div class="header-links"><a class="header-role" data-open="oto" href="#work/oto"><span aria-hidden="true"></span>Now at Frisson Labs / Oto</a><a href="#resume" data-open="resume">Résumé <span aria-hidden="true">↗</span></a><a class="header-hello" href="mailto:todsopon@hotmail.com">Say hello</a></div>
+    <div class="room-menu">
+      <button class="room-menu-button" id="room-menu-button" type="button" aria-expanded="false" aria-controls="room-menu" aria-label="Menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+      <div class="room-menu-list" id="room-menu" hidden>
+        <a href="#about" data-open="about">About Tod</a>
+        <a href="#resume" data-open="resume">Résumé</a>
+        <a href="mailto:todsopon@hotmail.com">Email Tod</a>
+        <hr>
+        <button class="view-toggle" id="view-toggle" type="button" aria-pressed="false">List view</button>
+        <button class="arrange-toggle" id="arrange-toggle" type="button" aria-pressed="false" aria-controls="scene room-editor">Arrange room</button>
+        <button id="keys-play" type="button">Let Fibi play the keyboard</button>
+        <button id="sound-toggle" type="button" aria-pressed="true">Keyboard sound: on</button>
+        <button id="tour-replay" type="button">Replay Fibi’s tour</button>
+      </div>
+    </div>
   </header>
 
   <main id="main">
@@ -78,19 +86,14 @@
             <a class="ledge-linkedin" href="https://www.linkedin.com/in/todsophon" target="_blank" rel="noopener noreferrer"><svg class="social-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="4.5" cy="5" r="2"/><path d="M3 9h3v12H3zm7 0h3v1.6c.9-1.2 2.1-1.9 3.7-1.9 3.1 0 4.3 2 4.3 5.2V21h-3v-6.7c0-1.8-.5-2.7-2-2.7-1.8 0-3 1.3-3 3.1V21h-3z"/></svg><span>LinkedIn</span></a>
           </nav>
           <span id="fibi-destination" class="fibi-destination" aria-hidden="true" hidden></span>
-          <div class="speech-bubble" id="speech-bubble" role="status"><span id="speech-message">Hi, I'm Fibi! Make yourself at home.</span><button class="guide-next" id="guide-next" type="button" hidden>Show me around →</button></div>
+          <div class="speech-bubble" id="speech-bubble"><span id="speech-message" aria-live="polite">Hi, I’m Fibi! Make yourself at home.</span><div class="speech-actions" id="speech-actions" hidden></div></div>
           <div class="character" id="character">
             <button class="character-button" id="fibi-button" aria-label="Say hello to Fibi" aria-describedby="fibi-instructions"><span class="character-sprite" id="character-image" role="img" aria-label="Fibi, your little room guide"></span></button>
             <span class="character-name">Fibi <span>your guide</span></span>
           </div>
         </div>
-        <div class="tour-dock" id="tour-dock">
-          <div class="dock-progress"><strong>Fibi’s tour</strong><span><span class="dock-bar" aria-hidden="true"><i id="dock-bar-fill"></i></span><span id="dock-count">0 of 6 seen</span></span></div>
-          <nav class="dock-stops" id="dock-stops" aria-label="Tour stops"></nav>
-          <div class="dock-tools"><button class="dock-tool" id="keys-play" type="button" title="Let Fibi play the floor keyboard"><span aria-hidden="true">♪</span><span>Let Fibi play</span></button><button class="dock-tool" id="sound-toggle" type="button" aria-pressed="true" title="Keyboard sound"><svg class="sound-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5v14l-4.5-4.5H4z"/><path class="sound-wave" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>Sound on</span></button><button class="view-toggle dock-tool" id="view-toggle" aria-pressed="false"><span aria-hidden="true">☷</span> List view</button><button class="arrange-toggle dock-tool" id="arrange-toggle" aria-pressed="false" aria-controls="scene room-editor"><span aria-hidden="true">⤧</span> Arrange room</button></div>
-        </div>
         <div class="room-editor" id="room-editor" hidden>
-          <div class="editor-heading"><strong id="selected-furniture">Make it yours</strong><div class="history-buttons"><button id="undo-room" disabled>Undo</button><button id="reset-room">Reset room</button></div></div>
+          <div class="editor-heading"><strong id="selected-furniture">Make it yours</strong><div class="history-buttons"><button id="undo-room" disabled>Undo</button><button id="reset-room">Reset room</button><button id="arrange-done" class="arrange-done">Done</button></div></div>
           <p id="room-instructions">Drag to snap into place. Select a piece and tap the floor to move it there. Arrow keys move; Enter places; Escape cancels.</p>
           <div class="placement-controls" id="placement-controls" hidden>
             <div class="nudge-buttons" role="group" aria-label="Move selected furniture one step"><button data-nudge="-1,0" aria-label="Move one step back left">↖</button><button data-nudge="0,-1" aria-label="Move one step back right">↗</button><button data-nudge="0,1" aria-label="Move one step front left">↙</button><button data-nudge="1,0" aria-label="Move one step front right">↘</button></div>
