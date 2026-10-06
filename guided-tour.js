@@ -19,8 +19,8 @@ export function createGuidedTour({ stage, guide, keyboard }) {
       title: 'The screening beanbag', line: 'Pull up a seat: a little gallery of the videos and Shorts Tod made.' },
     { id: 'about', name: 'Portrait', selector: '.wall-portrait', color: '#d9b6e9', anim: 'hello', chapter: 'about',
       title: 'Meet Tod', line: 'From Thailand to Seattle, with a camera along the way.' },
-    { id: 'analytics', name: 'Chart easel', selector: '[data-furniture="plant"]', beacon: 'plant', color: '#b3d98c', anim: 'thinking', chapter: 'analytics',
-      title: 'A head for the numbers', line: 'Growth work, a Salesforce capstone, and churn modeling: the numbers behind creative calls.' },
+    { id: 'analytics', name: 'Case study easel', selector: '[data-furniture="plant"]', beacon: 'plant', color: '#b3d98c', anim: 'thinking', href: 'frisson-case-study.html',
+      title: 'The Frisson Labs case study', line: 'How Tod builds AI video workflows that carry each lesson into the next clip, plus a call-to-action video that got 153 bio-link clicks.' },
   ];
   const byId = Object.fromEntries(STORIES.map(story => [story.id, story]));
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -32,6 +32,7 @@ export function createGuidedTour({ stage, guide, keyboard }) {
   let awake = new Set();
   let active = false;   // the room is (partly) asleep
   let touring = false;  // Fibi leads from story to story
+  let resumeAfterStory = false; // a story was opened from Fibi's bubble
   let speechTimer = 0;
   try { awake = new Set((JSON.parse(localStorage.getItem(SEEN_KEY)) || []).filter(id => byId[id])); } catch { /* Progress lasts for this visit. */ }
 
@@ -124,7 +125,7 @@ export function createGuidedTour({ stage, guide, keyboard }) {
     syncClasses();
     guide.hold(story.anim);
     const left = remaining().length;
-    const open = story.screening ? { label: 'Watch the films', screening: true, primary: true } : { label: 'Open the story', open: story.chapter, primary: true };
+    const open = story.screening ? { label: 'Watch the films', screening: true, primary: true } : story.href ? { label: 'Read the case study', href: story.href, primary: true } : { label: 'Open the story', open: story.chapter, primary: true };
     speak(`<strong>${escapeHTML(story.title)}</strong> ${escapeHTML(story.line)}${active ? `<small>${STORIES.length - left} of ${STORIES.length} awake</small>` : ''}`,
       left ? [open, { label: touring ? 'Next' : 'Next one', action: 'next' }, { label: 'Skip tour', action: 'skip' }] : [open, { label: 'Finish', action: 'finish' }]);
   }
@@ -187,7 +188,12 @@ export function createGuidedTour({ stage, guide, keyboard }) {
 
   actions.addEventListener('click', event => {
     const action = event.target.closest('[data-speech]')?.dataset.speech;
-    if (!action) { if (event.target.closest('[data-open], [data-screening], a')) setTimeout(hideSpeech, 0); return; }
+    if (!action) {
+      const opened = event.target.closest('[data-open], [data-screening]');
+      if (opened) resumeAfterStory = true;
+      if (opened || event.target.closest('a')) setTimeout(hideSpeech, 0);
+      return;
+    }
     if (action === 'tour') { touring = true; next(); }
     else if (action === 'next') { touring = true; next(); }
     else if (action === 'explore') { leave(); speak('Tap anything that glows and I’ll walk you there.', [], 4200); }
@@ -200,6 +206,22 @@ export function createGuidedTour({ stage, guide, keyboard }) {
   // Short remarks from elsewhere (Fibi waking up, a furniture move) never interrupt a story.
   document.addEventListener('fibi:say', event => { if (!bubble.classList.contains('is-guide')) speak(escapeHTML(event.detail.text), [], event.detail.holdMs || 3000); });
   document.addEventListener('portfolio:chapter-open', hideSpeech);
+  // Closing a story opened from Fibi's bubble brings her back with the next step,
+  // so the tour carries on instead of going quiet.
+  function resume() {
+    if (!resumeAfterStory) return;
+    resumeAfterStory = false;
+    const left = remaining().length;
+    if (!left) {
+      if (active) speak('<strong>That was the last one!</strong> Everything in the room is awake now.', [{ label: 'Finish', action: 'finish', primary: true }]);
+      return;
+    }
+    if (!active) return;
+    speak(`<strong>Welcome back!</strong> ${left} ${left === 1 ? 'corner is' : 'corners are'} still asleep.<small>${STORIES.length - left} of ${STORIES.length} awake</small>`,
+      [{ label: 'Next', action: 'next', primary: true }, { label: 'I’ll explore', action: 'explore' }, { label: 'Skip tour', action: 'skip' }]);
+  }
+  dialog.addEventListener('close', () => setTimeout(resume, 120));
+  document.addEventListener('portfolio:screening', event => { if (!event.detail.open) setTimeout(resume, 120); });
   document.addEventListener('portfolio:view', event => { if (event.detail.showList) leave(); });
   document.querySelector('#tour-replay')?.addEventListener('click', () => start({ replay: true }));
   document.querySelector('#tour-skip')?.addEventListener('click', skip);

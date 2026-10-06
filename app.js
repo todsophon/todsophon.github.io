@@ -5,8 +5,8 @@ const character = document.querySelector('#character');
 const scene = document.querySelector('#scene');
 const listView = document.querySelector('#list-view');
 const viewToggle = document.querySelector('#view-toggle');
-const chapterOrder = ['oto', 'youtube', 'tiktok', 'analytics', 'about'];
-const chapterNames = { youtube: 'YouTube', tiktok: 'TikTok', oto: 'Oto', analytics: 'Analytics', about: 'About me', resume: 'Resume' };
+const chapterOrder = ['oto', 'youtube', 'tiktok', 'about'];
+const chapterNames = { youtube: 'YouTube', tiktok: 'TikTok', oto: 'Oto', analytics: 'Analytics', about: 'About', resume: 'Résumé' };
 const baseTitle = document.title;
 const historyKey = 'todPortfolioRoute';
 let currentChapter = 'oto';
@@ -65,7 +65,7 @@ function videosHTML(videos) {
       <div class="video-card-copy">${video.format ? `<span class="video-format">${escapeHTML(video.format)}</span>` : ''}<h4>${escapeHTML(video.title)} <span aria-hidden="true">↗</span></h4>${video.metric ? `<p class="video-metric">${escapeHTML(video.metric)}</p>` : ''}${video.description ? `<p>${escapeHTML(video.description)}</p>` : ''}</div>
     </a>`;
   }).join('');
-  return cards ? `<section class="selected-videos" aria-labelledby="selected-videos-title"><h3 id="selected-videos-title">Selected videos</h3><div class="video-grid">${cards}</div></section>` : '';
+  return cards ? `<section class="selected-videos" aria-labelledby="selected-videos-title"><h3 id="selected-videos-title" class="visually-hidden">The videos</h3><div class="video-grid">${cards}</div></section>` : '';
 }
 
 function resumeHTML(item) {
@@ -74,7 +74,7 @@ function resumeHTML(item) {
   const skills = asArray(item.skills);
   return `${experience.length ? `<section aria-labelledby="experience-title"><h3 id="experience-title">Experience</h3><div class="experience-list">${experience.map(job => `<article class="experience-item"><div class="experience-heading"><h4>${escapeHTML(job.role)}</h4><span class="experience-date">${escapeHTML(job.date)}</span></div><p class="experience-company">${escapeHTML(job.company)}</p>${job.summary ? `<p>${escapeHTML(job.summary)}</p>` : ''}</article>`).join('')}</div></section>` : ''}
     ${education.length ? `<section aria-labelledby="education-title"><h3 id="education-title">Education</h3><div class="education-list">${education.map(school => `<article class="education-item"><h4>${escapeHTML(school.school)}</h4><p>${escapeHTML(school.degree)}</p>${school.date ? `<span class="education-date">${escapeHTML(school.date)}</span>` : ''}</article>`).join('')}</div></section>` : ''}
-    ${skills.length ? `<section aria-labelledby="skills-title"><h3 id="skills-title">Skills & tools</h3><ul class="skills-list">${skills.map(skill => `<li>${escapeHTML(skill)}</li>`).join('')}</ul></section>` : ''}`;
+    ${skills.length ? `<section aria-labelledby="skills-title"><h3 id="skills-title">Skills & tools</h3><p class="skills-line">${skills.map(escapeHTML).join(', ')}</p></section>` : ''}`;
 }
 
 function routeFor(key) { return key === 'about' || key === 'resume' ? `#${key}` : `#work/${key}`; }
@@ -166,7 +166,17 @@ function milestonesHTML(item) {
   if (!milestones.length) return '';
   const source = item.milestoneSource;
   const url = safeURL(source?.url);
-  return `<div class="milestone-stories" aria-label="YouTube milestone stories">${milestones.map(entry => `<article class="milestone-story" data-metal="${entry.metal}"><span class="milestone-number">${escapeHTML(entry.value)}</span><h3>${escapeHTML(entry.title)}</h3><p>${escapeHTML(entry.text)}</p></article>`).join('')}</div>${url ? `<p class="milestone-source">${escapeHTML(source.note)} <a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(source.label)} ↗</a></p>` : ''}`;
+  return `${milestones.map(entry => `<section class="project-section milestone-section" data-metal="${entry.metal}"><h3>${escapeHTML(entry.title)}</h3><p>${escapeHTML(entry.text)}</p></section>`).join('')}${url ? `<p class="source-note">${escapeHTML(source.note)} <a class="oto-inline-link" href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(source.label)} ↗</a></p>` : ''}`;
+}
+
+/** The chapter's links as one plain line of text links. */
+function chapterLinksHTML(item, key) {
+  const links = [];
+  if (key === 'about') links.push('<a class="oto-inline-link" href="#resume" data-open="resume">My résumé</a>', `<a class="oto-inline-link" href="mailto:${escapeHTML(config.contact.email)}">Email me</a>`);
+  if (key === 'resume' && config.resumeDownload) links.push(linkHTML({ label: 'Download the original (Word)', url: config.resumeDownload }, 'oto-inline-link'));
+  for (const link of [item.link, ...asArray(item.links)]) if (link) links.push(linkHTML(link, 'oto-inline-link'));
+  const shown = links.filter(Boolean);
+  return shown.length ? `<p class="oto-links">${shown.join('<span aria-hidden="true"> · </span>')}</p>` : '';
 }
 
 function renderChapter(key) {
@@ -177,30 +187,24 @@ function renderChapter(key) {
     lastFocusedElement = document.activeElement !== document.body ? document.activeElement : document.querySelector(`[data-open="${key}"]`) || viewToggle;
     previousOverflow = document.body.style.overflow;
   }
-  const metrics = asArray(item.metrics);
-  const meta = asArray(item.meta);
   document.querySelector('#dialog-label').textContent = chapterNames[key] || item.label;
   dialog.dataset.chapter = key;
   const fromAward = key === 'youtube' && ['silver', 'gold'].includes(dialog.dataset.award);
   dialogContent.innerHTML = key === 'oto' ? `${chapterHeadingHTML(item, key)}${otoHTML(item)}` : `
     ${chapterHeadingHTML(item, key)}
+    ${item.role ? `<p class="oto-role">${escapeHTML(item.role)}</p>` : ''}
     ${key === 'resume' ? resumeContactHTML() : ''}
     ${fromAward ? milestonesHTML(item) : ''}
     ${item.cover && safeURL(item.cover.image, 'image') ? `<figure class="chapter-cover"><img src="${escapeHTML(safeURL(item.cover.image, 'image'))}" alt="${escapeHTML(item.cover.alt)}" width="1280" height="211"><figcaption>${escapeHTML(item.cover.caption)}</figcaption></figure>` : ''}
     <p class="dialog-lead">${escapeHTML(item.lead)}</p>
     ${fromAward ? '' : milestonesHTML(item)}
-    ${meta.length ? `<dl class="project-meta">${meta.map(entry => `<div><dt>${escapeHTML(entry.label)}</dt><dd>${escapeHTML(entry.value)}</dd></div>`).join('')}</dl>` : ''}
-    ${metrics.length ? `<div class="metric-grid">${metrics.map(metric => `<div class="metric"><strong>${escapeHTML(metric.value)}</strong><span>${escapeHTML(metric.label)}</span></div>`).join('')}</div>` : ''}
-    ${metrics.length ? sourceHTML(item.source) : ''}
     ${reelsHTML(item.reels, { heading: 'Three Reels I made for Oto', intro: item.reelIntro || '', note: item.reelSource?.note })}
     ${asArray(item.sections).map(section => `<section class="project-section"><h3>${escapeHTML(section.title)}</h3>${section.text ? `<p>${escapeHTML(section.text)}</p>` : ''}${asArray(section.bullets).length ? `<ul class="project-bullets">${section.bullets.map(bullet => `<li>${escapeHTML(bullet)}</li>`).join('')}</ul>` : ''}</section>`).join('')}
     ${videosHTML(item.videos)}
     ${resumeHTML(item)}
     ${item.quote ? `<blockquote class="featured-quote">${escapeHTML(item.quote)}</blockquote><p class="source-note">${escapeHTML(item.quoteCredit)}</p>` : ''}
-    ${asArray(item.tags).length ? `<div class="project-tags">${item.tags.map(tag => `<span>${escapeHTML(tag)}</span>`).join('')}</div>` : ''}
-    ${key === 'about' ? `<div class="project-links"><button class="external-link" data-open="resume">View résumé <span aria-hidden="true">↗</span></button><a class="external-link" href="mailto:${escapeHTML(config.contact.email)}">Email me <span aria-hidden="true">↗</span></a></div>` : ''}
-    ${item.link || asArray(item.links).length || (key === 'resume' && config.resumeDownload) ? `<div class="project-links">${key === 'resume' && config.resumeDownload ? linkHTML({ label: 'Download original résumé (Word)', url: config.resumeDownload }) : ''}${item.link ? linkHTML(item.link) : ''}${asArray(item.links).map(link => linkHTML(link)).join('')}</div>` : ''}
-    ${!metrics.length ? sourceHTML(item.source) : ''}
+    ${chapterLinksHTML(item, key)}
+    ${sourceHTML(item.source)}
     ${item.pending ? `<p class="pending-note">${escapeHTML(item.pending)}</p>` : ''}
   `;
   startPreviews();

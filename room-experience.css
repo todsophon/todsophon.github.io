@@ -21,8 +21,6 @@
 @media screen {
   .project-dialog[open] { transform-origin:var(--entry-x,50%) var(--entry-y,60%); animation:case-unfold .42s cubic-bezier(.16,1,.3,1) both; }
   .project-dialog[open] .dialog-content { animation:case-content .5s .08s both; }
-  .project-dialog[data-chapter=about] .portrait-photo { transform:rotate(-3deg); box-shadow:5px 5px 0 #f5d94e; }
-  .project-dialog[data-chapter=analytics] { border-top:5px solid var(--blue); }
 }
 @keyframes case-unfold { from{opacity:0;transform:perspective(1100px) translateY(26px) rotateX(6deg) scale(.92)} to{opacity:1;transform:perspective(1100px) translateY(0) rotateX(0) scale(1)} }
 @keyframes case-content { from{opacity:0;transform:translateY(9px)} to{opacity:1;transform:translateY(0)} }

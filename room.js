@@ -1,8 +1,8 @@
-import { GRID_SIZE, STORAGE_KEY, LEGACY_STORAGE_KEY, FURNITURE, DEFAULT_LAYOUT, FLOOR_QUAD, tileToScreen, screenToTile, snapPlacement, snapDraggedPlacement, canPlace, nearbyOpenPlacement, normalizeLayout, serializeLayout, paintOrder } from './room-layout.mjs?v=41';
-import { createRoomCompanion } from './fibi.js?v=41';
-import { createGuidedTour } from './guided-tour.js?v=43';
-import { createFloorKeyboard } from './floor-keyboard.js?v=41';
-import { createWallDecor } from './wall-decor.js?v=43';
+import { GRID_SIZE, STORAGE_KEY, LEGACY_STORAGE_KEY, FURNITURE, DEFAULT_LAYOUT, FLOOR_QUAD, tileToScreen, screenToTile, snapPlacement, snapDraggedPlacement, canPlace, nearbyOpenPlacement, normalizeLayout, serializeLayout, paintOrder } from './room-layout.mjs?v=63';
+import { createRoomCompanion } from './fibi.js?v=63';
+import { createGuidedTour } from './guided-tour.js?v=63';
+import { createFloorKeyboard } from './floor-keyboard.js?v=63';
+import { createWallDecor } from './wall-decor.js?v=63';
 
 const stage = document.querySelector('#scene');
 const tiles = document.querySelector('#floor-tiles');
@@ -21,8 +21,8 @@ const SCENE_WIDTH = 1000;
 const SCENE_HEIGHT = 2000 / 3;
 const artWidths = { youtube: 290, oto: 290, bookshelf: 180, plant: 98, chair: 165, tiktok: 60 };
 // The projected tile center meets the center of the feet, not the frontmost foot.
-const groundAnchors = { youtube: 78, oto: 77, bookshelf: 80, plant: 95, chair: 86, tiktok: 96 };
-const groundCenters = { youtube: 51.3, oto: 49.1, bookshelf: 56, plant: 57, chair: 50, tiktok: 50 };
+const groundAnchors = { youtube: 78, oto: 77, bookshelf: 80, plant: 91, chair: 86, tiktok: 94 };
+const groundCenters = { youtube: 51.3, oto: 49.1, bookshelf: 56, plant: 54, chair: 50, tiktok: 50 };
 // Match both ground-plane directions to the room's 2:1 projection while keeping
 // upright edges vertical. Each source illustration has a different camera angle.
 // y' = shear * x + scale * y; the origin stays pinned to the feet during a move.
@@ -39,12 +39,12 @@ const atlasWindows = {
 // Pieces drawn outside the shared furniture atlas: [image, width, height].
 const spriteSources = {
   chair: ['assets/lounge-chair.png', 1536, 1024],
-  oto: ['assets/oto-furniture-atlas-v3.png', 1536, 1024],
+  oto: ['assets/oto-furniture-atlas-v4.png?v=2', 1536, 1024],
   plant: ['assets/chart-easel.webp', 494, 799],
   tiktok: ['assets/ring-light.webp?v=3', 267, 817],
 };
-const labels = { youtube: 'YouTube', oto: 'Oto', bookshelf: 'Record cabinet', tiktok: 'TikTok', plant: 'Analytics', chair: 'Watch films' };
-const accessibleLabel = (item, arranging = false) => arranging ? `Move ${item.label}` : item.action === 'screening' ? 'Watch films from the screening chair' : `Explore ${item.label}`;
+const labels = { youtube: 'YouTube', oto: 'Oto', bookshelf: 'Record cabinet', tiktok: 'TikTok', plant: 'Case study', chair: 'Watch films' };
+const accessibleLabel = (item, arranging = false) => arranging ? `Move ${item.label}` : item.action === 'screening' ? 'Watch films from the screening chair' : item.href ? 'Read the Frisson Labs case study' : `Explore ${item.label}`;
 const pieces = new Map();
 let layout = clone(DEFAULT_LAYOUT);
 let editing = false;
@@ -209,7 +209,7 @@ function startPointer(event, item) {
   if (selectedId && selectedId !== item.id) cancelSelection();
   const p = pointInRoom(event);
   pointer = { id: item.id, pointerId: event.pointerId, x: event.clientX, y: event.clientY, start: screenToTile(p.x, p.y), original: { ...(selectedId === item.id && pending ? pending : layout[item.id]) }, dragging: false };
-  event.currentTarget.setPointerCapture(event.pointerId);
+  try { event.currentTarget.setPointerCapture(event.pointerId); } catch { /* Synthetic or released pointers. */ }
 }
 function movePointer(event, item) {
   if (!pointer || pointer.pointerId !== event.pointerId || pointer.id !== item.id) return;
@@ -291,6 +291,7 @@ for (const item of FURNITURE) {
     if (suppressClick.id === item.id && performance.now() < suppressClick.until) return;
     if (editing) select(item.id);
     else if (item.action === 'screening') document.dispatchEvent(new CustomEvent('portfolio:request-screening', { detail: { source: hit } }));
+    else if (item.href) window.location.href = item.href;
     else document.dispatchEvent(new CustomEvent('room:open-chapter', { detail: { chapter: item.chapter } }));
   });
   hit.addEventListener('keydown', event => {

@@ -28,6 +28,23 @@ body{min-height:100dvh}
 /* A brighter, airier room: the same gentle lift on every painted layer. */
 .cozy-room:not(.reveal-active) .room-art,.cozy-room .room-color-spot,.cozy-room .furniture-sprite{filter:var(--room-light)}
 .cozy-room .character{width:13%;max-width:146px}
+/* Fibi can be picked up: no scrolling while dragging her on touch screens. */
+.cozy-room .character-button{touch-action:none;cursor:grab}
+.cozy-room .character.is-held{z-index:2000!important}
+.cozy-room .character.is-held .character-button{cursor:grabbing}
+/* Lift: the sprite rises above its floor shadow; the shadow shrinks with height. */
+.cozy-room .character .character-sprite{translate:0 calc(var(--fibi-lift,0) * -1px * var(--scene-scale,1))}
+.cozy-room .character:before{opacity:calc(1 - min(var(--fibi-lift,0) / 120, .6));scale:calc(1 - min(var(--fibi-lift,0) / 160, .45))}
+.cozy-room .character.is-held .character-sprite{filter:drop-shadow(0 8px 5px #3a2a2f33)}
+/* Landing: a quick squash and stretch from the feet. */
+.cozy-room .character.is-landing .character-button{transform-origin:51.5% var(--fibi-ground,84.5%);animation:fibi-land .32s cubic-bezier(.3,1.6,.5,1)}
+@keyframes fibi-land{0%{scale:calc(1 + var(--fibi-squash,.1)) calc(1 - var(--fibi-squash,.1))}55%{scale:calc(1 - var(--fibi-squash,.1) * .35) calc(1 + var(--fibi-squash,.1) * .35)}100%{scale:1 1}}
+.fibi-dust{position:absolute;z-index:1150;width:0;height:0;pointer-events:none}
+.fibi-dust:before,.fibi-dust:after{content:'';position:absolute;top:-6px;width:calc(16px + 22px * var(--dust,.5));height:calc(7px + 6px * var(--dust,.5));border-radius:50%;background:radial-gradient(closest-side,#fff6eae6,#fff6ea00);animation:fibi-dust .5s ease-out forwards}
+.fibi-dust:before{right:2px;--dir:-1}.fibi-dust:after{left:2px;--dir:1}
+@keyframes fibi-dust{from{opacity:.95;translate:0 0;scale:.5}to{opacity:0;translate:calc(var(--dir) * 26px) -6px;scale:1.25}}
+@media(prefers-reduced-motion:reduce){.cozy-room .character.is-landing .character-button,.fibi-dust:before,.fibi-dust:after{animation:none}}
+.is-holding-fibi .speech-bubble{opacity:0!important}
 .cozy-room .character:not(:hover):not(:focus-within) .character-name{opacity:0}
 /* Name tags: once an object is awake it wears a small, quiet tag so visitors know what it is. */
 .room-tag,.cozy-room:not(.is-arranging) .furniture-piece.is-awake .furniture-label{display:block;width:auto;height:auto;min-width:0;padding:3px 9px;border:1px solid var(--line-warm);border-radius:999px;background:#fffaf3eb;color:var(--ink-warm);font-size:11.5px;font-weight:650;line-height:1.25;white-space:nowrap;box-shadow:0 2px 7px #3a2a2f1c;animation:none;pointer-events:none;transition:opacity .15s,transform .15s}
@@ -36,7 +53,7 @@ body{min-height:100dvh}
 .cozy-room:not(.is-arranging) .furniture-piece.is-awake .furniture-hit:hover .furniture-label,.cozy-room:not(.is-arranging) .furniture-piece.is-awake .furniture-hit:focus-visible .furniture-label{border-color:#c98b62;transform:translate(-50%,calc(-100% - 2px))}
 .cozy-room:not(.is-arranging) .furniture-piece[data-furniture=bookshelf] .furniture-label{display:none}
 .cozy-room:not(.is-arranging) .furniture-piece.is-awake[data-furniture=youtube] .furniture-label{left:44%;top:6%}
-.cozy-room:not(.is-arranging) .furniture-piece.is-awake[data-furniture=oto] .furniture-label{left:56%;top:7%}
+.cozy-room:not(.is-arranging) .furniture-piece.is-awake[data-furniture=oto] .furniture-label{left:53%;top:50%}
 .cozy-room:not(.is-arranging) .furniture-piece.is-awake[data-furniture=tiktok] .furniture-label{left:50%;top:-1%}
 .cozy-room:not(.is-arranging) .furniture-piece.is-awake[data-furniture=chair] .furniture-label{left:50%;top:26%}
 .cozy-room:not(.is-arranging) .furniture-piece.is-awake[data-furniture=plant] .furniture-label{left:55%;top:3%}
@@ -212,3 +229,48 @@ body{min-height:100dvh}
   .reel-list li{flex:0 0 62%;scroll-snap-align:start}
 }
 .reel-frame:has(.reel-player){aspect-ratio:9/20;background:#fff}
+
+/* Every chapter: the same quiet template as Oto. */
+.dialog-content .project-kicker:empty{display:none}
+.project-dialog .dialog-content h2{max-width:640px;font-size:38px;letter-spacing:-1.4px}
+.project-dialog .dialog-lead{margin-top:18px}
+.project-dialog .oto-role+.resume-contact{margin-top:8px}
+.dialog-content .project-section{margin-top:30px}
+.dialog-content .project-section h3{margin:0 0 6px;font-size:19px;letter-spacing:-.3px}
+.dialog-content .project-section p{max-width:640px;font-size:15px;line-height:1.65}
+.project-dialog .source-note{margin-top:24px;font-size:12px;line-height:1.6}
+.project-dialog .source-note .source-link{color:#6733cf;font-weight:600}
+.project-dialog .portrait-photo{width:120px;height:120px;border:0;border-radius:14px;outline:0;box-shadow:none;transform:none}
+.project-dialog .chapter-cover img{border-radius:12px}
+.project-dialog .chapter-cover figcaption{font-size:12.5px}
+.project-dialog .featured-quote{margin:34px 0 4px;padding:0;border:0;background:none;color:#2b2137;font-size:24px;font-weight:650;letter-spacing:-.5px}
+.project-dialog .featured-quote+.source-note{margin-top:0}
+.selected-videos .video-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:16px 0 8px}
+.selected-videos .video-card{border:0;border-radius:0;background:none;box-shadow:none;transform:none}
+.selected-videos .video-card:hover{transform:none;box-shadow:none}
+.selected-videos .video-card:hover .video-thumbnail{filter:brightness(.92)}
+.selected-videos .video-thumbnail{border-radius:12px;aspect-ratio:16/10}
+.selected-videos .video-card-copy{padding:10px 0 0;gap:3px}
+.selected-videos .video-card-copy h4{font-size:15px;font-weight:650;color:#2b2137}
+.selected-videos .video-format{order:3;color:#7a6c83;font-size:12.5px;letter-spacing:0;text-transform:none}
+.selected-videos .video-card-copy .video-metric{order:4;color:#7a6c83!important;font-size:12.5px!important;font-weight:500}
+.selected-videos .video-card-copy p{color:#655b72;font-size:13.5px!important;line-height:1.5!important}
+.skills-line{max-width:640px;font-size:15px;line-height:1.7}
+.resume-contact a{color:#6733cf}
+@media(max-width:760px){
+  .project-dialog .dialog-content h2{font-size:29px;letter-spacing:-.9px}
+  .selected-videos .video-grid{grid-template-columns:1fr 1fr}
+  .project-dialog .portrait-photo{width:84px;height:84px}
+}
+.selected-videos .video-card:last-child:nth-child(odd){grid-column:auto;display:flex}
+.selected-videos .video-card:last-child:nth-child(odd) .video-thumbnail{height:auto}
+@media(max-width:760px){.selected-videos .video-card:last-child:nth-child(odd){grid-column:1/-1}}
+/* The generated easel and ring light have no painted shadow: give them a soft contact
+   shadow centred on their feet so they stand on the floor. */
+.furniture-piece[data-furniture=plant] .furniture-art::before,.furniture-piece[data-furniture=tiktok] .furniture-art::before{content:'';position:absolute;left:var(--ground-center,50%);top:var(--ground-anchor,90%);width:92%;aspect-ratio:2.2/1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,#3d150980,#3d150938 50%,transparent);pointer-events:none}
+.furniture-piece[data-furniture=tiktok] .furniture-art::before{width:150%}
+.furniture-piece .furniture-sprite{z-index:1}
+/* Held: she sways a little from the top, like she's being carried. */
+.cozy-room .character.is-held .character-button{transform-origin:51.5% 18%;animation:fibi-dangle 1.15s ease-in-out infinite}
+@keyframes fibi-dangle{0%,100%{rotate:-5deg}50%{rotate:5deg}}
+@media(prefers-reduced-motion:reduce){.cozy-room .character.is-held .character-button{animation:none}}

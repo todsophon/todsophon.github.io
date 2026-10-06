@@ -1,4 +1,4 @@
-import { FLOOR_FEATURES, tileToScreen } from './room-layout.mjs?v=41';
+import { FLOOR_FEATURES, tileToScreen } from './room-layout.mjs?v=63';
 
 // Keys are measured in plane units (TILE per floor tile). Each key lies flat on the
 // floor: it gets the local affine slice of the room's floor mapping at its own centre.
@@ -105,6 +105,21 @@ export function createFloorKeyboard({ stage, guide }) {
     const key = keys.find(k => px >= k.x && px <= k.x + k.w && py >= k.y && py <= k.y + k.h) || null;
     if (key && key !== stepKey && (event.detail.walking || playing)) press(key);
     stepKey = key;
+  });
+
+  // Fibi landing on a key presses it, harder for a bigger drop.
+  document.addEventListener('fibi:landed', event => {
+    const { x, y, strength } = event.detail;
+    const px = x * TILE - offset.x, py = y * TILE - offset.y, pad = GAP / 2 + 1;
+    const key = keys.find(k => px >= k.x - pad && px <= k.x + k.w + pad && py >= k.y - pad && py <= k.y + k.h + pad);
+    if (!key) return;
+    // Dropping her on a key is the visitor's own doing, so it may start the sound.
+    audio(true);
+    sound(key, .35 + strength * .65);
+    stage.classList.add('keys-discovered');
+    key.button.classList.remove('is-down'); void key.button.offsetWidth; key.button.classList.add('is-down');
+    clearTimeout(key.timer);
+    key.timer = setTimeout(() => key.button.classList.remove('is-down'), 120 + strength * 140);
   });
 
   function centerOf(key) {

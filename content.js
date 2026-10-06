@@ -47,6 +47,11 @@ window.PORTFOLIO = {
       pet: sheet('pet', 38, 4),
       sleep: sheet('sleep', 97, 10),
       dancing: sheet('dancing', 83, 9),
+      // Walking toward the viewer, walking away, and dangling while picked up.
+      walkToward: sheet('walk-toward', 97, 10),
+      walkAway: sheet('walk-away', 97, 10),
+      held: sheet('held', 97, 10),
+      falling: sheet('falling', 121, 13),
       celebrate: sheet('dancing', 83, 9)
     }
   },
@@ -58,10 +63,11 @@ window.PORTFOLIO = {
   resumeDownload: null,
   chapters: {
     youtube: {
-      number: '02', label: 'THE CREATOR CORNER', kicker: 'YOUTUBE · CONTENT & COMMUNITY',
+      number: '02', label: 'THE CREATOR CORNER', kicker: '',
       cover: { image: 'assets/tod-channel-banner.png', alt: 'Todsophon channel artwork with my wordmark, fantasy characters, and one-million-subscriber milestone', caption: 'My channel artwork, created for the 1M subscriber milestone.' },
-      title: 'A screen. A story.<br>A place to belong.',
-      lead: 'I make videos that bring people together. At Todsophon, storytelling, gaming, and a little mischief have grown into a community of 1.81 million subscribers.',
+      title: 'I make YouTube videos for 1.81 million subscribers.',
+      role: 'Todsophon, since September 2020. I write, make and grow it.',
+      lead: 'The channel is storytelling, gaming and a little mischief, and it has grown into a real community. Together the videos have been watched 455.3 million times.',
       meta: [
         { label: 'My role', value: 'Creator · strategy & growth' },
         { label: 'Since', value: 'September 2020' }
@@ -71,17 +77,16 @@ window.PORTFOLIO = {
         { value: '455.3M', label: 'YouTube channel views' }
       ],
       source: {
-        label: 'Todsophon on YouTube', url: 'https://www.youtube.com/@Todsophon',
-        note: 'Channel totals and selected video counts recorded September 21, 2026.'
+        note: 'Channel totals and video view counts were recorded on September 21, 2026.'
       },
       milestones: [
-        { metal: 'silver', value: '100K', title: 'Finding my people', text: 'When COVID sent me back to Thailand, making videos became a way to connect and help others feel less alone. A playful song parody unexpectedly reached millions of viewers overnight. To me, the silver milestone represents the community that began when I let myself be myself.' },
-        { metal: 'gold', value: '1M', title: 'Being myself, at scale', text: 'By November 2023, SPU introduced my channel as having more than a million subscribers and over 200 million views. In our conversation, I explained that each new video reinforced the same lesson: being different could help me find the people who enjoyed what I made.' }
+        { metal: 'silver', value: '100K', title: 'The first 100,000', text: 'When COVID sent me back to Thailand, making videos became a way to connect and help others feel less alone. A playful song parody unexpectedly reached millions of viewers overnight. To me, the silver milestone represents the community that began when I let myself be myself.' },
+        { metal: 'gold', value: '1M', title: 'One million', text: 'By November 2023, SPU introduced my channel as having more than a million subscribers and over 200 million views. In our conversation, I explained that each new video reinforced the same lesson: being different could help me find the people who enjoyed what I made.' }
       ],
-      milestoneSource: { label: 'Read the SPU Voices interview', url: 'https://stories.spu.edu/articles/a-virtual-place-to-belong-with-tod-yansomboon-24', note: 'SPU recounts the journey and reports the 1M+ milestone; it does not give a date for reaching 100K or 1M.' },
+      milestoneSource: { label: 'Read the SPU Voices interview', url: 'https://stories.spu.edu/articles/a-virtual-place-to-belong-with-tod-yansomboon-24', note: 'SPU tells the story and reports the 1M+ milestone, but doesn’t give a date for reaching 100K or 1M.' },
       sections: [
-        { title: 'Creativity, with a feedback loop', text: 'My work combines content strategy with close attention to click-through rate, retention, and engagement. I use those signals to guide creative decisions, from how a video opens to how its story holds attention.' },
-        { title: 'A few stories from the channel', text: 'These selections show two sides of my work: short, character-led gaming stories and a longer food adventure. Each format offers a different way to connect with an audience.' }
+        { title: 'Watching the numbers', text: 'I pay close attention to click-through rate, retention and engagement, and they shape a lot of my creative calls, from how a video opens to how long the story can hold someone.' },
+        { title: 'Three to start with', text: 'Two short, character-led Minecraft stories and one longer video where I go out for food. They show two sides of what I make.' }
       ],
       videos: [
         {
@@ -112,9 +117,10 @@ window.PORTFOLIO = {
       position: [38, 63]
     },
     tiktok: {
-      number: '03', label: 'THE SHORT-FORM STUDIO', kicker: 'TIKTOK · CREATIVE EXPERIMENTS',
-      title: 'A little time.<br>A lot to say.',
-      lead: 'A short video starts with a reason to keep watching. At Frisson Labs, I create short-form content and use audience signals to shape the next iteration.',
+      number: '03', label: 'THE SHORT-FORM STUDIO', kicker: '',
+      title: 'I make short videos and test what keeps people watching.',
+      role: 'Social Media Analyst at Frisson Labs. Mostly hooks, pacing and calls to action.',
+      lead: 'A short video needs a reason to keep watching in the first second. I make them, post them, and use what the audience does to plan the next one.',
       meta: [
         { label: 'My role', value: 'Social Media Analyst · Frisson Labs' },
         { label: 'Focus', value: 'Hooks, pacing & calls to action' }
@@ -122,7 +128,7 @@ window.PORTFOLIO = {
       sections: [
         { title: 'Start with the hook', text: 'I test creative variations, opening hooks, and calls to action. Each version gives me something specific to compare when reviewing how people respond.' },
         { title: 'Give the idea some personality', text: 'I make short-form videos and chibi animations using Seedance, Kling, and CapCut. Animation and editing help turn product ideas into small, expressive stories.' },
-        { title: 'Let the audience inform the next cut', text: 'I review TikTok, YouTube, and Instagram analytics, then bring those observations into creative planning. The work connects making content with understanding how it performs on each platform.' }
+        { title: 'Let the audience pick the next cut', text: 'I go through TikTok, YouTube and Instagram analytics and bring what I see back into planning. Making the video and understanding how it did on each platform are the same job to me.' }
       ],
       reels: frissonReels,
       reelIntro: 'I come up with the idea, animate with Seedance and Kling, edit in CapCut, then watch how people respond. These three show animation, product storytelling and me on camera.',
@@ -220,9 +226,10 @@ window.PORTFOLIO = {
       position: [59, 61]
     },
     about: {
-      number: '05', label: 'THE PERSON BEHIND THE ROOM', kicker: 'HI, I’M TOD YANSOMBOON',
-      title: 'Curious by nature.<br>Creator at heart.',
-      lead: 'I turn audience insights into content and product experiences. My work brings together the creativity of a storyteller and the curiosity of an analyst.',
+      number: '05', label: 'THE PERSON BEHIND THE ROOM', kicker: '',
+      title: 'Hi, I’m Tod.',
+      role: 'Based in Seattle, originally from Thailand.',
+      lead: 'I’m a storyteller and an analyst at the same time. I like taking what an audience actually does and turning it into better videos and better products.',
       meta: [
         { label: 'Based in', value: 'Seattle, Washington' },
         { label: 'At home with', value: 'Content, community & data' }
@@ -243,9 +250,10 @@ window.PORTFOLIO = {
       position: [42, 76]
     },
     analytics: {
-      number: '04', label: 'THE ANALYST’S NOTEBOOK', kicker: 'ANALYTICS · SELECTED PROJECTS',
-      title: 'Find the signal.<br>Make it useful.',
-      lead: 'My analytics projects explore how data can support earlier decisions—from customer health to churn risk.',
+      number: '04', label: 'THE ANALYST’S NOTEBOOK', kicker: '',
+      title: 'I use data to catch problems before customers feel them.',
+      role: 'Python, SQL, XGBoost and Airflow.',
+      lead: 'Two academic projects and one growth job: predicting customer issues a week early, modeling churn, and testing campaigns at Spotly.',
       meta: [
         { label: 'Work', value: 'Salesforce capstone & churn modeling' },
         { label: 'Tools', value: 'Python, SQL, XGBoost & Airflow' }
@@ -258,8 +266,9 @@ window.PORTFOLIO = {
       tags: ['Customer health', 'Churn prediction', 'Growth analytics', 'Python & SQL']
     },
     resume: {
-      number: '06', label: 'EXPERIENCE & EDUCATION', kicker: 'TOD YANSOMBOON · SEATTLE, WA',
-      title: 'Tod Yansomboon.',
+      number: '06', label: 'EXPERIENCE & EDUCATION', kicker: '',
+      title: 'Tod Yansomboon',
+      role: 'Seattle, WA',
       lead: 'I connect audience insights, creative experimentation, and product iteration across content, social platforms, and AI companion experiences.',
       sections: [],
       experience: [

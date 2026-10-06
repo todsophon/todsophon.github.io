@@ -1,5 +1,5 @@
-import { GRID_SIZE, FURNITURE, tileToScreen, screenToTile } from './room-layout.mjs';
-import { isWalkable, nearestWalkable, findPath, reachableTiles } from './fibi-pathfinding.mjs';
+import { GRID_SIZE, FURNITURE, tileToScreen, screenToTile } from './room-layout.mjs?v=63';
+import { isWalkable, nearestWalkable, findPath, reachableTiles } from './fibi-pathfinding.mjs?v=63';
 
 const WIDTH = 1000;
 const HEIGHT = 2000 / 3;
@@ -8,6 +8,14 @@ const SPEED = 74;
 const SLEEP_AFTER = 45;
 // Arrival spot: the middle of the room, at the front corner of the floor keyboard.
 const HOME = { x: 10, y: 10 };
+// Oto's physics (PhysicsEngine.kt), scaled from phone pixels to room units (about 0.4).
+const PHONE_TO_ROOM = .4;
+const GRAVITY = 1800 * PHONE_TO_ROOM;
+const BOUNCE_DAMPING = .55;
+const REST_SPEED = 90 * PHONE_TO_ROOM;
+const FLAIL_SPEED = 420 * PHONE_TO_ROOM;
+// How far above the floor she hangs while held, in room units.
+const HOLD_LIFT = 34;
 
 /** A floor-anchored companion. Furniture remains the source of navigation geometry. */
 export function createRoomCompanion({ stage, getLayout, isEditing }) {
@@ -49,6 +57,14 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
   let sleeping = false;
   let pressTimer = 0;
   let petted = false;
+  // Which way she is walking on screen: side, toward the viewer, or away.
+  let heading = 'side';
+  // Picking her up: the pointer, where it grabbed her, and whether a drag started.
+  let held = null;
+  let droppedAt = 0;
+  // Height above the floor (room units, up is positive) and falling speed (down is positive).
+  let lift = 0;
+  let air = null;
 
   // Idle and walking load first; every other animation loads the first time it plays.
   function preload(names) {
@@ -65,6 +81,7 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     }
   }
   preload(['idle', 'walk', 'hello']);
+  setTimeout(() => preload(['walkToward', 'walkAway', 'held', 'falling']), 2500);
   const ready = name => (animations[name]?.pages || []).every(page => images.get(page.image)?.complete && images.get(page.image).naturalWidth);
 
   function canAnimate() {
@@ -99,7 +116,7 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     if (next === animation) return;
     animation = next; animationTime = 0; displayedFrame = '';
     character.dataset.motion = next;
-    character.classList.toggle('is-walking', next === 'walk');
+    character.classList.toggle('is-walking', next.startsWith('walk'));
     character.classList.toggle('is-celebrating', next === 'celebrate');
   }
   function drawSprite() {
@@ -128,6 +145,7 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
   function drawPosition() {
     if (!position) { character.hidden = true; return; }
     character.hidden = false;
+    character.style.setProperty('--fibi-lift', lift.toFixed(2));
     const point = tileToScreen(position.x, position.y);
     const roomWidth = stage.clientWidth || WIDTH;
     const characterWidth = character.offsetWidth;
@@ -294,6 +312,8 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
       const to = tileToScreen(next.x, next.y);
       const distance = Math.hypot(to.x - from.x, to.y - from.y);
       if (Math.abs(to.x - from.x) > .1) sprite.style.setProperty('--fibi-facing', to.x < from.x ? '1' : '-1');
+      const dx = to.x - from.x, dy = to.y - from.y;
+      if (Math.hypot(dx, dy) > .5) heading = Math.abs(dy) > Math.abs(dx) * .9 ? (dy > 0 ? 'toward' : 'away') : 'side';
       if (distance <= budget) { position = { ...next }; path.shift(); budget -= distance; }
       else {
         const fraction = budget / distance;
@@ -318,11 +338,21 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
       sleeping = true; character.classList.add('is-sleeping'); hold('sleep');
       document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: 'Zzz… tap me to wake me up.', holdMs: 5000 } }));
     }
+    if (air) {
+      // Small fixed steps keep the bounce the same however slowly frames arrive.
+      for (let left = seconds; left > 0 && air; left -= 1 / 240) stepAir(Math.min(left, 1 / 240));
+      const flailing = air && air.vz > FLAIL_SPEED && ready('falling');
+      if (air) setAnimation(flailing ? 'falling' : ready('held') ? 'held' : 'idle');
+    }
+    else if (held?.dragging) { setAnimation(ready('held') ? 'held' : 'idle'); }
+    else {
     if (!path.length && canWander() && elapsed >= nextWander) wander();
-    if (path.length && ready('walk')) { setAnimation('walk'); advance(seconds); }
+    const walkCycle = heading === 'toward' && ready('walkToward') ? 'walkToward' : heading === 'away' && ready('walkAway') ? 'walkAway' : 'walk';
+    if (path.length && ready('walk')) { setAnimation(walkCycle); advance(seconds); }
     else if (elapsed < reactionUntil && ready(reactionName)) setAnimation(reactionName);
     else if (elapsed >= reactionUntil) setAnimation('idle');
     if (visit && visit.interactUntil !== null && elapsed >= visit.interactUntil) finishVisit();
+    }
     if (!reducedMotion.matches) animationTime += seconds;
     drawSprite();
     if (!reducedMotion.matches) frameRequest = requestAnimationFrame(tick);
@@ -367,9 +397,98 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     if (point.x >= 0 && point.x <= GRID_SIZE && point.y >= 0 && point.y <= GRID_SIZE) { cancelVisit(); startTrip(point, true); }
   });
   stage.addEventListener('pointercancel', () => { pointerStart = null; });
-  // Tap: a laugh. Press and hold: she leans into a head pat.
+  // Pick her up: drag past a few pixels and she dangles from the pointer; let go and she
+  // lands on the nearest open spot of floor.
+  function scenePoint(event) {
+    const rect = stage.getBoundingClientRect();
+    return { x: (event.clientX - rect.left) / rect.width * WIDTH, y: (event.clientY - rect.top) / rect.height * HEIGHT };
+  }
+  function moveHeld(event) {
+    const point = scenePoint(event);
+    const feet = { x: point.x + held.offset.x, y: point.y + held.offset.y - HOLD_LIFT };
+    // Her shadow goes on the floor straight below her; over the wall, that's the floor's back edge.
+    const onFloor = t => t.x >= .4 && t.y >= .4 && t.x <= GRID_SIZE - .4 && t.y <= GRID_SIZE - .4;
+    let below = feet.y + HOLD_LIFT, tile = screenToTile(feet.x, below);
+    for (let step = 0; step < 160 && !onFloor(tile) && below < HEIGHT; step++) tile = screenToTile(feet.x, below += 4);
+    position = { x: Math.max(.4, Math.min(GRID_SIZE - .4, tile.x)), y: Math.max(.4, Math.min(GRID_SIZE - .4, tile.y)) };
+    // Pulled up the wall or past the floor's edge, she hangs higher above her shadow.
+    lift = Math.max(10, tileToScreen(position.x, position.y).y - feet.y);
+    drawPosition();
+  }
+  function startHold(event) {
+    held.dragging = true;
+    clearTimeout(pressTimer);
+    cancelVisit(); wake();
+    path = []; manualTrip = false; clearDestination();
+    preload(['held']);
+    character.classList.add('is-held');
+    stage.classList.add('is-holding-fibi');
+    setAnimation(ready('held') ? 'held' : 'idle'); drawSprite();
+    feedback.textContent = `You picked up ${config.name}.`;
+    moveHeld(event);
+    schedule();
+  }
+  function dropHeld(cancelled = false) {
+    const wasDragging = held?.dragging;
+    held = null;
+    if (!wasDragging) return;
+    character.classList.remove('is-held');
+    stage.classList.remove('is-holding-fibi');
+    droppedAt = performance.now();
+    // She lands on the nearest open floor, drifting there while she falls.
+    const spot = isWalkable(getLayout(), position) ? { ...position } : nearestWalkable(getLayout(), position) || nearestWalkable(getLayout(), HOME);
+    air = { vz: 0, from: { ...position }, to: spot ? { ...spot } : { ...position }, t: 0, bounces: 0, cancelled };
+    greetingUntil = elapsed + 3; nextWander = elapsed + 6; lastActivity = elapsed;
+    preload(['falling']);
+    if (reducedMotion.matches) { lift = 0; position = { ...air.to }; land(0); air = null; settle(); return; }
+    schedule();
+  }
+  // One physics step: gravity, the drift to her landing spot, and bounces.
+  function stepAir(seconds) {
+    air.t += seconds;
+    air.vz += GRAVITY * seconds;
+    lift -= air.vz * seconds;
+    const drift = Math.min(1, air.t / .35);
+    position = { x: air.from.x + (air.to.x - air.from.x) * drift, y: air.from.y + (air.to.y - air.from.y) * drift };
+    if (lift <= 0 && air.vz > 0) {
+      lift = 0;
+      const impact = air.vz;
+      land(impact);
+      if (impact > REST_SPEED) { air.vz = -impact * BOUNCE_DAMPING; air.bounces++; }
+      else { position = { ...air.to }; air = null; settle(); }
+    }
+    drawPosition();
+  }
+  // Touching down: a squash, a puff of dust, and a nudge for whatever is underfoot.
+  function land(impact) {
+    const strength = Math.min(1, impact / 220);
+    character.style.setProperty('--fibi-squash', (strength * .16).toFixed(3));
+    character.classList.remove('is-landing'); void character.offsetWidth; character.classList.add('is-landing');
+    if (strength > .15) {
+      const dust = document.createElement('span');
+      dust.className = 'fibi-dust';
+      const feet = tileToScreen(position.x, position.y);
+      dust.style.left = `${feet.x / WIDTH * 100}%`; dust.style.top = `${feet.y / HEIGHT * 100}%`;
+      dust.style.setProperty('--dust', strength.toFixed(2));
+      stage.append(dust);
+      dust.addEventListener('animationend', () => dust.remove(), { once: true });
+    }
+    document.dispatchEvent(new CustomEvent('fibi:landed', { detail: { x: position.x, y: position.y, impact, strength } }));
+  }
+  function settle() {
+    const cancelled = air?.cancelled;
+    playReaction('happy', 1.8);
+    feedback.textContent = `${config.name} landed.`;
+    if (!cancelled && !tourMode) document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: 'Wheee! Thanks for the lift.', holdMs: 2400 } }));
+  }
+  // Tap: a laugh. Press and hold: she leans into a head pat. Drag: pick her up.
   button.addEventListener('pointerdown', event => {
     if (event.button !== 0) return;
+    air = null;
+    const feet = tileToScreen(position.x, position.y), point = scenePoint(event);
+    feet.y -= lift;
+    held = { id: event.pointerId, x: event.clientX, y: event.clientY, offset: { x: feet.x - point.x, y: feet.y - point.y }, dragging: false };
+    try { button.setPointerCapture(event.pointerId); } catch { /* Synthetic pointers. */ }
     petted = false;
     clearTimeout(pressTimer);
     pressTimer = setTimeout(() => {
@@ -377,14 +496,24 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
       document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: 'Hehe, thank you! ♡', holdMs: 2600 } }));
     }, 550);
   });
+  button.addEventListener('pointermove', event => {
+    if (!held || held.id !== event.pointerId) return;
+    if (!held.dragging && Math.hypot(event.clientX - held.x, event.clientY - held.y) < (event.pointerType === 'touch' ? 9 : 5)) return;
+    event.preventDefault();
+    if (!held.dragging) startHold(event); else moveHeld(event);
+  });
+  button.addEventListener('pointerup', event => { if (held?.id === event.pointerId) dropHeld(); });
+  button.addEventListener('pointercancel', event => { if (held?.id === event.pointerId) dropHeld(true); });
+  button.addEventListener('lostpointercapture', event => { if (held?.id === event.pointerId) dropHeld(); });
   for (const type of ['pointerup', 'pointercancel', 'pointerleave']) button.addEventListener(type, () => clearTimeout(pressTimer));
   button.addEventListener('contextmenu', event => event.preventDefault());
   button.addEventListener('click', () => {
     if (petted) { petted = false; return; }
+    if (performance.now() - droppedAt < 400) return;
     const wasSleeping = sleeping;
     cancelVisit(); stop(); wake(); greetingUntil = elapsed + 2; nextWander = elapsed + 3.5;
     if (!wasSleeping) playReaction('laugh', 2.2);
-    if (!tourMode) document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: wasSleeping ? 'Oh! I’m up, I’m up. ✦' : 'Hehe! Pick a numbered spot and I’ll show you around. ✦', holdMs: 3600 } }));
+    if (!tourMode) document.dispatchEvent(new CustomEvent('fibi:say', { detail: { text: wasSleeping ? 'Oh! I’m up, I’m up. ✦' : 'Hehe! You can pick me up and drag me around, too. ✦', holdMs: 3600 } }));
   });
   for (const type of ['pointerdown', 'keydown', 'wheel']) document.addEventListener(type, () => { if (!sleeping) lastActivity = elapsed; }, { passive: true });
   button.addEventListener('keydown', event => {

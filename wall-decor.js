@@ -1,4 +1,4 @@
-import { WALL_ITEMS, WALL_STORAGE_KEY, wallMatrix, sceneToWall, wallToScene, wallSpan, slideTo, defaultWallState, normalizeWallState, canHang } from './wall-layout.mjs?v=43';
+import { WALL_ITEMS, WALL_STORAGE_KEY, wallMatrix, sceneToWall, wallToScene, wallSpan, slideTo, defaultWallState, normalizeWallState, canHang } from './wall-layout.mjs?v=63';
 
 const SCENE_WIDTH = 1000;
 const SCENE_HEIGHT = 2000 / 3;
