@@ -1,5 +1,5 @@
-import { GRID_SIZE, FURNITURE, tileToScreen, screenToTile } from './room-layout.mjs?v=63';
-import { isWalkable, nearestWalkable, findPath, reachableTiles } from './fibi-pathfinding.mjs?v=63';
+import { GRID_SIZE, FURNITURE, tileToScreen, screenToTile } from './room-layout.mjs?v=69';
+import { isWalkable, nearestWalkable, findPath, reachableTiles } from './fibi-pathfinding.mjs?v=69';
 
 const WIDTH = 1000;
 const HEIGHT = 2000 / 3;
@@ -408,8 +408,12 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     const feet = { x: point.x + held.offset.x, y: point.y + held.offset.y - HOLD_LIFT };
     // Her shadow goes on the floor straight below her; over the wall, that's the floor's back edge.
     const onFloor = t => t.x >= .4 && t.y >= .4 && t.x <= GRID_SIZE - .4 && t.y <= GRID_SIZE - .4;
-    let below = feet.y + HOLD_LIFT, tile = screenToTile(feet.x, below);
-    for (let step = 0; step < 160 && !onFloor(tile) && below < HEIGHT; step++) tile = screenToTile(feet.x, below += 4);
+    // Search straight down first (she's over the wall), then straight up (she's past the front edge).
+    let tile = screenToTile(feet.x, feet.y + HOLD_LIFT);
+    for (let step = 1; step < 200 && !onFloor(tile); step++) {
+      const down = screenToTile(feet.x, feet.y + HOLD_LIFT + step * 4), up = screenToTile(feet.x, feet.y + HOLD_LIFT - step * 4);
+      tile = onFloor(down) ? down : onFloor(up) ? up : tile;
+    }
     position = { x: Math.max(.4, Math.min(GRID_SIZE - .4, tile.x)), y: Math.max(.4, Math.min(GRID_SIZE - .4, tile.y)) };
     // Pulled up the wall or past the floor's edge, she hangs higher above her shadow.
     lift = Math.max(10, tileToScreen(position.x, position.y).y - feet.y);
@@ -484,9 +488,14 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
   // Tap: a laugh. Press and hold: she leans into a head pat. Drag: pick her up.
   button.addEventListener('pointerdown', event => {
     if (event.button !== 0) return;
+    // No text selection or native image drag while she is held.
+    event.preventDefault();
+    window.getSelection?.()?.removeAllRanges();
     air = null;
     const feet = tileToScreen(position.x, position.y), point = scenePoint(event);
     feet.y -= lift;
+    point.x = Math.max(feet.x - 14, Math.min(feet.x + 14, point.x));
+    point.y = Math.max(feet.y - 62, Math.min(feet.y - 4, point.y));
     held = { id: event.pointerId, x: event.clientX, y: event.clientY, offset: { x: feet.x - point.x, y: feet.y - point.y }, dragging: false };
     try { button.setPointerCapture(event.pointerId); } catch { /* Synthetic pointers. */ }
     petted = false;

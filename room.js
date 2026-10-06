@@ -1,8 +1,8 @@
-import { GRID_SIZE, STORAGE_KEY, LEGACY_STORAGE_KEY, FURNITURE, DEFAULT_LAYOUT, FLOOR_QUAD, tileToScreen, screenToTile, snapPlacement, snapDraggedPlacement, canPlace, nearbyOpenPlacement, normalizeLayout, serializeLayout, paintOrder } from './room-layout.mjs?v=63';
-import { createRoomCompanion } from './fibi.js?v=63';
-import { createGuidedTour } from './guided-tour.js?v=63';
-import { createFloorKeyboard } from './floor-keyboard.js?v=63';
-import { createWallDecor } from './wall-decor.js?v=63';
+import { GRID_SIZE, STORAGE_KEY, LEGACY_STORAGE_KEY, FURNITURE, DEFAULT_LAYOUT, FLOOR_QUAD, tileToScreen, screenToTile, snapPlacement, snapDraggedPlacement, canPlace, nearbyOpenPlacement, normalizeLayout, serializeLayout, paintOrder } from './room-layout.mjs?v=69';
+import { createRoomCompanion } from './fibi.js?v=69';
+import { createGuidedTour } from './guided-tour.js?v=69';
+import { createFloorKeyboard } from './floor-keyboard.js?v=69';
+import { createWallDecor } from './wall-decor.js?v=69';
 
 const stage = document.querySelector('#scene');
 const tiles = document.querySelector('#floor-tiles');

@@ -1,4 +1,4 @@
-import { GRID_SIZE, FURNITURE, RESERVED_AREAS, tileToScreen } from './room-layout.mjs?v=63';
+import { GRID_SIZE, FURNITURE, RESERVED_AREAS, tileToScreen } from './room-layout.mjs?v=69';
 
 // A small, conservative square around Fibi's feet keeps the sprite off furniture.
 export const WALKING_CLEARANCE = 0.35;

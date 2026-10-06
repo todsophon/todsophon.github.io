@@ -16,7 +16,7 @@ export const FURNITURE = Object.freeze([
   { id: 'youtube', label: 'Creator desk', width: 3, depth: 8, default: { x: 0, y: 4 }, chapter: 'youtube', sprite: { col: 0, row: 0 } },
   { id: 'oto', label: 'Oto AI desk', width: 8, depth: 3, default: { x: 6, y: 0 }, chapter: 'oto', sprite: { col: 1, row: 0 } },
   { id: 'bookshelf', label: 'Record cabinet', width: 2, depth: 4, default: { x: 0, y: 12 }, chapter: 'youtube', sprite: { col: 2, row: 0 } },
-  { id: 'plant', label: 'Case study easel', width: 2, depth: 2, default: { x: 14, y: 5 }, href: 'frisson-case-study.html', sprite: { col: 0, row: 1 } },
+  { id: 'plant', label: 'Case study easel', width: 2, depth: 2, default: { x: 15, y: 0 }, href: 'frisson-case-study.html', sprite: { col: 0, row: 1 } },
   { id: 'chair', label: 'Screening beanbag', width: 4, depth: 4, default: { x: 2, y: 13 }, action: 'screening', sprite: { col: 1, row: 1 } },
   { id: 'tiktok', label: 'TikTok ring light', width: 2, depth: 2, default: { x: 4, y: 3 }, chapter: 'tiktok', sprite: { col: 2, row: 1 } },
 ].map(item => Object.freeze({
@@ -40,6 +40,7 @@ export const FLOOR_QUAD = Object.freeze({
 const furnitureById = new Map(FURNITURE.map(item => [item.id, item]));
 // Earlier defaults, as changes from the current one.
 const PREVIOUS_DEFAULTS = Object.freeze([
+  { plant: { x: 14, y: 5 } },
   { plant: { x: 14, y: 2 } },
   { plant: { x: 14, y: 2 }, chair: { x: 6, y: 12 }, tiktok: { x: 2, y: 12 } },
   { plant: { x: 14, y: 2 }, chair: { x: 6, y: 12 }, tiktok: { x: 14, y: 6 } },

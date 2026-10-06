@@ -29,7 +29,17 @@ body{min-height:100dvh}
 .cozy-room:not(.reveal-active) .room-art,.cozy-room .room-color-spot,.cozy-room .furniture-sprite{filter:var(--room-light)}
 .cozy-room .character{width:13%;max-width:146px}
 /* Fibi can be picked up: no scrolling while dragging her on touch screens. */
-.cozy-room .character-button{touch-action:none;cursor:grab}
+/* Only her body can be grabbed or tapped: Oto's hitbox for Fibi is 83 × 130 of a 176 frame,
+   centred on her and standing on her feet. It rides inside the sprite, so it lifts with her. */
+.cozy-room .character,.cozy-room .character-button{pointer-events:none}
+/* Dragging Fibi or furniture must never start a text or image selection in the room. */
+.cozy-room.scene{user-select:none;-webkit-user-select:none}
+.cozy-room.scene img{-webkit-user-drag:none}
+.cozy-room .fibi-hitbox{position:absolute;left:25.3%;top:10.5%;width:47.2%;height:74%;border-radius:40% 40% 18% 18%;pointer-events:auto;touch-action:none;cursor:grab}
+.cozy-room .character.is-held .fibi-hitbox{cursor:grabbing}
+.cozy-room .character .character-name{opacity:0}
+.cozy-room .character:has(.fibi-hitbox:hover) .character-name,.cozy-room .character:has(.character-button:focus-visible) .character-name{opacity:1}
+.cozy-room .character.is-held .character-name,.cozy-room .character.is-walking .character-name{opacity:0!important}
 .cozy-room .character.is-held{z-index:2000!important}
 .cozy-room .character.is-held .character-button{cursor:grabbing}
 /* Lift: the sprite rises above its floor shadow; the shadow shrinks with height. */

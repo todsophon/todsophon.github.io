@@ -16,7 +16,7 @@ export const WALL_ITEMS = Object.freeze([
   { id: 'silver', wall: 'cream', width: 92, height: 122, default: { u: .07, v: .04 } },
   { id: 'gold', wall: 'cream', width: 92, height: 122, default: { u: .23, v: .04 } },
   { id: 'pinboard', wall: 'teal', width: 236, height: 128, default: { u: .05, v: .1 } },
-  { id: 'portrait', wall: 'teal', width: 96, height: 110, default: { u: .7, v: .2 } },
+  { id: 'portrait', wall: 'teal', width: 96, height: 110, default: { u: .63, v: .1 } },
 ].map(item => Object.freeze({ ...item, default: Object.freeze(item.default) })));
 export const WALL_STORAGE_KEY = 'todsophon.wall-decor.v3';
 

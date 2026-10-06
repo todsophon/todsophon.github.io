@@ -1,4 +1,4 @@
-import { FLOOR_FEATURES, tileToScreen } from './room-layout.mjs?v=63';
+import { FLOOR_FEATURES, tileToScreen } from './room-layout.mjs?v=69';
 
 // Keys are measured in plane units (TILE per floor tile). Each key lies flat on the
 // floor: it gets the local affine slice of the room's floor mapping at its own centre.
