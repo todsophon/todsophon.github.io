@@ -6,21 +6,21 @@ const frissonReels = [
   {
     title: 'A chibi story at the fish market',
     type: 'AI-assisted character story',
-    url: 'https://www.instagram.com/reel/DcMS-QNvZgj/',
+    url: 'https://www.instagram.com/reel/DcMS-QNvZgj/', poster: 'assets/reel-fish-market.webp',
     result: '25.7K likes',
     note: 'A character moment placed inside an everyday, real-world scene.'
   },
   {
     title: 'A rainy character story',
     type: 'Chibi animation',
-    url: 'https://www.instagram.com/reel/DcR2IaJPSZs/',
+    url: 'https://www.instagram.com/reel/DcR2IaJPSZs/', poster: 'assets/reel-rainy-story.webp',
     result: '19.1K likes',
     note: 'A mood-led animation that gives the companion a small story of its own.'
   },
   {
     title: 'Showing the product myself',
     type: 'On-camera product demo',
-    url: 'https://www.instagram.com/reel/DTbhlYYkmyv/',
+    url: 'https://www.instagram.com/reel/DTbhlYYkmyv/', poster: 'assets/reel-product-demo.webp',
     result: '24.1K likes',
     note: 'A more direct format: my face, the app, and a clear reason to look closer.'
   }
@@ -85,7 +85,7 @@ window.PORTFOLIO = {
       ],
       videos: [
         {
-          title: 'Help the Deer Child — Episode 2',
+          title: 'Help the Deer Child, Episode 2',
           url: 'https://www.youtube.com/shorts/tM0eptoO9Fo',
           format: 'YouTube Short', metric: '2.6M views',
           description: 'An episode from my Minecraft storytelling series.',
@@ -125,15 +125,19 @@ window.PORTFOLIO = {
         { title: 'Let the audience inform the next cut', text: 'I review TikTok, YouTube, and Instagram analytics, then bring those observations into creative planning. The work connects making content with understanding how it performs on each platform.' }
       ],
       reels: frissonReels,
+      reelIntro: 'I come up with the idea, animate with Seedance and Kling, edit in CapCut, then watch how people respond. These three show animation, product storytelling and me on camera.',
       reelSource: { note: 'These Reels are Tod’s selections from @tod_desu. Like counts are rounded snapshots observed September 22, 2026; they may change.', label: 'Visit @tod_desu', url: 'https://www.instagram.com/tod_desu/' },
       tags: ['TikTok', 'Short-form video', 'Creative testing', 'Chibi animation'],
       link: { label: 'See the Instagram channel I created', url: 'https://www.instagram.com/tod_desu/' },
       position: [63, 73]
     },
     oto: {
-      number: '01', label: 'THE COMPANION LAB', kicker: 'FRISSON LABS · OTO',
-      title: 'A little companion.<br>A world of possibility.',
-      lead: 'At Frisson Labs, I connect community growth with hands-on product work across Oto’s companion home, mobile apps, games, and Discord experiences.',
+      number: '01', label: 'THE COMPANION LAB', kicker: '',
+      title: 'I help build Oto, an app where you raise a little AI companion.',
+      role: 'Social Media Analyst at Frisson Labs since October 2025.',
+      lead: 'My job sits between the community and the product. I make the videos that bring people in, watch what they do once they arrive, and help turn that into changes in the app, the games and our Discord.',
+      community: 'So far I’ve brought about 15,000 people into Oto’s Discord, and the app has passed 10,000 downloads. Those are two separate milestones. I’m not claiming the videos caused the downloads.',
+      shortForm: 'I also run @tod_desu on Instagram ({followers} followers). Otomates show up there in little stories, and sometimes I demo the app on camera myself. Three I’m happy with:',
       meta: [
         { label: 'My role', value: 'Social Media Analyst' },
         { label: 'Dates', value: 'October 2025–Present' },
@@ -169,30 +173,32 @@ window.PORTFOLIO = {
       },
       projects: [
         {
-          kind: 'APP', status: 'SHIPPED', title: 'Oto · the companion app',
+          kind: 'APP', status: 'Shipped on iOS', title: 'The Oto app',
           image: 'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/a5/0e/68/a50e6821-157a-5470-aa0b-dc2271a6f496/01-raise.png/314x680bb.webp',
           imageAlt: 'Official Oto App Store screenshot of the companion app',
-          text: 'A home for an Otomate: care, conversation, decoration, and games in one experience.',
-          contribution: 'My part: room interactions, clearer feedback, Android behavior, and product iteration with the Frisson Labs team.',
+          text: 'You adopt an Otomate, feed it, decorate its room, talk to it and play games together.',
+          contribution: 'I worked on how the companion moves and reacts in its room, made its feedback clearer, handled Android behavior, and kept iterating with the rest of the Frisson Labs team.',
           link: { label: 'View the shipped app', url: 'https://apps.apple.com/us/app/oto-ai-voice-companion/id6754143501' }
         },
         {
-          kind: 'GAME', status: 'AVAILABLE IN OTO', title: 'Word Guess!',
+          kind: 'GAME', status: 'Playable in Oto', title: 'Word Guess!',
           image: 'assets/word-guess-card.png', imageAlt: 'Word Guess game art with Fibi and a five-letter puzzle',
+          video: 'assets/game-word-guess.mp4', link: { label: 'Play Word Guess', url: 'https://www.oto.chat/games/word-guess' },
           text: 'A daily word puzzle where your Otomate helps sort clues and brings personality to each guess.',
-          contribution: 'My part: companion-led game feel, discovery, and interaction polish.'
+          contribution: 'I shaped how it feels to play alongside your companion, how people find the game, and a lot of small interaction polish.'
         },
         {
-          kind: 'GAME', status: 'AVAILABLE IN OTO', title: 'Bridge Walk',
+          kind: 'GAME', status: 'Playable in Oto', title: 'Bridge Walk',
           image: 'assets/bridge-walk-card.webp', imageAlt: 'Bridge Walk game art showing Fibi crossing rooftops',
+          video: 'assets/game-bridge-walk.mp4', link: { label: 'Play Bridge Walk', url: 'https://www.oto.chat/games/bridge-walk' },
           text: 'A timing game: grow the bridge, cross the gap, and chase a perfect landing.',
-          contribution: 'My part: concept, interaction, polish, and measurement.'
+          contribution: 'This one started as my idea. I worked on the interaction and polish, then measured how people played it.'
         },
         {
-          kind: 'AI VIDEO', status: 'PUBLISHED REELS', title: 'Otomates in short-form stories',
+          kind: 'AI VIDEO', status: 'Posted on Instagram', title: 'Short stories with Otomates',
           image: 'assets/fibi-happy.webp', imageAlt: 'Fibi smiling',
-          text: 'Character-led clips and on-camera product stories made for @tod_desu.',
-          contribution: 'My part: concepts, AI-assisted animation, editing, posting, and reading audience response.',
+          text: 'Short clips where the companions have little adventures, plus a few where I show the app myself.',
+          contribution: 'I come up with the idea, animate it with AI tools, edit, post, and then read the comments and numbers to plan the next one.',
           link: { label: 'Watch a selected Reel', url: 'https://www.instagram.com/reel/DcMS-QNvZgj/' }
         }
       ],
@@ -202,7 +208,7 @@ window.PORTFOLIO = {
         { eyebrow: 'CROSS-PLATFORM + COMMUNITY', title: 'From app to Discord', text: 'Connected Oto’s mobile and web experiences with the community around them: Android and iOS game and voice flows, a Discord Activity hub, game cards, and player-aware companion moments.', contribution: 'Android, iOS, web, and Discord' }
       ],
       sections: [
-        { title: 'What ties the work together', text: 'I use what people watch, play, and share to spot friction and shape the next iteration. That means moving between creative content, product flows, game feel, and analytics instead of treating them as separate jobs.' },
+        { title: 'How it fits together', text: 'What people watch, play and share tells me where they get stuck or bored. I move between making content, product flows, game feel and analytics because to me they are all part of the same job.' },
         { title: 'Meet Fibi', text: 'Fibi appears in Oto’s character gallery under my creator name, todsophon. She is also the little guide wandering around this portfolio room.' }
       ],
       tags: ['Product iteration', 'Community growth', 'Android & iOS', 'Games', 'AI companions'],

@@ -1,4 +1,4 @@
-import { createScreeningRoom } from './gallery.js';
+import { createScreeningRoom } from './gallery.js?v=46';
 
 const scene = document.querySelector('#scene');
 const screeningSource = () => document.querySelector('[data-furniture="chair"] .furniture-hit');

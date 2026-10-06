@@ -12,18 +12,18 @@
   <link rel="stylesheet" href="portfolio.css">
   <link rel="stylesheet" href="brand.css">
   <link rel="stylesheet" href="brand-details.css">
-  <link rel="stylesheet" href="room-experience.css?v=32">
-  <link rel="stylesheet" href="gallery.css">
-  <link rel="stylesheet" href="room-first.css?v=32">
+  <link rel="stylesheet" href="room-experience.css?v=45">
+  <link rel="stylesheet" href="gallery.css?v=47">
+  <link rel="stylesheet" href="room-first.css?v=45">
   <link rel="stylesheet" href="room-reveal.css?v=41">
-  <link rel="stylesheet" href="pinboard.css?v=19">
-  <link rel="stylesheet" href="portfolio-update.css?v=37">
-  <link rel="stylesheet" href="guided-room.css?v=41">
-  <script src="content.js?v=41" defer></script>
-  <script src="app.js?v=41" defer></script>
-  <script type="module" src="pinboard.js?v=41"></script>
-  <script type="module" src="room.js?v=41"></script>
-  <script type="module" src="room-experience.js?v=32"></script>
+  <link rel="stylesheet" href="pinboard.css?v=42">
+  <link rel="stylesheet" href="portfolio-update.css?v=45">
+  <link rel="stylesheet" href="guided-room.css?v=47">
+  <script src="content.js?v=47" defer></script>
+  <script src="app.js?v=46" defer></script>
+  <script type="module" src="pinboard.js?v=42"></script>
+  <script type="module" src="room.js?v=44"></script>
+  <script type="module" src="room-experience.js?v=46"></script>
 </head>
 <body>
   <a class="skip-link" href="#scene-section">Skip to the room</a>
@@ -41,6 +41,7 @@
         <button class="arrange-toggle" id="arrange-toggle" type="button" aria-pressed="false" aria-controls="scene room-editor">Arrange room</button>
         <button id="keys-play" type="button">Let Fibi play the keyboard</button>
         <button id="sound-toggle" type="button" aria-pressed="true">Keyboard sound: on</button>
+        <button id="tour-skip" type="button">Skip Fibi’s tour</button>
         <button id="tour-replay" type="button">Replay Fibi’s tour</button>
       </div>
     </div>
@@ -66,15 +67,16 @@
         <span class="visually-hidden" id="room-hint"></span>
         <div class="scene cozy-room" id="scene" role="group" aria-label="Cozy illustrated studio with movable furniture" aria-describedby="room-instructions">
           <img class="room-art" src="assets/studio-background-guided.webp" alt="A warm creative studio with wooden floors, a bookcase, plants, and silver and gold play-button awards hanging side by side" width="1536" height="1024" draggable="false" fetchpriority="high">
-          <div class="wall-awards" aria-label="Todsophon's YouTube milestones">
-            <button class="wall-award wall-award-silver" data-open="youtube" data-milestone="silver" aria-label="Silver YouTube award: the first 100,000 subscribers. Read the story"><span class="award-open" aria-hidden="true">↗</span><span class="award-tooltip" aria-hidden="true">The first 100K ↗</span></button>
-            <button class="wall-award wall-award-gold" data-open="youtube" data-milestone="gold" aria-label="Gold YouTube award: one million subscribers. Read the story"><span class="award-open" aria-hidden="true">↗</span><span class="award-tooltip" aria-hidden="true">One million ↗</span></button>
-          </div>
-          <button class="wall-portrait" data-open="about" aria-label="Meet Tod Yansomboon. Drag the portrait along the wall, or click to explore" aria-describedby="wall-portrait-instructions" title="Drag to move the portrait, or click to meet Tod"><img src="assets/tod-wall-frame-v2.png" alt="" width="1186" height="1326" draggable="false"><span>Meet Tod ↗</span><i class="portrait-drag-hint" aria-hidden="true">☷</i></button>
-          <div class="wall-pinboard" aria-label="Oto project pinboard">
-            <button class="board-note board-note-product" type="button" data-note="product" data-open="oto" aria-label="Oto app project: drag this photo on the board or click to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-app.webp" alt="" width="180" height="200" draggable="false"><span>APP</span></span></button>
-            <button class="board-note board-note-community" type="button" data-note="community" data-open="oto" aria-label="Oto game projects: drag this photo or click to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-games.webp" alt="" width="180" height="200" draggable="false"><span>GAMES</span></span></button>
-            <button class="board-note board-note-films" type="button" data-note="films" data-open="oto" aria-label="Oto AI video projects: drag this photo or click to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-films.webp" alt="" width="180" height="200" draggable="false"><span>FILMS</span></span></button>
+          <div class="wall-decor-scene" aria-label="Wall decor: drag any piece along its wall, or tap to open its story">
+            <button class="wall-item wall-award wall-award-silver" type="button" data-wall-item="silver" data-w="75" data-h="100" data-open="youtube" data-milestone="silver" aria-label="Silver YouTube award: the first 100,000 subscribers. Drag along the wall, or tap to read the story"><img src="assets/wall-silver.webp" alt="" width="150" height="200" draggable="false"></button>
+            <button class="wall-item wall-award wall-award-gold" type="button" data-wall-item="gold" data-w="75" data-h="100" data-open="youtube" data-milestone="gold" aria-label="Gold YouTube award: one million subscribers. Drag along the wall, or tap to read the story"><img src="assets/wall-gold.webp" alt="" width="150" height="200" draggable="false"></button>
+            <div class="wall-item wall-pinboard" data-wall-item="pinboard" data-w="320" data-h="174">
+              <button class="pinboard-frame" type="button" data-open="oto" aria-label="Oto project pinboard. Drag along the wall, or tap to explore"><img src="assets/wall-corkboard.webp" alt="" width="640" height="348" draggable="false"></button>
+              <button class="board-note board-note-product" type="button" data-note="product" data-open="oto" aria-label="Oto app project: drag this photo on the board or tap to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-app.webp" alt="" width="180" height="200" draggable="false"><span>APP</span></span></button>
+              <button class="board-note board-note-community" type="button" data-note="community" data-open="oto" aria-label="Oto game projects: drag this photo or tap to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-games.webp" alt="" width="180" height="200" draggable="false"><span>GAMES</span></span></button>
+              <button class="board-note board-note-films" type="button" data-note="films" data-open="oto" aria-label="Oto AI video projects: drag this photo or tap to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-films.webp" alt="" width="180" height="200" draggable="false"><span>FILMS</span></span></button>
+            </div>
+            <button class="wall-item wall-portrait" type="button" data-wall-item="portrait" data-w="150" data-h="172" data-open="about" aria-label="Meet Tod Yansomboon. Drag along the wall, or tap to read his story"><img src="assets/wall-frame.webp" alt="" width="300" height="345" draggable="false"></button>
           </div>
           <svg class="tile-room" id="tile-room" viewBox="0 0 1000 666.6667" aria-hidden="true">
             <g id="floor-tiles"></g>
@@ -83,8 +85,8 @@
           <div id="furniture-layer" class="furniture-layer"></div>
           <nav class="contact-ledge" aria-label="Continue with Tod">
             <a class="ledge-build room-mailbox" href="mailto:todsopon@hotmail.com" aria-label="Email Tod"><img src="assets/mailbox.webp" alt="" width="460" height="663" draggable="false"><span>Say hello</span></a>
-            <a class="ledge-instagram" href="https://www.instagram.com/tod_desu/" target="_blank" rel="noopener noreferrer"><svg class="social-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2.2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg><span>Instagram</span></a>
-            <a class="ledge-linkedin" href="https://www.linkedin.com/in/todsophon" target="_blank" rel="noopener noreferrer"><svg class="social-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="4.5" cy="5" r="2"/><path d="M3 9h3v12H3zm7 0h3v1.6c.9-1.2 2.1-1.9 3.7-1.9 3.1 0 4.3 2 4.3 5.2V21h-3v-6.7c0-1.8-.5-2.7-2-2.7-1.8 0-3 1.3-3 3.1V21h-3z"/></svg><span>LinkedIn</span></a>
+            <a class="ledge-instagram" href="https://www.instagram.com/tod_desu/" target="_blank" rel="noopener noreferrer"><svg class="brand-logo" viewBox="0 0 24 24" aria-hidden="true"><defs><radialGradient id="ig-gradient" cx="30%" cy="107%" r="150%"><stop offset="0" stop-color="#fdf497"/><stop offset=".05" stop-color="#fdf497"/><stop offset=".45" stop-color="#fd5949"/><stop offset=".6" stop-color="#d6249f"/><stop offset=".9" stop-color="#285aeb"/></radialGradient></defs><rect width="24" height="24" rx="6" fill="url(#ig-gradient)"/><rect x="5" y="5" width="14" height="14" rx="4.2" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.3" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="16.4" cy="7.6" r="1.05" fill="#fff"/></svg><span>Instagram</span></a>
+            <a class="ledge-linkedin" href="https://www.linkedin.com/in/todsophon" target="_blank" rel="noopener noreferrer"><svg class="brand-logo" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="#0a66c2"/><path fill="#fff" d="M7.1 9.6H4.4v9.1h2.7zM5.75 5.3a1.57 1.57 0 1 0 0 3.14 1.57 1.57 0 0 0 0-3.14zM19.6 13.5c0-2.6-1.4-4.1-3.7-4.1-1.3 0-2.2.7-2.6 1.4V9.6h-2.6v9.1h2.7V14c0-1.2.5-2 1.6-2s1.5.8 1.5 2v4.7h2.7z"/></svg><span>LinkedIn</span></a>
           </nav>
           <span id="fibi-destination" class="fibi-destination" aria-hidden="true" hidden></span>
           <div class="speech-bubble" id="speech-bubble"><span id="speech-message" aria-live="polite">Hi, I’m Fibi! Make yourself at home.</span><div class="speech-actions" id="speech-actions" hidden></div></div>
@@ -111,7 +113,6 @@
         </div>
         <span class="visually-hidden room-save-status" id="room-save-status" role="status"></span>
         <span class="visually-hidden" id="fibi-instructions">Fibi wanders around the room. Click a spot on the floor to guide her, or focus Fibi and use the arrow keys.</span>
-        <span class="visually-hidden" id="wall-portrait-instructions">Drag the portrait around the teal wall or use arrow keys while focused. Click to meet Tod. Its position is saved in this browser.</span>
         <span class="visually-hidden" id="board-instructions">The three pinned notes can be dragged around the Oto board and saved in this browser. Click a note to explore its subject.</span>
         <span class="visually-hidden" id="fibi-status" role="status" aria-live="polite"></span>
       </div>

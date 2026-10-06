@@ -21,15 +21,6 @@
 @media screen {
   .project-dialog[open] { transform-origin:var(--entry-x,50%) var(--entry-y,60%); animation:case-unfold .42s cubic-bezier(.16,1,.3,1) both; }
   .project-dialog[open] .dialog-content { animation:case-content .5s .08s both; }
-  .project-dialog[data-chapter=oto] { border-top:5px solid var(--yellow); border-radius:5px 12px 12px 5px; }
-  .project-dialog[data-chapter=oto] .dialog-topbar { background:#2b1946; }
-  .project-dialog[data-chapter=oto] .dialog-topbar .eyebrow { color:#f5d94e; letter-spacing:1.5px; }
-  .project-dialog[data-chapter=oto] .dialog-tools>button:not(.close-button) { color:#e8ddf8; }
-  .project-dialog[data-chapter=oto] .close-button { background:#4e346b; color:#fff; }
-  .project-dialog[data-chapter=oto] .dialog-content { counter-reset:lab-note; }
-  .project-dialog[data-chapter=oto] .project-section { border-left:1px solid #ddd0ef; padding-left:23px; counter-increment:lab-note; }
-  .project-dialog[data-chapter=oto] .project-section h3 { position:relative; }
-  .project-dialog[data-chapter=oto] .project-section h3:before { content:''; position:absolute; left:-28px; top:.5em; width:9px; height:9px; border:2px solid #fff; background:var(--violet); border-radius:50%; box-shadow:0 0 0 1px #d6c4ed; }
   .project-dialog[data-chapter=about] .portrait-photo { transform:rotate(-3deg); box-shadow:5px 5px 0 #f5d94e; }
   .project-dialog[data-chapter=analytics] { border-top:5px solid var(--blue); }
 }

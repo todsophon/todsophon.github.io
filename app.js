@@ -28,7 +28,7 @@ function safeURL(value, type = 'link') {
     if (url.protocol === 'https:') return url.href;
     // The local preview uses HTTP. Only known asset types may use its origin.
     const assetRoot = new URL('assets/', window.location.href).pathname;
-    const extension = type === 'image' ? /\.(png|jpe?g|webp|avif|gif|svg)$/i : /\.(docx|pdf)$/i;
+    const extension = type === 'image' ? /\.(png|jpe?g|webp|avif|gif|svg)$/i : type === 'video' ? /\.(mp4|webm)$/i : /\.(docx|pdf)$/i;
     if (url.origin === window.location.origin && url.pathname.startsWith(assetRoot) && extension.test(url.pathname)) return url.href;
   } catch { /* Invalid content links are omitted from the page. */ }
   return null;
@@ -100,22 +100,10 @@ function resetShareFeedback() {
 }
 
 function chapterHeadingHTML(item, key) {
-  const heading = `<p class="project-kicker">${escapeHTML(item.kicker)}</p><h2 id="dialog-title">${titleHTML(item.title)}</h2>`;
+  const heading = `${item.kicker ? `<p class="project-kicker">${escapeHTML(item.kicker)}</p>` : ''}<h2 id="dialog-title">${titleHTML(item.title)}</h2>`;
   const portrait = ['about', 'resume'].includes(key) ? safeURL(config.portrait, 'image') : null;
   if (!portrait) return heading;
   return `<div class="chapter-heading"><div class="chapter-heading-copy">${heading}</div><img class="portrait-photo" src="${escapeHTML(portrait)}" alt="${escapeHTML(config.name)}" width="200" height="200" decoding="async"></div>`;
-}
-
-function projectGalleryHTML(projects) {
-  if (!asArray(projects).length) return '';
-  const area = kind => kind === 'APP' ? 'app' : kind === 'GAME' ? 'games' : 'films';
-  return `<section class="oto-projects" aria-labelledby="oto-projects-title"><div class="oto-projects-heading"><span class="case-eyebrow">SELECTED WORK / FRISSON LABS</span><h3 id="oto-projects-title">Things you can actually see.</h3><p>Products, games, and films—each marked with its current status and what I contributed.</p></div><div class="oto-project-grid">${projects.map(project => {
-    const image = safeURL(project.image, 'image');
-    return `<article class="oto-project-card" data-project="${area(project.kind)}">
-      <div class="oto-project-media ${area(project.kind)}">${image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(project.imageAlt || '')}" loading="lazy" decoding="async">` : ''}<span class="oto-project-kind">${escapeHTML(project.kind)}</span></div>
-      <div class="oto-project-copy"><span class="oto-project-status"><i aria-hidden="true"></i>${escapeHTML(project.status)}</span><h4>${escapeHTML(project.title)}</h4><p>${escapeHTML(project.text)}</p><small>${escapeHTML(project.contribution)}</small>${project.link ? linkHTML(project.link, 'oto-project-link') : ''}</div>
-    </article>`;
-  }).join('')}</div><p class="frisson-source">App screenshots are from the public App Store listing; game artwork comes from the Oto project catalog. Work was completed with the Frisson Labs team.</p></section>`;
 }
 
 function instagramReel(value) {
@@ -127,32 +115,50 @@ function instagramReel(value) {
   return match ? { url: `https://www.instagram.com/reel/${match[1]}/`, embed: `https://www.instagram.com/reel/${match[1]}/embed/` } : null;
 }
 
-function channelHTML(channel) {
-  const url = safeURL(channel?.url);
-  if (!url) return '';
-  return `<section class="frisson-channel" aria-label="Instagram channel"><div class="frisson-channel-mark" aria-hidden="true">@</div><div class="frisson-channel-copy"><span class="case-eyebrow">THE CHANNEL I CREATED</span><h3>${escapeHTML(channel.handle)}</h3><p>Short-form stories that introduce the companions and give people a reason to meet them.</p><small>${escapeHTML(channel.note)}</small></div><div class="frisson-channel-stat"><strong>${escapeHTML(channel.followers)}</strong><span>followers</span><a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">Visit the channel ↗</a></div></section>`;
-}
-
-function reelsHTML(reels, source) {
-  const entries = asArray(reels).map(reel => ({ ...reel, link: instagramReel(reel.url) })).filter(reel => reel.link);
+/** Selected Reels with their real covers. Instagram's player loads only after Play is pressed. */
+function reelsHTML(reels, { heading = '', intro = '', note = '' } = {}) {
+  const entries = asArray(reels).map(reel => ({ ...reel, link: instagramReel(reel.url), poster: safeURL(reel.poster, 'image') })).filter(reel => reel.link);
   if (!entries.length) return '';
-  return `<section class="frisson-films" aria-labelledby="frisson-films-title"><div class="frisson-section-heading"><span class="case-eyebrow">01 / THE SHORT-FORM STUDIO</span><h3 id="frisson-films-title">Three ways I told the Oto story.</h3><p>I develop the idea, use tools including Seedance, Kling, and CapCut across my short-form work, then edit and review the response. These public Reels show animation, product storytelling, and me on camera.</p><div class="frisson-process" aria-label="My short-form workflow"><span>Concept</span><span aria-hidden="true">→</span><span>Animate & edit</span><span aria-hidden="true">→</span><span>Review the response</span></div></div><div class="frisson-film-grid">${entries.map((reel, index) => `
-    <article class="frisson-film" data-film="${index + 1}"><a class="frisson-film-poster" href="${escapeHTML(reel.link.embed)}" target="_blank" rel="noopener noreferrer" aria-label="Watch ${escapeHTML(reel.title)} in Instagram's public player"><span class="film-reel-number">0${index + 1} / ${escapeHTML(reel.type)}</span><span class="film-reel-art" aria-hidden="true"><span></span><span></span><span></span></span><span class="film-play" aria-hidden="true">▶</span><span class="film-poster-cta">Watch the Reel ↗</span></a><div class="frisson-film-copy"><h4>${escapeHTML(reel.title)}</h4>${reel.result ? `<strong class="film-result">${escapeHTML(reel.result)}</strong>` : ''}<p>${escapeHTML(reel.note)}</p><a href="${escapeHTML(reel.link.url)}" target="_blank" rel="noopener noreferrer">Open original ↗</a></div></article>`).join('')}</div><p class="frisson-source">${escapeHTML(source?.note || '')}</p></section>`;
+  return `<section class="reel-list" aria-label="Selected Reels">${heading ? `<h3>${escapeHTML(heading)}</h3>` : ''}${intro ? `<p>${escapeHTML(intro)}</p>` : ''}<ul>${entries.map(reel => `
+    <li><div class="reel-frame">${reel.poster ? `<img src="${escapeHTML(reel.poster)}" alt="" width="360" height="640" loading="lazy" decoding="async">` : ''}<button class="reel-play" type="button" data-reel-embed="${escapeHTML(reel.link.embed)}" data-reel-title="${escapeHTML(reel.title)}" aria-label="Play ${escapeHTML(reel.title)}. Loads Instagram's player"><span aria-hidden="true">▶</span></button></div>
+      <strong>${escapeHTML(reel.title)}</strong><span>${escapeHTML(reel.note)}</span><small>${escapeHTML([reel.type, reel.result].filter(Boolean).join(' · '))} · <a href="${escapeHTML(reel.link.url)}" target="_blank" rel="noopener noreferrer">Open on Instagram ↗</a></small></li>`).join('')}</ul>${note ? `<p class="source-note">${escapeHTML(note)}</p>` : ''}</section>`;
 }
 
-function productHTML(product) {
-  if (!product) return '';
-  const screenshots = asArray(product.screenshots).map(shot => ({ ...shot, src: safeURL(shot.src, 'image') })).filter(shot => shot.src);
-  return `<section class="frisson-product" aria-labelledby="frisson-product-title">
-    <div class="frisson-section-heading"><span class="case-eyebrow">02 / THE PRODUCT</span><h3 id="frisson-product-title">${escapeHTML(product.title)}</h3><p>${escapeHTML(product.text)}</p></div>
-    <div class="frisson-product-layout"><div class="oto-device"><div class="oto-device-top"><span>oto / app preview</span><span class="oto-preview-live">AUTO</span></div><div class="oto-device-screen" role="img" aria-label="Auto-playing sequence of official Oto App Store screenshots">${screenshots.map((shot, index) => `<img src="${escapeHTML(shot.src)}" alt="" aria-hidden="true" style="--preview-index:${index}" loading="lazy" decoding="async">`).join('')}</div><div class="oto-device-bottom"><span>01—0${screenshots.length} · OFFICIAL APP STORE SCREENS</span><button type="button" id="oto-preview-toggle" aria-pressed="false">Pause preview</button></div></div><ol class="oto-product-steps">${asArray(product.steps).map(step => `<li><strong>${escapeHTML(step.label)}</strong><span>${escapeHTML(step.text)}</span></li>`).join('')}</ol></div>
-    ${screenshots.length ? `<div class="oto-app-gallery-heading"><strong>Inside the shipped app</strong><span>Scroll to see more →</span></div><div class="oto-app-gallery" aria-label="Official Oto App Store screenshots">${screenshots.map(shot => `<figure><img src="${escapeHTML(shot.src)}" alt="${escapeHTML(shot.alt)}" width="314" height="680" loading="lazy" decoding="async"><figcaption>${escapeHTML(shot.label)}</figcaption></figure>`).join('')}</div><p class="frisson-source">Screenshots from the public Oto App Store listing. Product features were built with the Frisson Labs team.</p>` : ''}
-    <div class="frisson-case-links"><a href="https://apps.apple.com/us/app/oto-ai-voice-companion/id6754143501" target="_blank" rel="noopener noreferrer">Explore the iPhone app ↗</a><a href="https://www.oto.chat/otomates" target="_blank" rel="noopener noreferrer">Meet Fibi in the public gallery ↗</a></div>
-  </section>`;
-}
-
-function communityHTML() {
-  return `<section class="frisson-community" aria-labelledby="frisson-community-title"><div class="frisson-section-heading"><span class="case-eyebrow">03 / THE COMMUNITY</span><h3 id="frisson-community-title">Give people a reason to stay.</h3><p>My work connects content, the product, and the people around it. At Frisson Labs I brought 15,000 people to Discord; Oto has more than 10,000 downloads. These are separate milestones, not a claimed video-to-download conversion.</p></div><div class="frisson-community-path" aria-label="Content, product, and community are connected parts of the work"><span>Discover through a story</span><span aria-hidden="true">→</span><span>Meet an Otomate</span><span aria-hidden="true">→</span><span>Join the community</span></div><p class="frisson-source">Discord and download figures provided by Tod, September 2026. Product work was completed with the Frisson Labs team.</p></section>`;
+/** The Oto chapter: real screenshots first, then the work in varied rows and plain prose. */
+function otoHTML(item) {
+  const projects = asArray(item.projects);
+  const [app, ...rest] = projects;
+  const shots = asArray(item.productShowcase?.screenshots).map(shot => ({ ...shot, src: safeURL(shot.src, 'image') })).filter(shot => shot.src);
+  const row = project => {
+    const image = safeURL(project.image, 'image');
+    const video = safeURL(project.video, 'video');
+    const media = video
+      ? `<video class="loop-preview" src="${escapeHTML(video)}"${image ? ` poster="${escapeHTML(image)}"` : ''} muted loop playsinline preload="metadata" aria-label="${escapeHTML(`A few seconds of ${project.title} being played`)}"></video>`
+      : image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(project.imageAlt || '')}" loading="lazy" decoding="async">` : '';
+    return `<article class="oto-work${project.kind === 'AI VIDEO' ? ' is-portrait' : ''}${video ? ' has-video' : ''}">
+      ${media}
+      <div><h4>${escapeHTML(project.title)}</h4><p>${escapeHTML(project.text)}</p><p>${escapeHTML(project.contribution)}</p>
+      <small>${escapeHTML(project.status)}${project.link ? ` · ${linkHTML(project.link, 'oto-inline-link')}` : ''}</small></div>
+    </article>`;
+  };
+  const channel = item.channel;
+  const shortForm = (item.shortForm || '').replace('{followers}', channel?.followers || '');
+  const notes = [item.source?.note, channel?.note, item.reelSource?.note].filter(Boolean).join(' ');
+  return `
+    ${item.role ? `<p class="oto-role">${escapeHTML(item.role)}</p>` : ''}
+    <p class="dialog-lead">${escapeHTML(item.lead)}</p>
+    ${app ? `<section class="oto-app" aria-labelledby="oto-app-title">
+      <h3 id="oto-app-title">${escapeHTML(app.title)}</h3>
+      <p>${escapeHTML(app.text)} ${escapeHTML(app.contribution)}</p>
+      ${shots.length ? `<div class="oto-shots">${shots.map(shot => `<figure><img src="${escapeHTML(shot.src)}" alt="${escapeHTML(shot.alt)}" width="314" height="680" loading="lazy" decoding="async"><figcaption>${escapeHTML(shot.label)}</figcaption></figure>`).join('')}</div>` : ''}
+      <small class="oto-app-meta">${escapeHTML(app.status)}${app.link ? ` · ${linkHTML(app.link, 'oto-inline-link')}` : ''}</small>
+    </section>` : ''}
+    ${rest.length ? `<section class="oto-more" aria-labelledby="oto-more-title"><h3 id="oto-more-title">Games and videos</h3>${rest.map(row).join('')}</section>` : ''}
+    ${reelsHTML(item.reels, { heading: 'On Instagram', intro: shortForm })}
+    ${item.community ? `<section class="project-section"><h3>The community</h3><p>${escapeHTML(item.community)}</p></section>` : ''}
+    ${asArray(item.sections).map(section => `<section class="project-section"><h3>${escapeHTML(section.title)}</h3><p>${escapeHTML(section.text)}</p></section>`).join('')}
+    <p class="oto-links">${[item.link, ...asArray(item.links), channel && { label: channel.handle, url: channel.url }].filter(Boolean).map(link => linkHTML(link, 'oto-inline-link')).join('<span aria-hidden="true"> · </span>')}</p>
+    ${notes ? `<p class="source-note">${escapeHTML(notes)}</p>` : ''}`;
 }
 
 function milestonesHTML(item) {
@@ -173,10 +179,10 @@ function renderChapter(key) {
   }
   const metrics = asArray(item.metrics);
   const meta = asArray(item.meta);
-  document.querySelector('#dialog-label').textContent = `${item.number ? `${item.number} / ` : ''}${item.label}`;
+  document.querySelector('#dialog-label').textContent = chapterNames[key] || item.label;
   dialog.dataset.chapter = key;
   const fromAward = key === 'youtube' && ['silver', 'gold'].includes(dialog.dataset.award);
-  dialogContent.innerHTML = `
+  dialogContent.innerHTML = key === 'oto' ? `${chapterHeadingHTML(item, key)}${otoHTML(item)}` : `
     ${chapterHeadingHTML(item, key)}
     ${key === 'resume' ? resumeContactHTML() : ''}
     ${fromAward ? milestonesHTML(item) : ''}
@@ -186,11 +192,7 @@ function renderChapter(key) {
     ${meta.length ? `<dl class="project-meta">${meta.map(entry => `<div><dt>${escapeHTML(entry.label)}</dt><dd>${escapeHTML(entry.value)}</dd></div>`).join('')}</dl>` : ''}
     ${metrics.length ? `<div class="metric-grid">${metrics.map(metric => `<div class="metric"><strong>${escapeHTML(metric.value)}</strong><span>${escapeHTML(metric.label)}</span></div>`).join('')}</div>` : ''}
     ${metrics.length ? sourceHTML(item.source) : ''}
-    ${key === 'oto' ? projectGalleryHTML(item.projects) : ''}
-    ${key === 'oto' ? channelHTML(item.channel) : ''}
-    ${reelsHTML(item.reels, item.reelSource)}
-    ${key === 'oto' ? productHTML(item.productShowcase) : ''}
-    ${key === 'oto' ? communityHTML() : ''}
+    ${reelsHTML(item.reels, { heading: 'Three Reels I made for Oto', intro: item.reelIntro || '', note: item.reelSource?.note })}
     ${asArray(item.sections).map(section => `<section class="project-section"><h3>${escapeHTML(section.title)}</h3>${section.text ? `<p>${escapeHTML(section.text)}</p>` : ''}${asArray(section.bullets).length ? `<ul class="project-bullets">${section.bullets.map(bullet => `<li>${escapeHTML(bullet)}</li>`).join('')}</ul>` : ''}</section>`).join('')}
     ${videosHTML(item.videos)}
     ${resumeHTML(item)}
@@ -201,8 +203,9 @@ function renderChapter(key) {
     ${!metrics.length ? sourceHTML(item.source) : ''}
     ${item.pending ? `<p class="pending-note">${escapeHTML(item.pending)}</p>` : ''}
   `;
+  startPreviews();
   resetShareFeedback();
-  document.title = `${chapterNames[key] || item.label} — ${config.name}`;
+  document.title = `${chapterNames[key] || item.label} · ${config.name}`;
   document.dispatchEvent(new CustomEvent('portfolio:chapter-open', { detail: { chapter: key } }));
   document.querySelector('#speech-message').textContent = key === 'resume' ? "Here's a little more about Tod." : `Let's explore ${key === 'about' ? "Tod's story" : chapterNames[key]}!`;
   const nextKey = chapterOrder[(chapterOrder.indexOf(key) + 1) % chapterOrder.length];
@@ -214,6 +217,15 @@ function renderChapter(key) {
   if (!dialog.open) { dialog.showModal(); document.body.style.overflow = 'hidden'; }
   dialog.scrollTop = 0;
   document.querySelector('#dialog-close').focus({ preventScroll: true });
+}
+
+/** Game clips loop quietly; with reduced motion they stay still and get controls instead. */
+function startPreviews() {
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  for (const video of dialogContent.querySelectorAll('video.loop-preview')) {
+    if (still) { video.controls = true; continue; }
+    video.play().catch(() => { video.controls = true; });
+  }
 }
 
 function hideChapter() {
@@ -285,12 +297,15 @@ function setView(showList) {
 }
 
 document.addEventListener('click', event => {
-  const previewToggle = event.target.closest?.('#oto-preview-toggle');
-  if (previewToggle) {
-    const paused = previewToggle.getAttribute('aria-pressed') !== 'true';
-    previewToggle.setAttribute('aria-pressed', String(paused));
-    previewToggle.textContent = paused ? 'Play preview' : 'Pause preview';
-    previewToggle.closest('.oto-device')?.classList.toggle('is-paused', paused);
+  const reel = event.target.closest?.('[data-reel-embed]');
+  if (reel) {
+    const frame = document.createElement('iframe');
+    frame.className = 'reel-player';
+    frame.src = reel.dataset.reelEmbed;
+    frame.title = `${reel.dataset.reelTitle} on Instagram`;
+    frame.allow = 'autoplay; encrypted-media; picture-in-picture';
+    reel.closest('.reel-frame').replaceChildren(frame);
+    frame.focus();
     return;
   }
   const trigger = event.target.closest?.('[data-open]');

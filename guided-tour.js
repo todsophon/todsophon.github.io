@@ -36,10 +36,8 @@ export function createGuidedTour({ stage, guide, keyboard }) {
   try { awake = new Set((JSON.parse(localStorage.getItem(SEEN_KEY)) || []).filter(id => byId[id])); } catch { /* Progress lasts for this visit. */ }
 
   const elementsFor = story => [...stage.querySelectorAll(story.selector)];
-  const targetFor = story => {
-    const element = stage.querySelector(story.selector);
-    return element?.matches('.furniture-piece') ? element.querySelector('.furniture-hit') : element;
-  };
+  // Fibi walks to the piece of furniture when a story has one, otherwise to the wall piece.
+  const targetFor = story => story.beacon ? stage.querySelector(`[data-furniture="${story.beacon}"] .furniture-hit`) : stage.querySelector(story.selector);
   function storyFor(target) {
     const furniture = target.closest('.furniture-piece')?.dataset.furniture;
     if (target.closest('.wall-portrait')) return byId.about;
@@ -57,6 +55,9 @@ export function createGuidedTour({ stage, guide, keyboard }) {
   function syncClasses() {
     stage.classList.toggle('reveal-active', active);
     for (const story of STORIES) for (const element of elementsFor(story)) element.classList.toggle('is-painted', !active || awake.has(story.id));
+    // Awake objects wear their name tag (furniture tags and the wall decor's own tags).
+    for (const piece of stage.querySelectorAll('.furniture-piece')) piece.classList.toggle('is-awake', !active || piece.classList.contains('is-painted'));
+    document.dispatchEvent(new CustomEvent('room:awake-changed'));
     for (const story of STORIES) for (const element of elementsFor(story)) {
       const button = element.matches('.furniture-piece') ? element.querySelector('.furniture-hit') : element;
       if (!button?.matches('button')) continue;
@@ -93,7 +94,7 @@ export function createGuidedTour({ stage, guide, keyboard }) {
     speak(left === STORIES.length
       ? `<strong>Hi, I’m ${escapeHTML(config.character.name)}!</strong> This is Tod’s room, but it’s still asleep. Tap anything that glows and I’ll wake it up.`
       : `<strong>Welcome back!</strong> ${left} ${left === 1 ? 'corner is' : 'corners are'} still asleep.`,
-    [{ label: left === STORIES.length ? 'Show me around' : 'Keep going', action: 'tour', primary: true }, { label: 'I’ll explore', action: 'explore' }]);
+    [{ label: left === STORIES.length ? 'Show me around' : 'Keep going', action: 'tour', primary: true }, { label: 'I’ll explore', action: 'explore' }, { label: 'Skip the tour', action: 'skip' }]);
   }
   function burstAt(element, color) {
     const room = stage.getBoundingClientRect(), box = element.getBoundingClientRect();
@@ -125,7 +126,7 @@ export function createGuidedTour({ stage, guide, keyboard }) {
     const left = remaining().length;
     const open = story.screening ? { label: 'Watch the films', screening: true, primary: true } : { label: 'Open the story', open: story.chapter, primary: true };
     speak(`<strong>${escapeHTML(story.title)}</strong> ${escapeHTML(story.line)}${active ? `<small>${STORIES.length - left} of ${STORIES.length} awake</small>` : ''}`,
-      left ? [open, { label: touring ? 'Next' : 'Next one', action: 'next' }] : [open, { label: 'Finish', action: 'finish' }]);
+      left ? [open, { label: touring ? 'Next' : 'Next one', action: 'next' }, { label: 'Skip tour', action: 'skip' }] : [open, { label: 'Finish', action: 'finish' }]);
   }
   function visit(story) {
     const target = targetFor(story);
@@ -164,6 +165,18 @@ export function createGuidedTour({ stage, guide, keyboard }) {
     guide.preload(['hello', 'talking', 'happy']);
     guide.walkTo(guide.home(), { onComplete: () => { guide.play('hello', 3.4); welcome(); } });
   }
+  /** Wake every story at once and let the visitor look around on their own. */
+  function skip() {
+    touring = false;
+    for (const story of STORIES) awake.add(story.id);
+    save();
+    active = false; syncClasses();
+    stage.querySelectorAll('.room-color-spot').forEach(spot => spot.remove());
+    guide.cancelVisit();
+    guide.setTourMode(false);
+    guide.play('happy', 2.2);
+    speak('<strong>All awake!</strong> Make yourself at home. Tap anything to open its story.', [], 4200);
+  }
   /** Step away from the guided part; the room stays as awake as it is. */
   function leave() {
     touring = false;
@@ -179,6 +192,7 @@ export function createGuidedTour({ stage, guide, keyboard }) {
     else if (action === 'next') { touring = true; next(); }
     else if (action === 'explore') { leave(); speak('Tap anything that glows and I’ll walk you there.', [], 4200); }
     else if (action === 'finish') finish();
+    else if (action === 'skip') skip();
   });
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && bubble.classList.contains('is-visible') && !dialog.open) hideSpeech();
@@ -188,6 +202,7 @@ export function createGuidedTour({ stage, guide, keyboard }) {
   document.addEventListener('portfolio:chapter-open', hideSpeech);
   document.addEventListener('portfolio:view', event => { if (event.detail.showList) leave(); });
   document.querySelector('#tour-replay')?.addEventListener('click', () => start({ replay: true }));
+  document.querySelector('#tour-skip')?.addEventListener('click', skip);
   document.querySelector('#keys-play')?.addEventListener('click', () => { leave(); keyboard?.playTune(); });
   const soundButton = document.querySelector('#sound-toggle');
   const syncSound = () => {
@@ -209,6 +224,7 @@ export function createGuidedTour({ stage, guide, keyboard }) {
     wakeTarget: target => { const story = storyFor(target); if (story) wake(story, target); },
     markSeen: target => { const story = storyFor(target); if (story && !awake.has(story.id)) { awake.add(story.id); save(); syncClasses(); } },
     leave,
+    skip,
     // Arranging needs to see the real room: wake everything quietly.
     pause: () => {
       hideSpeech(); guide.cancelVisit(); touring = false;

@@ -17,8 +17,8 @@ export const FURNITURE = Object.freeze([
   { id: 'oto', label: 'Oto AI desk', width: 8, depth: 3, default: { x: 6, y: 0 }, chapter: 'oto', sprite: { col: 1, row: 0 } },
   { id: 'bookshelf', label: 'Record cabinet', width: 2, depth: 4, default: { x: 0, y: 12 }, chapter: 'youtube', sprite: { col: 2, row: 0 } },
   { id: 'plant', label: 'Growth chart', width: 2, depth: 2, default: { x: 14, y: 2 }, chapter: 'analytics', sprite: { col: 0, row: 1 } },
-  { id: 'chair', label: 'Screening beanbag', width: 4, depth: 4, default: { x: 6, y: 12 }, action: 'screening', sprite: { col: 1, row: 1 } },
-  { id: 'tiktok', label: 'TikTok ring light', width: 2, depth: 2, default: { x: 2, y: 12 }, chapter: 'tiktok', sprite: { col: 2, row: 1 } },
+  { id: 'chair', label: 'Screening beanbag', width: 4, depth: 4, default: { x: 2, y: 13 }, action: 'screening', sprite: { col: 1, row: 1 } },
+  { id: 'tiktok', label: 'TikTok ring light', width: 2, depth: 2, default: { x: 4, y: 3 }, chapter: 'tiktok', sprite: { col: 2, row: 1 } },
 ].map(item => Object.freeze({
   ...item,
   default: Object.freeze(item.default),
@@ -38,6 +38,11 @@ export const FLOOR_QUAD = Object.freeze({
   front: Object.freeze([485, 649]), left: Object.freeze([62.5, 394.5]),
 });
 const furnitureById = new Map(FURNITURE.map(item => [item.id, item]));
+// Earlier defaults, as changes from the current one.
+const PREVIOUS_DEFAULTS = Object.freeze([
+  { chair: { x: 6, y: 12 }, tiktok: { x: 2, y: 12 } },
+  { chair: { x: 6, y: 12 }, tiktok: { x: 14, y: 6 } },
+]);
 
 /** Projective map from the unit square onto a floor quad, so grid lines stay straight. */
 function homography({ back, right, front, left }) {
@@ -224,11 +229,12 @@ export function normalizeLayout(input) {
     || !FURNITURE.every(item => canPlace(input.items, item.id, input.items[item.id].x, input.items[item.id].y))) {
     return cloneLayout(DEFAULT_LAYOUT);
   }
-  // Bring an untouched saved room along when its creation corner moves.
-  if (FURNITURE.every(item => {
-    const previous = item.id === 'tiktok' ? { x: 14, y: 6 } : item.default;
-    return input.items[item.id].x === previous.x && input.items[item.id].y === previous.y;
-  })) return cloneLayout(DEFAULT_LAYOUT);
+  // A saved room that still matches an earlier default arrangement was never really
+  // rearranged, so it follows the current default.
+  if (PREVIOUS_DEFAULTS.some(previous => FURNITURE.every(item => {
+    const position = { ...item.default, ...previous }[item.id] || item.default;
+    return input.items[item.id].x === position.x && input.items[item.id].y === position.y;
+  }))) return cloneLayout(DEFAULT_LAYOUT);
   return cloneLayout(input.items);
 }
 

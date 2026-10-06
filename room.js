@@ -1,13 +1,13 @@
 import { GRID_SIZE, STORAGE_KEY, LEGACY_STORAGE_KEY, FURNITURE, DEFAULT_LAYOUT, FLOOR_QUAD, tileToScreen, screenToTile, snapPlacement, snapDraggedPlacement, canPlace, nearbyOpenPlacement, normalizeLayout, serializeLayout, paintOrder } from './room-layout.mjs?v=41';
 import { createRoomCompanion } from './fibi.js?v=41';
-import { createGuidedTour } from './guided-tour.js?v=41';
+import { createGuidedTour } from './guided-tour.js?v=43';
 import { createFloorKeyboard } from './floor-keyboard.js?v=41';
+import { createWallDecor } from './wall-decor.js?v=43';
 
 const stage = document.querySelector('#scene');
 const tiles = document.querySelector('#floor-tiles');
 const preview = document.querySelector('#placement-preview');
 const layer = document.querySelector('#furniture-layer');
-const wallPortrait = document.querySelector('.wall-portrait');
 const arrangeButton = document.querySelector('#arrange-toggle');
 const editor = document.querySelector('#room-editor');
 const controls = document.querySelector('#placement-controls');
@@ -17,8 +17,6 @@ const placeButton = document.querySelector('#place-furniture');
 const undoButton = document.querySelector('#undo-room');
 const NS = 'http://www.w3.org/2000/svg';
 const clone = value => JSON.parse(JSON.stringify(value));
-const WALL_STORAGE_KEY = 'todsophon.wall-portrait.v1';
-const DEFAULT_WALL_POSITION = { x: 83, y: 23.5 };
 const SCENE_WIDTH = 1000;
 const SCENE_HEIGHT = 2000 / 3;
 const artWidths = { youtube: 290, oto: 290, bookshelf: 180, plant: 98, chair: 165, tiktok: 60 };
@@ -36,16 +34,16 @@ const artPerspective = {
 // Measured atlas windows preserve each object's silhouette without editing the source.
 const atlasWindows = {
   youtube: [20, 40, 525, 491], oto: [548, 50, 510, 482], bookshelf: [1070, 50, 435, 455],
-  plant: [0, 0, 494, 799], chair: [330, 80, 880, 860], tiktok: [0, 0, 259, 822],
+  plant: [0, 0, 494, 799], chair: [330, 80, 880, 860], tiktok: [0, 0, 267, 817],
 };
 // Pieces drawn outside the shared furniture atlas: [image, width, height].
 const spriteSources = {
   chair: ['assets/lounge-chair.png', 1536, 1024],
   oto: ['assets/oto-furniture-atlas-v3.png', 1536, 1024],
   plant: ['assets/chart-easel.webp', 494, 799],
-  tiktok: ['assets/ring-light.webp', 259, 822],
+  tiktok: ['assets/ring-light.webp?v=3', 267, 817],
 };
-const labels = { youtube: 'YouTube', oto: 'Oto / Frisson Labs', bookshelf: 'Record cabinet', tiktok: 'TikTok', plant: 'Analytics', chair: 'Watch films' };
+const labels = { youtube: 'YouTube', oto: 'Oto', bookshelf: 'Record cabinet', tiktok: 'TikTok', plant: 'Analytics', chair: 'Watch films' };
 const accessibleLabel = (item, arranging = false) => arranging ? `Move ${item.label}` : item.action === 'screening' ? 'Watch films from the screening chair' : `Explore ${item.label}`;
 const pieces = new Map();
 let layout = clone(DEFAULT_LAYOUT);
@@ -56,30 +54,13 @@ let selectedId = null;
 let pending = null;
 let pointer = null;
 let suppressClick = { id: null, until: 0 };
-let wallSuppressClickUntil = 0;
-let wallPointer = null;
-let wallPosition = { ...DEFAULT_WALL_POSITION };
 const history = [];
 
-const snapWall = value => Math.round(value * 2) / 2;
-function normalizeWallPosition(value) {
-  if (!Number.isFinite(value?.x) || !Number.isFinite(value?.y)) return { ...DEFAULT_WALL_POSITION };
-  // The clear strip between the pinboard and the wall's end keeps the portrait visible after a drop.
-  const x = snapWall(Math.max(82, Math.min(84.5, value.x)));
-  const minY = 12 + (x - 70) * .5;
-  const maxY = 26 - (x - 84) * .25;
-  return { x, y: snapWall(Math.max(minY, Math.min(maxY, value.y))) };
-}
-function renderWallPosition(value = wallPosition) {
-  wallPortrait.style.left = `${value.x}%`;
-  wallPortrait.style.top = `${value.y}%`;
-}
-function saveWallPosition(message = 'Wall photo saved on this browser') {
-  try { localStorage.setItem(WALL_STORAGE_KEY, JSON.stringify(wallPosition)); status.textContent = message; status.classList.remove('unsaved'); }
-  catch { status.textContent = 'Photo moved · saving unavailable in this browser'; status.classList.add('unsaved'); }
-}
+// The awards, portrait and pinboard hang on the walls; they share Undo and Reset.
+const wallDecor = createWallDecor({ stage, onChange: message => { status.textContent = message; status.classList.toggle('unsaved', /unavailable/.test(message)); } });
+document.addEventListener('wall:before-change', () => rememberLayout());
 function rememberLayout() {
-  history.push({ layout: clone(layout), wall: { ...wallPosition } });
+  history.push({ layout: clone(layout), wall: wallDecor.getState() });
   if (history.length > 30) history.shift();
   undoButton.disabled = false;
 }
@@ -88,15 +69,6 @@ try {
   const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
   if (saved) layout = normalizeLayout(JSON.parse(saved));
 } catch { status.textContent = 'Layout available for this visit'; status.classList.add('unsaved'); }
-try {
-  const savedWall = JSON.parse(localStorage.getItem(WALL_STORAGE_KEY));
-  // Move only the old default; keep visitors' custom wall arrangements.
-  wallPosition = savedWall?.x === 84.5 && savedWall?.y === 29
-    ? { ...DEFAULT_WALL_POSITION } : normalizeWallPosition(savedWall);
-}
-catch { wallPosition = { ...DEFAULT_WALL_POSITION }; }
-renderWallPosition();
-
 function polygonFor(x, y) {
   return [[x,y],[x+1,y],[x+1,y+1],[x,y+1]].map(([a,b]) => { const p = tileToScreen(a,b); return `${p.x},${p.y}`; }).join(' ');
 }
@@ -332,56 +304,6 @@ for (const item of FURNITURE) {
   });
 }
 
-wallPortrait.addEventListener('pointerdown', event => {
-  if (event.button !== 0 || !event.isPrimary || wallPointer) return;
-  wallPortrait.focus({ preventScroll: true });
-  wallPointer = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, original: { ...wallPosition }, current: { ...wallPosition }, dragging: false };
-  wallPortrait.setPointerCapture(event.pointerId);
-});
-wallPortrait.addEventListener('pointermove', event => {
-  if (!wallPointer || wallPointer.pointerId !== event.pointerId) return;
-  const dx = event.clientX - wallPointer.startX, dy = event.clientY - wallPointer.startY;
-  if (!wallPointer.dragging && Math.hypot(dx, dy) < (event.pointerType === 'touch' ? 10 : 6)) return;
-  event.preventDefault();
-  if (!wallPointer.dragging) { wallPointer.dragging = true; wallPortrait.classList.add('is-wall-dragging'); }
-  const rect = stage.getBoundingClientRect();
-  wallPointer.current = normalizeWallPosition({ x: wallPointer.original.x + dx / rect.width * 100, y: wallPointer.original.y + dy / rect.height * 100 });
-  renderWallPosition(wallPointer.current);
-});
-function finishWallPointer(event, cancelled = false) {
-  if (!wallPointer || wallPointer.pointerId !== event.pointerId) return;
-  const { original, current, dragging } = wallPointer;
-  wallPointer = null;
-  wallPortrait.classList.remove('is-wall-dragging');
-  if (!dragging) return;
-  wallSuppressClickUntil = performance.now() + 500;
-  if (cancelled) { renderWallPosition(); return; }
-  if (current.x !== original.x || current.y !== original.y) {
-    rememberLayout();
-    wallPosition = current;
-    saveWallPosition();
-    announce('Meet Tod photo placed on the wall. You can undo this from Arrange room.');
-  }
-  renderWallPosition();
-}
-wallPortrait.addEventListener('pointerup', event => finishWallPointer(event));
-wallPortrait.addEventListener('pointercancel', event => finishWallPointer(event, true));
-wallPortrait.addEventListener('lostpointercapture', event => finishWallPointer(event, true));
-wallPortrait.addEventListener('dragstart', event => event.preventDefault());
-wallPortrait.addEventListener('keydown', event => {
-  const directions = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
-  const direction = directions[event.key];
-  if (!direction) return;
-  event.preventDefault();
-  const step = event.shiftKey ? 2 : .5;
-  const next = normalizeWallPosition({ x: wallPosition.x + direction[0] * step, y: wallPosition.y + direction[1] * step });
-  if (next.x === wallPosition.x && next.y === wallPosition.y) return;
-  rememberLayout();
-  wallPosition = next;
-  renderWallPosition();
-  saveWallPosition();
-});
-
 function placeSelectedOnFloor(event) {
   if (!editing || !selectedId) return;
   const item = FURNITURE.find(item => item.id === selectedId);
@@ -414,28 +336,22 @@ undoButton.addEventListener('click', () => {
   if (!history.length) return;
   cancelSelection();
   const previous = history.pop();
-  layout = previous.layout; wallPosition = previous.wall;
-  renderWallPosition(); render(); save('Previous arrangement restored'); saveWallPosition('Previous arrangement restored'); announce('Last change undone.');
+  layout = previous.layout; wallDecor.setState(previous.wall);
+  render(); save('Previous arrangement restored'); announce('Last change undone.');
 });
 document.querySelector('#reset-room').addEventListener('click', () => {
   cancelSelection();
-  if (JSON.stringify(layout) === JSON.stringify(DEFAULT_LAYOUT) && wallPosition.x === DEFAULT_WALL_POSITION.x && wallPosition.y === DEFAULT_WALL_POSITION.y && !document.querySelector('.wall-pinboard')?.classList.contains('has-moved-notes')) { announce('The room is already in its original arrangement.'); return; }
-  rememberLayout(); layout = clone(DEFAULT_LAYOUT); wallPosition = { ...DEFAULT_WALL_POSITION };
+  if (JSON.stringify(layout) === JSON.stringify(DEFAULT_LAYOUT) && wallDecor.isDefault() && !document.querySelector('.wall-pinboard')?.classList.contains('has-moved-notes')) { announce('The room is already in its original arrangement.'); return; }
+  rememberLayout(); layout = clone(DEFAULT_LAYOUT); wallDecor.reset();
   document.dispatchEvent(new CustomEvent('room:reset'));
-  renderWallPosition(); render(); save('Original arrangement restored'); saveWallPosition('Original arrangement restored'); announce('Room reset. You can undo this.');
+  render(); save('Original arrangement restored'); announce('Room reset. You can undo this.');
 });
 document.addEventListener('keydown', event => { if (event.key === 'Escape' && selectedId && !document.querySelector('dialog').open) cancelSelection(); });
 document.addEventListener('portfolio:chapter-open', () => { if (editing) setEditing(false); });
 document.addEventListener('portfolio:screening', event => { if (event.detail.open && editing) setEditing(false); });
 document.addEventListener('portfolio:view', event => { setEditing(false); arrangeButton.hidden = event.detail.showList; });
-window.addEventListener('blur', () => { if (pointer) cancelSelection(); if (wallPointer) finishWallPointer({ pointerId: wallPointer.pointerId }, true); });
+window.addEventListener('blur', () => { if (pointer) cancelSelection(); });
 window.addEventListener('storage', event => {
-  if (event.key === WALL_STORAGE_KEY) {
-    try { wallPosition = normalizeWallPosition(JSON.parse(event.newValue)); }
-    catch { wallPosition = { ...DEFAULT_WALL_POSITION }; }
-    renderWallPosition(); history.length = 0; undoButton.disabled = true; status.textContent = 'Wall photo updated from another tab';
-    return;
-  }
   if (event.key !== STORAGE_KEY) return;
   cancelSelection();
   try { layout = normalizeLayout(event.newValue ? JSON.parse(event.newValue) : null); }
@@ -447,11 +363,8 @@ const keyboard = createFloorKeyboard({ stage, guide });
 tour = createGuidedTour({ stage, guide, keyboard });
 let deliveringVisitClick = false;
 stage.addEventListener('click', event => {
-  if (event.target.closest?.('.wall-portrait') && performance.now() < wallSuppressClickUntil) {
-    event.preventDefault(); event.stopImmediatePropagation(); return;
-  }
   if (deliveringVisitClick || editing || event.defaultPrevented || event.button !== 0) return;
-  const target = event.target.closest?.('.furniture-hit, .wall-award, .wall-portrait, .board-note');
+  const target = event.target.closest?.('.furniture-hit, .wall-award, .wall-portrait, .board-note, .pinboard-frame');
   if (!target) return;
   const furnitureId = target.closest('.furniture-piece')?.dataset.furniture || null;
   if (furnitureId && suppressClick.id === furnitureId && performance.now() < suppressClick.until) return;

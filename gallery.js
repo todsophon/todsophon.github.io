@@ -49,11 +49,10 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
   const identityMark = node('span', 'screening-identity-mark', '▶');
   identityMark.setAttribute('aria-hidden', 'true');
   const identityCopy = node('div', 'screening-identity-copy');
-  identityCopy.append(node('span', 'screening-eyebrow', 'TOD’S SCREENING ROOM'));
-  const heading = node('h2', 'screening-title', 'A few stories. Press play.');
+  const heading = node('h2', 'screening-title', 'My videos');
   heading.id = 'screening-title';
   identityCopy.append(heading);
-  identity.append(identityMark, identityCopy);
+  identity.append(identityCopy);
   const closeButton = button('screening-close', '×', 'Close screening room');
   header.append(identity, closeButton);
 
@@ -69,13 +68,13 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
   const playAffordance = node('span', 'screening-play-affordance');
   const playIcon = node('span', 'screening-play-icon', '▶');
   playIcon.setAttribute('aria-hidden', 'true');
-  playAffordance.append(playIcon, node('span', 'screening-play-label', 'Play film'));
+  playAffordance.append(playIcon);
   poster.append(posterImage, playAffordance);
   const curtains = node('div', 'screening-curtains');
   curtains.setAttribute('aria-hidden', 'true');
   curtains.append(node('span'), node('span'));
-  stage.append(poster, curtains);
-  const stageNote = node('p', 'screening-stage-note', 'Pick a story below. Sound starts when you press play.');
+  stage.append(poster);
+  const stageNote = node('p', 'screening-stage-note', 'Sound starts when you press play.');
   stageNote.id = 'screening-intro';
   stageColumn.append(stage, stageNote);
 
@@ -96,19 +95,19 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
   const external = node('a', 'screening-youtube', 'Watch on YouTube ↗');
   external.target = '_blank';
   external.rel = 'noopener noreferrer';
-  const storyButton = button('screening-case', 'Results & process ↗');
+  const storyButton = button('screening-case', 'How the channel grew ↗');
   const navigation = node('div', 'screening-navigation');
   const previousButton = button('screening-step', '←', 'Previous video');
   const nextButton = button('screening-step', '→', 'Next video');
   const keyboardHint = node('span', 'screening-keyboard-hint', 'A different story');
-  navigation.append(previousButton, keyboardHint, nextButton);
-  details.append(position, format, title, description, metric, external, storyButton, navigation);
+  navigation.append(previousButton, nextButton);
+  details.append(format, title, description, metric, external, storyButton, navigation);
   body.append(stageColumn, details);
 
   const collection = node('section', 'screening-collection');
   collection.setAttribute('aria-labelledby', 'screening-collection-title');
   const collectionHeader = node('div', 'screening-collection-header');
-  const collectionHeading = node('h3', 'screening-eyebrow', 'THE COLLECTION');
+  const collectionHeading = node('h3', 'screening-collection-title', 'Pick another');
   collectionHeading.id = 'screening-collection-title';
   const filters = node('div', 'screening-filters');
   filters.setAttribute('role', 'group');
@@ -121,7 +120,8 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
     filterButtons.set(key, item);
     filters.append(item);
   }
-  collectionHeader.append(collectionHeading, filters);
+  // Three videos don't need format filters; the buttons stay built so links can still request a filter.
+  collectionHeader.append(collectionHeading);
   const filmstrip = node('div', 'screening-filmstrip');
   const filmButtons = new Map();
   for (const video of ordered) {
@@ -155,7 +155,7 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
     filmButtons.set(video.index, item);
     filmstrip.append(item);
   }
-  const sourceNote = node('p', 'screening-source-note', 'Selected work from Todsophon. View counts are dated snapshots, not live totals.');
+  const sourceNote = node('p', 'screening-source-note', 'View counts were recorded on September 21, 2026, so they’re out of date by now.');
   collection.append(collectionHeader, filmstrip, sourceNote);
   const status = node('p', 'screening-sr-only');
   status.setAttribute('role', 'status');
@@ -186,7 +186,7 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
     }
     stage.classList.remove('is-playing');
     poster.hidden = false;
-    stageNote.textContent = 'Pick a story below. Sound starts when you press play.';
+    stageNote.textContent = 'Sound starts when you press play.';
     if (wasPlaying) status.textContent = 'Playback stopped. Press play to watch the selected video.';
   }
 
@@ -232,7 +232,7 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
     if (!selected || !dialog.open || document.hidden) return;
     stopPlayback();
     iframe = node('iframe', 'screening-player');
-    iframe.title = `${selected.title} — YouTube video player`;
+    iframe.title = `${selected.title}: YouTube video player`;
     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     iframe.allowFullscreen = true;
     iframe.referrerPolicy = 'strict-origin-when-cross-origin';
@@ -316,7 +316,7 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
     }
   });
   dialog.addEventListener('animationend', event => {
-    if (event.animationName === 'screening-curtain') dialog.classList.remove('is-entering');
+    if (event.animationName === 'screening-arrive') dialog.classList.remove('is-entering');
   });
   document.addEventListener('visibilitychange', () => { if (document.hidden) stopPlayback(); });
 

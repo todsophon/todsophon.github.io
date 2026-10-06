@@ -1,6 +1,6 @@
 /* A quiet frame around the room: Tod's name, one small menu, and Fibi's own bubble.
    Loaded last so it settles earlier layers. */
-:root{--paper-warm:#faf6f0;--ink-warm:#3a2a2f;--muted-warm:#7a6560;--line-warm:#ead9c6;--clay:#a9492e;--clay-dark:#8a3a24}
+:root{--room-light:brightness(1.09) saturate(1.06) contrast(.97);--paper-warm:#faf6f0;--ink-warm:#3a2a2f;--muted-warm:#7a6560;--line-warm:#ead9c6;--clay:#a9492e;--clay-dark:#8a3a24}
 html,body,main,.world,.scene-section{background:var(--paper-warm)}
 body{min-height:100dvh}
 
@@ -25,9 +25,23 @@ body{min-height:100dvh}
 .scene-section{position:relative;min-height:0;justify-content:flex-start}
 .cozy-room.scene{width:min(100%,1240px,calc((100dvh - 60px - 20px) * 1.5));margin:0 auto 12px;background:transparent}
 .cozy-room .room-art{mix-blend-mode:normal}
+/* A brighter, airier room: the same gentle lift on every painted layer. */
+.cozy-room:not(.reveal-active) .room-art,.cozy-room .room-color-spot,.cozy-room .furniture-sprite{filter:var(--room-light)}
 .cozy-room .character{width:13%;max-width:146px}
 .cozy-room .character:not(:hover):not(:focus-within) .character-name{opacity:0}
-.cozy-room:not(.reveal-active):not(.is-arranging) .furniture-label,.cozy-room:not(.is-arranging) .furniture-piece.is-painted .furniture-label{display:none}
+/* Name tags: once an object is awake it wears a small, quiet tag so visitors know what it is. */
+.room-tag,.cozy-room:not(.is-arranging) .furniture-piece.is-awake .furniture-label{display:block;width:auto;height:auto;min-width:0;padding:3px 9px;border:1px solid var(--line-warm);border-radius:999px;background:#fffaf3eb;color:var(--ink-warm);font-size:11.5px;font-weight:650;line-height:1.25;white-space:nowrap;box-shadow:0 2px 7px #3a2a2f1c;animation:none;pointer-events:none;transition:opacity .15s,transform .15s}
+.cozy-room:not(.is-arranging) .furniture-piece.is-awake .furniture-label:after{content:none}
+.cozy-room:not(.is-arranging) .furniture-piece.is-awake .furniture-label:before{content:none}
+.cozy-room:not(.is-arranging) .furniture-piece.is-awake .furniture-hit:hover .furniture-label,.cozy-room:not(.is-arranging) .furniture-piece.is-awake .furniture-hit:focus-visible .furniture-label{border-color:#c98b62;transform:translate(-50%,calc(-100% - 2px))}
+.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=bookshelf] .furniture-label{display:none}
+.cozy-room:not(.is-arranging) .furniture-piece.is-awake[data-furniture=youtube] .furniture-label{left:44%;top:6%}
+.cozy-room:not(.is-arranging) .furniture-piece.is-awake[data-furniture=oto] .furniture-label{left:56%;top:7%}
+.cozy-room:not(.is-arranging) .furniture-piece.is-awake[data-furniture=tiktok] .furniture-label{left:50%;top:-1%}
+.cozy-room:not(.is-arranging) .furniture-piece.is-awake[data-furniture=chair] .furniture-label{left:50%;top:26%}
+.cozy-room:not(.is-arranging) .furniture-piece.is-awake[data-furniture=plant] .furniture-label{left:55%;top:3%}
+.wall-tag{position:absolute;transform:translate(-50%,calc(-100% - 5px));font-size:11.5px}
+.wall-tag:not(.is-awake),.is-arranging .wall-tag,.is-moving-wall-decor .wall-tag{opacity:0}
 .cozy-room:not(.is-arranging) .award-open,.cozy-room:not(.is-arranging) .portrait-drag-hint,.cozy-room:not(.is-arranging) .wall-portrait>span{display:none}
 .room-color-spot{background-image:url('assets/studio-background-guided.webp')}
 
@@ -38,17 +52,12 @@ body{min-height:100dvh}
 .cozy-room.reveal-active .wall-award .award-open{display:none!important}
 .cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label:before{content:attr(data-name);position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);padding:4px 9px;border:1px solid var(--line-warm);border-radius:999px;background:#fffaf3;color:var(--ink-warm);font-size:12px;font-weight:650;line-height:1.3;white-space:nowrap;opacity:0;transition:opacity .15s;pointer-events:none}
 .cozy-room.reveal-active .furniture-hit:hover .furniture-label:before,.cozy-room.reveal-active .furniture-hit:focus-visible .furniture-label:before{opacity:1}
-.cozy-room.reveal-active .wall-portrait:not(.is-painted){box-shadow:none}
-.cozy-room.reveal-active .wall-portrait:not(.is-painted) img{filter:grayscale(1) brightness(1.1) contrast(.97) drop-shadow(0 0 9px #f7c27e)}
-.cozy-room.reveal-active .wall-portrait:not(.is-painted):after{content:'✦';position:absolute;left:50%;top:44%;display:grid;place-items:center;width:24px;height:24px;transform:translate(-50%,-50%);border-radius:50%;background:#ffd9a3;color:#b25a2e;font-size:13px;box-shadow:0 0 0 5px #fff4e266,0 0 18px 7px #f7c27e99;animation:soft-glow 2.4s ease-in-out infinite;pointer-events:none}
 /* Each glow sits on the part people recognise: the screens, the ring, the seat, the chart. */
 .cozy-room.reveal-active .furniture-piece[data-furniture=oto] .furniture-label{left:56%;top:24%}
 .cozy-room.reveal-active .furniture-piece[data-furniture=youtube] .furniture-label{left:44%;top:22%}
 .cozy-room.reveal-active .furniture-piece[data-furniture=tiktok] .furniture-label{left:50%;top:13%}
 .cozy-room.reveal-active .furniture-piece[data-furniture=chair] .furniture-label{left:50%;top:44%}
 .cozy-room.reveal-active .furniture-piece[data-furniture=plant] .furniture-label{left:52%;top:30%}
-/* While asleep the board's photos stay visible, just without color. */
-.cozy-room.reveal-active .wall-pinboard .board-note span.note-photo,.cozy-room.reveal-active .wall-pinboard .board-note span.note-photo span{opacity:1!important}
 @keyframes soft-glow{50%{box-shadow:0 0 0 8px #fff4e244,0 0 26px 11px #f7c27e88}}
 
 /* Fibi's bubble: a line from her, and at most two small buttons. */
@@ -76,32 +85,54 @@ body{min-height:100dvh}
 .is-arranging .floor-keys-scene{opacity:.55}
 .is-arranging .floor-key{pointer-events:none}
 
+/* Instagram and LinkedIn sit centred along the two front edges of the floor, just past the
+   slab, turned to each edge's angle (from FLOOR_QUAD in room-layout.mjs). */
+.cozy-room .contact-ledge .ledge-instagram,.cozy-room .contact-ledge .ledge-linkedin{display:inline-flex;align-items:center;gap:7px;padding:4px 6px;color:#5a3a30;font-size:12.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-shadow:none;transform-origin:50% 50%}
+.cozy-room .contact-ledge .ledge-instagram{left:25.42%;top:83.15%;right:auto;transform:translate(-50%,-50%) rotate(31.06deg)}
+.cozy-room .contact-ledge .ledge-linkedin{left:72.9%;top:84.4%;right:auto;transform:translate(-50%,-50%) rotate(-27.93deg)}
+.cozy-room .contact-ledge .ledge-instagram:hover,.cozy-room .contact-ledge .ledge-linkedin:hover{color:#2e2128;text-decoration:none}
+.cozy-room .contact-ledge .ledge-instagram:hover span,.cozy-room .contact-ledge .ledge-linkedin:hover span{text-decoration:underline;text-underline-offset:3px}
+.brand-logo{display:block;width:19px;height:19px;flex:none;border-radius:5px;box-shadow:0 1px 3px #3a2a2f33}
+.cozy-room.reveal-active .brand-logo{filter:grayscale(1)}
+
 /* A mailbox at the front corner for email. */
-.contact-ledge .room-mailbox{left:50%;bottom:3.6%;width:4.3%;min-height:0;padding:0;border:0;background:none;box-shadow:none;translate:-50% 0;display:block;transition:transform .18s ease}
-.contact-ledge .room-mailbox img{display:block;width:100%;height:auto;filter:drop-shadow(0 3px 2px #5a2e1e40)}
+/* The post's foot (58% across, 99% down the sprite) stands on the floor just inside its front
+   corner: tile (16.4, 16.4) in room-layout.mjs. */
+.contact-ledge .room-mailbox{left:48.56%;top:94.5%;bottom:auto;width:4.3%;min-height:0;padding:0;border:0;background:none;box-shadow:none;translate:-58.3% -98.9%;display:block;transition:transform .18s ease}
+.contact-ledge .room-mailbox img{display:block;width:100%;height:auto;filter:var(--room-light) drop-shadow(0 3px 2px #5a2e1e40)}
 .contact-ledge .room-mailbox span{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);padding:4px 9px;border:1px solid var(--line-warm);border-radius:999px;background:#fffaf3;color:var(--ink-warm);font-size:12px;font-weight:650;white-space:nowrap;opacity:0;transition:opacity .16s;pointer-events:none}
 .contact-ledge .room-mailbox:hover,.contact-ledge .room-mailbox:focus-visible{transform:translateY(-4px);background:none}
 .contact-ledge .room-mailbox:hover span,.contact-ledge .room-mailbox:focus-visible span{opacity:1}
 .cozy-room.reveal-active .room-mailbox img{filter:grayscale(1) brightness(1.06) drop-shadow(0 3px 2px #5a2e1e40)}
 
-/* Awards hang side by side above the YouTube desk. */
-.wall-award-silver{left:22.9%;top:17.8%;width:5.1%;height:14.1%}
-.wall-award-gold{left:28.6%;top:14.4%;width:4.7%;height:14.5%}
-
-/* The teal wall slopes at about 0.44 where the board and portrait hang. The cork image is
-   drawn at 0.31 and the frame at 0.41, so each gets the difference as a vertical shear. */
-.wall-pinboard{left:60.5%;top:5.5%;width:21%;transform:skewY(7.4deg);transform-origin:0 0}
-.board-note{width:16%;height:36%;background:none;cursor:grab}
-.board-note:hover,.board-note:focus-visible{outline:none}
-.board-note .note-photo{position:absolute;inset:0;display:flex;flex-direction:column;gap:4%;padding:7% 7% 0;box-sizing:border-box;background:#fbf8f1;box-shadow:1px 2px 3px #402c3359;transform:skewY(17.2deg) rotate(var(--tilt,0deg));transform-origin:50% 0;pointer-events:none}
+/* Wall decor: each piece is a flat texture laid onto its wall by a perspective matrix
+   (wall-layout.mjs), so it sits flat anywhere along the wall and can be dragged. */
+.wall-decor-scene{position:absolute;left:0;top:0;z-index:2;width:1000px;height:666.667px;transform-origin:0 0;transform:scale(var(--scene-scale,1));pointer-events:none}
+.cozy-room .wall-decor-scene .wall-item{position:absolute;left:0;top:0;width:auto;height:auto;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;transform-origin:0 0;transition:filter .15s;pointer-events:auto;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.cozy-room .wall-decor-scene .wall-item:hover,.cozy-room .wall-decor-scene .wall-item:focus-visible{transform-origin:0 0;filter:brightness(1.05) drop-shadow(0 0 5px #fff3d6)}
+.cozy-room .wall-decor-scene .wall-item:focus-visible{outline:2px solid #e9b44c;outline-offset:2px}
+.cozy-room .wall-decor-scene .wall-item.is-wall-dragging{cursor:grabbing;filter:drop-shadow(2px 6px 6px #3a2a2f40)}
+.wall-item img,.pinboard-frame img{display:block;width:100%;height:100%;pointer-events:none;filter:var(--room-light) drop-shadow(1.5px 2.5px 1.5px #5a3a2a40)}
+.wall-item.wall-award>img{filter:var(--room-light) drop-shadow(1.5px 3px 2px #5a3a2a50)}
+.pinboard-frame{position:absolute;inset:0;padding:0;border:0;background:none;cursor:grab;touch-action:none}
+.pinboard-frame:focus-visible{outline:2px solid #e9b44c;outline-offset:2px}
+.is-wall-dragging .pinboard-frame{cursor:grabbing}
+.cozy-room .wall-pinboard .board-note{position:absolute;width:17%;height:52%;padding:0;border:0;background:none;cursor:grab;touch-action:none;transform:none;scale:1}
+.cozy-room .wall-pinboard .board-note:hover,.cozy-room .wall-pinboard .board-note:focus-visible{outline:none;scale:1.05;filter:drop-shadow(0 2px 3px #402c3359)}
+.cozy-room .wall-pinboard .board-note:after{content:none}
+.board-note .note-photo{position:absolute;inset:0;display:flex;flex-direction:column;gap:4%;padding:7% 7% 0;box-sizing:border-box;background:#fbf8f1;box-shadow:1px 2px 3px #402c3359;transform:rotate(var(--tilt,0deg));pointer-events:none}
 .board-note .note-photo img{display:block;width:100%;aspect-ratio:9/10;height:auto;object-fit:cover}
-.board-note .note-photo span{display:block;transform:none;padding:0;color:#4b3c43;font-size:clamp(6px,.6vw,9px);font-weight:900;letter-spacing:.06em;line-height:1;text-align:center;text-shadow:none}
-.board-note .note-photo:before{content:'';position:absolute;left:50%;top:-3%;width:11%;aspect-ratio:1;border-radius:50%;background:#d23a2c;box-shadow:0 1px 2px #0005;transform:translateX(-50%)}
+.board-note .note-photo span{display:block;transform:none;padding:0;color:#4b3c43;font-size:9px;font-weight:900;letter-spacing:.06em;line-height:1;text-align:center;text-shadow:none}
+.board-note .note-photo:before{content:'';position:absolute;left:50%;top:-4%;width:10%;aspect-ratio:1;border-radius:50%;background:#d23a2c;box-shadow:0 1px 2px #0005;transform:translateX(-50%)}
 .board-note-product{--tilt:-3deg}.board-note-community{--tilt:2deg}.board-note-films{--tilt:-2deg}
-.board-note:focus-visible .note-photo{outline:3px solid #e9b44c;outline-offset:2px}
-.wall-portrait{width:9.4%}
-.wall-portrait img{transform:skewY(2.9deg);transform-origin:0 0}
-.wall-portrait>span{bottom:-9%}
+.board-note:focus-visible .note-photo{outline:2px solid #e9b44c;outline-offset:2px}
+/* Asleep: the same grayscale as the room, with one soft glow per story. */
+.cozy-room.reveal-active .wall-item:not(.is-painted)>img,.cozy-room.reveal-active .wall-decor-scene .wall-pinboard:not(.is-painted){filter:grayscale(1) brightness(1.1) contrast(.97)!important}
+.cozy-room.reveal-active .wall-item.is-painting>img,.cozy-room.reveal-active .wall-pinboard.is-painting{animation:reveal-object-color .85s ease-out forwards}
+.cozy-room.reveal-active .wall-pinboard:not(.is-painted) .board-note .note-photo,.cozy-room.reveal-active .wall-pinboard:not(.is-painted) .board-note .note-photo span{opacity:1!important}
+.cozy-room.reveal-active .wall-portrait:not(.is-painted){box-shadow:none}
+.cozy-room.reveal-active .wall-portrait:not(.is-painted):after{content:'✦';position:absolute;left:50%;top:45%;display:grid;place-items:center;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:50%;background:#ffd9a3;color:#b25a2e;font-size:16px;box-shadow:0 0 0 6px #fff4e266,0 0 20px 8px #f7c27e99;animation:soft-glow 2.4s ease-in-out infinite;pointer-events:none}
+.is-moving-wall-decor .speech-bubble{opacity:0!important}
 
 @media(max-width:760px){
   .site-header{height:54px;padding:0 12px}
@@ -119,14 +150,65 @@ body{min-height:100dvh}
   #speech-message strong{font-size:13px}
   .speech-action{font-size:12px;min-height:32px}
   .contact-ledge .room-mailbox{width:6%}
+  .cozy-room .contact-ledge .ledge-instagram,.cozy-room .contact-ledge .ledge-linkedin{font-size:10px;gap:4px;letter-spacing:.06em}
+  .brand-logo{width:14px;height:14px;border-radius:4px}
+  .room-tag,.cozy-room:not(.is-arranging) .furniture-piece.is-awake .furniture-label{font-size:8.5px;padding:1px 5px;box-shadow:0 1px 4px #3a2a2f1c}
+  .wall-tag{transform:translate(-50%,calc(-100% - 2px))}
   .cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label,.cozy-room.reveal-active .wall-portrait:not(.is-painted):after{width:17px;height:17px;min-width:17px;font-size:10px;box-shadow:0 0 0 3px #fff4e266,0 0 12px 4px #f7c27e99}
   .cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label:after{font-size:10px}
-  .wall-award{min-width:0}
-  .wall-award-silver{left:22.9%;top:17.8%;width:5.1%;height:14.1%}
-  .wall-award-gold{left:28.6%;top:14.4%;width:4.7%;height:14.5%}
   .board-note .note-photo span{display:none}
 }
 @media(prefers-reduced-motion:reduce){
   .cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label{animation:none}
   .floor-key,.contact-ledge .room-mailbox{transition:none}
 }
+
+/* Chapter pages: plain headings, real images, and prose instead of labels, stat cards and pills. */
+.dialog-topbar .eyebrow{font-size:13px;font-weight:650;letter-spacing:0;text-transform:none}
+.oto-role{margin:10px 0 0;color:#7a6c83;font-size:14px}
+.project-dialog[data-chapter=oto] .dialog-content h2{max-width:620px;font-size:38px;letter-spacing:-1.4px}
+.project-dialog[data-chapter=oto] .dialog-lead{margin-top:18px}
+.oto-app,.oto-more,.reel-list{margin:40px 0 0}
+.dialog-content .oto-app h3,.dialog-content .oto-more h3,.dialog-content .reel-list h3{margin:0 0 8px;font-size:21px;letter-spacing:-.4px}
+.dialog-content .oto-app>p{max-width:640px;margin:0;font-size:15px;line-height:1.65}
+.oto-shots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:20px 0 10px}
+.oto-shots figure{margin:0}
+.oto-shots img{display:block;width:100%;height:auto;aspect-ratio:314/680;object-fit:cover;object-position:top;border-radius:14px;box-shadow:0 6px 18px #2a1f3a1f}
+.oto-shots figcaption{margin-top:7px;color:#7a6c83;font-size:12.5px}
+.oto-app-meta,.oto-work small{display:block;color:#7a6c83;font-size:13px}
+.oto-work{display:grid;grid-template-columns:200px minmax(0,1fr);gap:22px;align-items:start;padding:20px 0;border-top:1px solid #ece4f2}
+.oto-work:last-child{border-bottom:1px solid #ece4f2}
+.oto-work img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px}
+.oto-work.is-portrait img{object-fit:contain;background:#f4eefa}
+.oto-work h4{margin:2px 0 6px;font-size:17px;letter-spacing:-.2px}
+.dialog-content .oto-work p{margin:0 0 8px;font-size:14.5px;line-height:1.6}
+.oto-inline-link{color:#6733cf;font-weight:600;text-underline-offset:3px}
+.oto-inline-link span{margin-left:2px}
+.dialog-content .reel-list>p{max-width:640px;margin:0 0 14px;font-size:15px;line-height:1.65}
+.reel-list ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:0;padding:0;list-style:none}
+.reel-list li{display:flex;flex-direction:column;gap:4px;min-width:0}
+.reel-frame{position:relative;aspect-ratio:9/16;margin-bottom:8px;overflow:hidden;border-radius:12px;background:#1d1a1c}
+.reel-frame img{display:block;width:100%;height:100%;object-fit:cover}
+.reel-play{position:absolute;inset:0;display:grid;place-items:center;width:100%;padding:0;border:0;background:linear-gradient(0deg,#0004,transparent 40%);cursor:pointer}
+.reel-play span{display:grid;place-items:center;width:54px;height:54px;padding-left:4px;border-radius:50%;background:#fff;color:#1d1a1c;font-size:19px;box-shadow:0 4px 18px #0005;transition:transform .15s}
+.reel-play:hover span{transform:scale(1.06)}
+.reel-play:focus-visible{outline:3px solid #6733cf;outline-offset:-3px}
+.reel-player{display:block;width:100%;height:100%;border:0;background:#fff}
+.reel-list strong{font-size:15px;line-height:1.3;color:#2b2137}
+.reel-list li>span{color:#655b72;font-size:13.5px;line-height:1.5}
+.reel-list small{color:#7a6c83;font-size:12.5px}
+.reel-list small a{color:#6733cf;font-weight:600;text-underline-offset:3px}
+.reel-list .source-note{margin-top:14px}
+.oto-work.has-video{grid-template-columns:240px minmax(0,1fr)}
+.oto-work video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:#1d1a1c}
+.oto-links{display:flex;flex-wrap:wrap;gap:4px 8px;margin:34px 0 0;font-size:14px}
+.oto-links span[aria-hidden]{color:#b8aac4}
+@media(max-width:760px){
+  .project-dialog[data-chapter=oto] .dialog-content h2{font-size:29px;letter-spacing:-.9px}
+  .oto-shots{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;margin-right:-22px;padding-right:22px;scrollbar-width:none}
+  .oto-shots figure{flex:0 0 44%;scroll-snap-align:start}
+  .oto-work,.oto-work.has-video{grid-template-columns:1fr;gap:12px}
+  .reel-list ul{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin-right:-22px;padding-right:22px;scrollbar-width:none}
+  .reel-list li{flex:0 0 62%;scroll-snap-align:start}
+}
+.reel-frame:has(.reel-player){aspect-ratio:9/20;background:#fff}
