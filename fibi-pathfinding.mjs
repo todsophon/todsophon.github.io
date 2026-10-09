@@ -9,7 +9,7 @@ const samePoint = (a, b) => Math.abs(a.x - b.x) < EPSILON && Math.abs(a.y - b.y)
 
 function obstaclesFor(layout) {
   if (!layout || FURNITURE.some(item => !validPoint(layout[item.id]))) return null;
-  return [...RESERVED_AREAS, ...FURNITURE.map(item => ({ ...layout[item.id], width: item.width, depth: item.depth }))]
+  return [...RESERVED_AREAS, ...FURNITURE.filter(item => !item.retired).map(item => ({ ...layout[item.id], width: item.width, depth: item.depth }))]
     .map(area => ({
       left: area.x - WALKING_CLEARANCE,
       right: area.x + area.width + WALKING_CLEARANCE,

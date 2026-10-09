@@ -32,6 +32,10 @@
 .furniture-art{position:absolute;inset:0;pointer-events:none;transition:transform .2s,filter .2s;transform-origin:var(--ground-center,50%) var(--ground-anchor,85%);z-index:0}
 .furniture-sprite{position:absolute;inset:0;background-image:url('assets/furniture-atlas.png');background-repeat:no-repeat;transform:var(--furniture-perspective,none);transform-origin:var(--ground-center,50%) var(--ground-anchor,85%)}
 .furniture-hit:hover+.furniture-art{filter:brightness(1.035)}
+.furniture-piece[hidden]{display:none!important}
+.cozy-room:not(.is-arranging) .is-decoration .furniture-hit:before{pointer-events:none}
+.cozy-room .is-decoration .furniture-label{display:none!important}
+.cozy-room:not(.is-arranging) .is-decoration .furniture-art{filter:none}
 .furniture-hit.is-awaiting-fibi+.furniture-art{filter:brightness(1.07) drop-shadow(0 0 7px #f5d94eaa)}
 .furniture-hit.is-awaiting-fibi .furniture-label{border-color:#d6a629;box-shadow:0 0 0 3px #f5d94e55,0 3px 0 #d0c7b54d}
 .furniture-piece.is-selected .furniture-art{filter:brightness(1.035) drop-shadow(0 0 2px #fff4ce)}

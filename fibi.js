@@ -164,6 +164,7 @@ export function createRoomCompanion({ stage, getLayout, isEditing }) {
     // using the furniture's own drawing order (the same rule paintOrder uses).
     let lower = 10, upper = Infinity;
     for (const item of FURNITURE) {
+      if (item.retired) continue;
       const placed = getLayout()[item.id];
       const center = tileToScreen(placed.x + item.width / 2, placed.y + item.depth / 2);
       const halfWidth = (item.width + item.depth) * 12.5;

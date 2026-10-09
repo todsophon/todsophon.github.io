@@ -11,15 +11,13 @@ export function createGuidedTour({ stage, guide, keyboard }) {
   const STORIES = [
     { id: 'oto', name: 'Oto desk', selector: '[data-furniture="oto"], .wall-pinboard', beacon: 'oto', color: '#68cbf5', anim: 'talking', chapter: 'oto',
       title: 'Oto at Frisson Labs', line: `Tod’s current role: community growth and hands-on product work on Oto’s apps and games. ${value('oto', 0) || '15K'} people brought to Discord.` },
-    { id: 'youtube', name: 'YouTube desk', selector: '[data-furniture="youtube"], [data-furniture="bookshelf"], .wall-award', beacon: 'youtube', color: '#f4c967', anim: 'happy', chapter: 'youtube',
+    { id: 'youtube', name: 'Paired YouTube awards', selector: '.wall-award', color: '#f4c967', anim: 'happy', chapter: 'youtube',
       title: 'From 100K to a million', line: `${value('youtube', 0) || '1.81M'} subscribers and ${value('youtube', 1) || '455M'} views. The play buttons on the wall mark the milestones.` },
-    { id: 'tiktok', name: 'Ring light', selector: '[data-furniture="tiktok"]', beacon: 'tiktok', color: '#79d9cf', anim: 'jumping', chapter: 'tiktok',
-      title: 'Short-form', line: 'Hooks, pacing, and paying attention to how people actually respond.' },
-    { id: 'videos', name: 'Beanbag', selector: '[data-furniture="chair"]', beacon: 'chair', color: '#f1bd76', anim: 'sitLoop', screening: true,
-      title: 'The screening beanbag', line: 'Pull up a seat: a little gallery of the videos and Shorts Tod made.' },
+    { id: 'videos', name: 'Video desk', selector: '[data-furniture="youtube"], [data-furniture="bookshelf"], [data-furniture="tiktok"]', beacon: 'youtube', color: '#f1bd76', anim: 'talking', screening: true,
+      title: 'My video desk', line: 'YouTube films, Shorts, and Instagram character stories. Choose short-form or long-form inside the gallery.' },
     { id: 'about', name: 'Portrait', selector: '.wall-portrait', color: '#d9b6e9', anim: 'hello', chapter: 'about',
       title: 'Meet Tod', line: 'From Thailand to Seattle, with a camera along the way.' },
-    { id: 'analytics', name: 'Case study easel', selector: '[data-furniture="plant"]', beacon: 'plant', color: '#b3d98c', anim: 'thinking', href: 'frisson-case-study.html',
+    { id: 'analytics', name: 'Insights easel', selector: '[data-furniture="plant"]', beacon: 'plant', color: '#b3d98c', anim: 'thinking', chapter: 'oto', note: 'experiments',
       title: 'The Frisson Labs case study', line: 'How Tod builds AI video workflows that carry each lesson into the next clip, plus a call-to-action video that got 153 bio-link clicks.' },
   ];
   const byId = Object.fromEntries(STORIES.map(story => [story.id, story]));
@@ -44,7 +42,7 @@ export function createGuidedTour({ stage, guide, keyboard }) {
     if (target.closest('.wall-portrait')) return byId.about;
     if (target.closest('.wall-award')) return byId.youtube;
     if (target.closest('.board-note, .wall-pinboard')) return byId.oto;
-    return STORIES.find(story => story.beacon === furniture) || (furniture === 'bookshelf' ? byId.youtube : null);
+    return STORIES.find(story => story.beacon === furniture) || (furniture === 'bookshelf' ? byId.videos : null);
   }
   function save() { try { localStorage.setItem(SEEN_KEY, JSON.stringify([...awake])); } catch { /* Progress lasts for this visit. */ } }
 
@@ -73,7 +71,7 @@ export function createGuidedTour({ stage, guide, keyboard }) {
     clearTimeout(speechTimer);
     message.innerHTML = html;
     status.textContent = message.textContent;
-    actions.replaceChildren(...buttons.map(({ label, action, primary, open, screening, href }) => {
+    actions.replaceChildren(...buttons.map(({ label, action, primary, open, screening, filter, note, href }) => {
       const element = document.createElement(href ? 'a' : 'button');
       element.className = `speech-action${primary ? ' is-primary' : ''}`;
       element.textContent = label;
@@ -81,6 +79,8 @@ export function createGuidedTour({ stage, guide, keyboard }) {
       if (action) element.dataset.speech = action;
       if (open) element.dataset.open = open;
       if (screening) element.dataset.screening = '';
+      if (filter) element.dataset.screeningFilter = filter;
+      if (note) element.dataset.note = note;
       return element;
     }));
     actions.hidden = !buttons.length;
@@ -125,7 +125,7 @@ export function createGuidedTour({ stage, guide, keyboard }) {
     syncClasses();
     guide.hold(story.anim);
     const left = remaining().length;
-    const open = story.screening ? { label: 'Watch the films', screening: true, primary: true } : story.href ? { label: 'Read the case study', href: story.href, primary: true } : { label: 'Open the story', open: story.chapter, primary: true };
+    const open = story.screening ? { label: 'Watch the videos', screening: true, filter: story.filter, primary: true } : story.href ? { label: 'Read the case study', href: story.href, primary: true } : { label: 'Open the story', open: story.chapter, note: story.note, primary: true };
     speak(`<strong>${escapeHTML(story.title)}</strong> ${escapeHTML(story.line)}${active ? `<small>${STORIES.length - left} of ${STORIES.length} awake</small>` : ''}`,
       left ? [open, { label: touring ? 'Next' : 'Next one', action: 'next' }, { label: 'Skip tour', action: 'skip' }] : [open, { label: 'Finish', action: 'finish' }]);
   }

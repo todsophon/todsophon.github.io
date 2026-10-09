@@ -1,7 +1,7 @@
 import { createScreeningRoom } from './gallery.js?v=69';
 
 const scene = document.querySelector('#scene');
-const screeningSource = () => document.querySelector('[data-furniture="chair"] .furniture-hit');
+const screeningSource = () => document.querySelector('[data-furniture="youtube"] .furniture-hit');
 const selectedVideos = window.PORTFOLIO.chapters.youtube.videos || [];
 const featuredIndex = Math.max(0, selectedVideos.findIndex(video => video.format === 'Long-form video'));
 
@@ -31,5 +31,5 @@ document.addEventListener('click', event => {
   if (!trigger || event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   const supplied = trigger.dataset.videoIndex;
-  openScreening({ index: supplied === undefined ? featuredIndex : Number(supplied), source: trigger });
+  openScreening({ index: supplied === undefined ? featuredIndex : Number(supplied), filter: trigger.dataset.screeningFilter || 'all', source: trigger });
 });

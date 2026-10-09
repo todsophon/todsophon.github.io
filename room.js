@@ -43,7 +43,7 @@ const spriteSources = {
   plant: ['assets/chart-easel.webp', 494, 799],
   tiktok: ['assets/ring-light.webp?v=3', 267, 817],
 };
-const labels = { youtube: 'YouTube', oto: 'Oto', bookshelf: 'Record cabinet', tiktok: 'TikTok', plant: 'Case study', chair: 'Watch films' };
+const labels = { youtube: 'Videos', oto: 'Oto / Frisson', bookshelf: 'Record cabinet', tiktok: 'Ring light', plant: 'Insights & experiments', chair: '' };
 const accessibleLabel = (item, arranging = false) => arranging ? `Move ${item.label}` : item.action === 'screening' ? 'Watch films from the screening chair' : item.href ? 'Read the Frisson Labs case study' : `Explore ${item.label}`;
 const pieces = new Map();
 let layout = clone(DEFAULT_LAYOUT);
@@ -121,7 +121,9 @@ function setEditing(value) {
   guide?.editingChanged();
   if (!value) cancelSelection();
   for (const item of FURNITURE) {
-    pieces.get(item.id).querySelector('button').setAttribute('aria-label', accessibleLabel(item, value));
+    const hit = pieces.get(item.id).querySelector('button');
+    hit.setAttribute('aria-label', accessibleLabel(item, value));
+    if (item.decorative) hit.disabled = !value;
   }
 }
 function select(id, position = layout[id]) {
@@ -258,6 +260,8 @@ function nudge(dx, dy) {
 for (const item of FURNITURE) {
   const piece = document.createElement('div');
   piece.className = 'furniture-piece'; piece.dataset.furniture = item.id;
+  if (item.retired) piece.hidden = true;
+  if (item.decorative) piece.classList.add('is-decoration');
   if (item.chapter) piece.dataset.chapter = item.chapter;
   if (item.action) piece.dataset.action = item.action;
   piece.style.width = `${artWidths[item.id] / 10}%`;
@@ -269,6 +273,7 @@ for (const item of FURNITURE) {
   hit.setAttribute('aria-label', accessibleLabel(item));
   hit.setAttribute('aria-describedby', 'room-instructions');
   hit.setAttribute('aria-pressed', 'false');
+  if (item.decorative) hit.disabled = true;
   const art = document.createElement('span'); art.className = 'furniture-art'; art.setAttribute('aria-hidden', 'true');
   // Keep perspective on a separate layer so dragging/landing never resets it.
   const sprite = document.createElement('span'); sprite.className = 'furniture-sprite';
@@ -280,6 +285,7 @@ for (const item of FURNITURE) {
   sprite.style.backgroundPosition = `${offset(cropX, cropWidth, sourceWidth)}% ${offset(cropY, cropHeight, sourceHeight)}%`;
   art.append(sprite);
   const label = document.createElement('span'); label.className = 'furniture-label'; label.textContent = labels[item.id]; label.setAttribute('aria-hidden', 'true');
+  if (item.decorative) label.hidden = true;
   hit.append(label); piece.append(hit, art); layer.append(piece); pieces.set(item.id, piece);
   hit.addEventListener('pointerdown', event => startPointer(event, item));
   hit.addEventListener('pointermove', event => movePointer(event, item));
@@ -292,7 +298,7 @@ for (const item of FURNITURE) {
     if (editing) select(item.id);
     else if (item.action === 'screening') document.dispatchEvent(new CustomEvent('portfolio:request-screening', { detail: { source: hit } }));
     else if (item.href) window.location.href = item.href;
-    else document.dispatchEvent(new CustomEvent('room:open-chapter', { detail: { chapter: item.chapter } }));
+    else document.dispatchEvent(new CustomEvent('room:open-chapter', { detail: { chapter: item.chapter, section: item.section, source: hit } }));
   });
   hit.addEventListener('keydown', event => {
     if (!editing) return;

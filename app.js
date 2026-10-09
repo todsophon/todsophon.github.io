@@ -5,7 +5,7 @@ const character = document.querySelector('#character');
 const scene = document.querySelector('#scene');
 const listView = document.querySelector('#list-view');
 const viewToggle = document.querySelector('#view-toggle');
-const chapterOrder = ['oto', 'youtube', 'tiktok', 'about'];
+const chapterOrder = ['oto', 'youtube', 'about'];
 const chapterNames = { youtube: 'YouTube', tiktok: 'TikTok', oto: 'Oto', analytics: 'Analytics', about: 'About', resume: 'Résumé' };
 const baseTitle = document.title;
 const historyKey = 'todPortfolioRoute';
@@ -126,7 +126,7 @@ function reelsHTML(reels, { heading = '', intro = '', note = '' } = {}) {
 
 /** The Oto chapter: real screenshots first, then the work in varied rows and plain prose. */
 function otoHTML(item) {
-  const projects = asArray(item.projects);
+  const projects = asArray(item.projects).filter(project => project.kind !== 'AI VIDEO');
   const [app, ...rest] = projects;
   const shots = asArray(item.productShowcase?.screenshots).map(shot => ({ ...shot, src: safeURL(shot.src, 'image') })).filter(shot => shot.src);
   const row = project => {
@@ -142,8 +142,7 @@ function otoHTML(item) {
     </article>`;
   };
   const channel = item.channel;
-  const shortForm = (item.shortForm || '').replace('{followers}', channel?.followers || '');
-  const notes = [item.source?.note, channel?.note, item.reelSource?.note].filter(Boolean).join(' ');
+  const notes = [item.source?.note, channel?.note].filter(Boolean).join(' ');
   return `
     ${item.role ? `<p class="oto-role">${escapeHTML(item.role)}</p>` : ''}
     <p class="dialog-lead">${escapeHTML(item.lead)}</p>
@@ -153,8 +152,10 @@ function otoHTML(item) {
       ${shots.length ? `<div class="oto-shots">${shots.map(shot => `<figure><img src="${escapeHTML(shot.src)}" alt="${escapeHTML(shot.alt)}" width="314" height="680" loading="lazy" decoding="async"><figcaption>${escapeHTML(shot.label)}</figcaption></figure>`).join('')}</div>` : ''}
       <small class="oto-app-meta">${escapeHTML(app.status)}${app.link ? ` · ${linkHTML(app.link, 'oto-inline-link')}` : ''}</small>
     </section>` : ''}
-    ${rest.length ? `<section class="oto-more" aria-labelledby="oto-more-title"><h3 id="oto-more-title">Games and videos</h3>${rest.map(row).join('')}</section>` : ''}
-    ${reelsHTML(item.reels, { heading: 'On Instagram', intro: shortForm })}
+    <nav class="oto-links" aria-label="Oto sections"><a class="oto-inline-link" href="#oto-app-title" data-oto-section="oto-app-title">Products & games</a> · <a class="oto-inline-link" href="#oto-experiments" data-oto-section="oto-experiments">Insights & experiments</a></nav>
+    ${rest.length ? `<section class="oto-more" aria-labelledby="oto-more-title"><h3 id="oto-more-title">Games</h3>${rest.map(row).join('')}</section>` : ''}
+    <section class="project-section"><h3>Stories with Otomates</h3><p>I make character stories and product demos, then use audience response to plan the next one.</p><a class="oto-inline-link" href="#videos" data-screening data-screening-filter="shorts">Watch short-form in the video gallery ↗</a></section>
+    <section class="project-section" id="oto-experiments"><h3>Insights & experiments</h3><p>A character video brought 1.9K follows and 12 bio-link clicks. A video with a call to action recorded 18 follows and 153 bio-link clicks. These posts show different audience responses; they do not isolate the effect of the CTA.</p><a class="oto-inline-link" href="frisson-case-study.html">See the comparison, workflow, and evidence ↗</a></section>
     ${item.community ? `<section class="project-section"><h3>The community</h3><p>${escapeHTML(item.community)}</p></section>` : ''}
     ${asArray(item.sections).map(section => `<section class="project-section"><h3>${escapeHTML(section.title)}</h3><p>${escapeHTML(section.text)}</p></section>`).join('')}
     <p class="oto-links">${[item.link, ...asArray(item.links), channel && { label: channel.handle, url: channel.url }].filter(Boolean).map(link => linkHTML(link, 'oto-inline-link')).join('<span aria-hidden="true"> · </span>')}</p>
@@ -301,6 +302,12 @@ function setView(showList) {
 }
 
 document.addEventListener('click', event => {
+  const sectionLink = event.target.closest?.('[data-oto-section]');
+  if (sectionLink) {
+    event.preventDefault();
+    document.getElementById(sectionLink.dataset.otoSection)?.scrollIntoView({ block: 'start', behavior: 'instant' });
+    return;
+  }
   const reel = event.target.closest?.('[data-reel-embed]');
   if (reel) {
     const frame = document.createElement('iframe');
@@ -318,16 +325,21 @@ document.addEventListener('click', event => {
   event.preventDefault();
   openChapter(trigger.dataset.open, { source: trigger });
   if (trigger.dataset.note) {
-    const section = { product: '[data-project="app"]', community: '[data-project="games"]', films: '[data-project="films"]' }[trigger.dataset.note];
+    const section = { product: '#oto-app-title', community: '#oto-more-title', films: '#oto-experiments', experiments: '#oto-experiments' }[trigger.dataset.note];
     requestAnimationFrame(() => dialog.querySelector(section)?.scrollIntoView({ block: 'start', behavior: 'instant' }));
   }
 });
 document.addEventListener('room:open-chapter', event => {
   const chapter = event.detail.chapter;
-  const source = document.querySelector(`.furniture-piece[data-chapter="${chapter}"] .furniture-hit`);
+  const source = event.detail.source || document.querySelector(`.furniture-piece[data-chapter="${chapter}"] .furniture-hit`);
   if (chapter === 'youtube') {
-    document.dispatchEvent(new CustomEvent('portfolio:request-screening', { detail: { index: 2, filter: 'all', source } }));
-  } else openChapter(chapter, { source });
+    document.dispatchEvent(new CustomEvent('portfolio:request-screening', { detail: { filter: 'all', source } }));
+  } else if (chapter === 'tiktok') {
+    document.dispatchEvent(new CustomEvent('portfolio:request-screening', { detail: { filter: 'shorts', source } }));
+  } else {
+    openChapter(chapter, { source });
+    if (event.detail.section === 'experiments') document.getElementById('oto-experiments')?.scrollIntoView({ block: 'start', behavior: 'instant' });
+  }
 });
 document.addEventListener('portfolio:hide-case-for-screening', () => {
   if (!dialog.open) return;
@@ -335,7 +347,10 @@ document.addEventListener('portfolio:hide-case-for-screening', () => {
   window.history.replaceState(stateWithRoute({ kind: 'base', version: 1 }), '', pageURL(lastBaseHash));
   hideChapter();
 });
-document.addEventListener('portfolio:show-video-case', () => openChapter('youtube', { source: document.querySelector('[data-furniture="chair"] .furniture-hit') }));
+document.addEventListener('portfolio:show-video-case', event => {
+  openChapter(event.detail?.chapter || 'youtube', { source: document.querySelector('[data-furniture="youtube"] .furniture-hit') });
+  if (event.detail?.section === 'experiments') document.getElementById('oto-experiments')?.scrollIntoView({ block: 'start', behavior: 'instant' });
+});
 document.querySelector('#tour-button')?.addEventListener('click', event => { event.preventDefault(); openChapter('oto', { source: event.currentTarget }); });
 document.querySelector('#dialog-close').addEventListener('click', closeChapter);
 document.querySelector('#dialog-back').addEventListener('click', closeChapter);

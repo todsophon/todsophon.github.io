@@ -16,9 +16,10 @@ export const FURNITURE = Object.freeze([
   { id: 'youtube', label: 'Creator desk', width: 3, depth: 8, default: { x: 0, y: 4 }, chapter: 'youtube', sprite: { col: 0, row: 0 } },
   { id: 'oto', label: 'Oto AI desk', width: 8, depth: 3, default: { x: 6, y: 0 }, chapter: 'oto', sprite: { col: 1, row: 0 } },
   { id: 'bookshelf', label: 'Record cabinet', width: 2, depth: 4, default: { x: 0, y: 12 }, chapter: 'youtube', sprite: { col: 2, row: 0 } },
-  { id: 'plant', label: 'Case study easel', width: 2, depth: 2, default: { x: 15, y: 0 }, href: 'frisson-case-study.html', sprite: { col: 0, row: 1 } },
-  { id: 'chair', label: 'Screening beanbag', width: 4, depth: 4, default: { x: 2, y: 13 }, action: 'screening', sprite: { col: 1, row: 1 } },
-  { id: 'tiktok', label: 'TikTok ring light', width: 2, depth: 2, default: { x: 4, y: 3 }, chapter: 'tiktok', sprite: { col: 2, row: 1 } },
+  { id: 'plant', label: 'Insights & experiments', width: 2, depth: 2, default: { x: 15, y: 0 }, chapter: 'oto', section: 'experiments', sprite: { col: 0, row: 1 } },
+  // Keep the retired chair's saved position so this preview can be reverted without losing arrangements.
+  { id: 'chair', label: 'Retired beanbag', retired: true, width: 4, depth: 4, default: { x: 2, y: 13 }, sprite: { col: 1, row: 1 } },
+  { id: 'tiktok', label: 'Ring light', decorative: true, width: 2, depth: 2, default: { x: 4, y: 3 }, sprite: { col: 2, row: 1 } },
 ].map(item => Object.freeze({
   ...item,
   default: Object.freeze(item.default),
@@ -140,8 +141,9 @@ export function canPlace(layout, id, x, y) {
   const item = furnitureById.get(id);
   const candidate = { x, y };
   if (!item || !validPosition(candidate, item) || !hasValidPositions(layout)) return false;
+  if (item.retired) return true;
   if ([...RESERVED_AREAS, ...FLOOR_FEATURES].some(area => overlaps(candidate, item, area, area))) return false;
-  return FURNITURE.every(other => other.id === id
+  return FURNITURE.every(other => other.retired || other.id === id
     || !overlaps(candidate, item, layout[other.id], other));
 }
 

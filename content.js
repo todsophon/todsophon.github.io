@@ -86,31 +86,139 @@ window.PORTFOLIO = {
       milestoneSource: { label: 'Read the SPU Voices interview', url: 'https://stories.spu.edu/articles/a-virtual-place-to-belong-with-tod-yansomboon-24', note: 'SPU tells the story and reports the 1M+ milestone, but doesn’t give a date for reaching 100K or 1M.' },
       sections: [
         { title: 'Watching the numbers', text: 'I pay close attention to click-through rate, retention and engagement, and they shape a lot of my creative calls, from how a video opens to how long the story can hold someone.' },
-        { title: 'Three to start with', text: 'Two short, character-led Minecraft stories and one longer video where I go out for food. They show two sides of what I make.' }
+        { title: 'A few to start with', text: 'Three popular Shorts from different years and a mix of longer videos from across my channel: gaming, challenges, tutorials, and on-camera stories.' }
       ],
       videos: [
-        {
-          title: 'Help the Deer Child, Episode 2',
-          url: 'https://www.youtube.com/shorts/tM0eptoO9Fo',
-          format: 'YouTube Short', metric: '2.6M views',
-          description: 'An episode from my Minecraft storytelling series.',
-          thumbnail: 'https://i.ytimg.com/vi/tM0eptoO9Fo/hqdefault.jpg'
-        },
-        {
-          title: 'Katthi secretly eats Todsophon’s food',
-          url: 'https://www.youtube.com/shorts/isCL43TAtHw',
-          format: 'YouTube Short', metric: '1.6M views',
-          description: 'A small bit of mischief in the Minecraft world.',
-          thumbnail: 'https://i.ytimg.com/vi/isCL43TAtHw/hqdefault.jpg'
-        },
-        {
-          title: 'I Tested 1-Star Fast Food',
-          url: 'https://www.youtube.com/watch?v=ceBkGA7Y-1k',
-          format: 'Long-form video',
-          description: 'Taking the storytelling beyond gaming and out for a meal.',
-          thumbnail: 'https://i.ytimg.com/vi/ceBkGA7Y-1k/hqdefault.jpg'
-        }
-      ],
+  {
+    "title": "Minecraft, help me throw the spear!!",
+    "url": "https://www.youtube.com/shorts/tQ1hhdB1wrw",
+    "format": "YouTube Short",
+    "metric": "17M views",
+    "publishedAge": "2025",
+    "recorded": "October 8, 2026",
+    "description": "A popular short from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/tQ1hhdB1wrw/oar3.jpg?sqp=-oaymwEYCJUDENAFSFqQAgHyq4qpAwcIARUAAIhC&rs=AOn4CLDCaxSt9I4jLOF8AmDUIgevRbEtGw&usqp=CCk"
+  },
+  {
+    "title": "😂โอเค Google!! \"กาแฟแท้☕️\" | Tot Musica #Shorts",
+    "url": "https://www.youtube.com/shorts/AcDzJrr6N4k",
+    "format": "YouTube Short",
+    "metric": "10M views",
+    "publishedAge": "2022",
+    "recorded": "October 8, 2026",
+    "description": "A popular short from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/AcDzJrr6N4k/oar1.jpg?sqp=-oaymwEYCJUDENAFSFqQAgHyq4qpAwcIARUAAIhC&rs=AOn4CLDUK3S1k-9pz_qAfwVcqWpyPy7sKA&usqp=CCk"
+  },
+  {
+    "title": "Minecraft - What's Inside Bedrock?",
+    "url": "https://www.youtube.com/shorts/m3TCRhoDmmI",
+    "format": "YouTube Short",
+    "metric": "10M views",
+    "publishedAge": "2021",
+    "recorded": "October 8, 2026",
+    "description": "A popular short from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/m3TCRhoDmmI/oar2.jpg?usqp=CCk"
+  },
+  {
+    "title": "A very strange game!? The \"Feed the Head\" game requires feeding the head!! | Feed The Head",
+    "url": "https://www.youtube.com/watch?v=omOpfiMymzA",
+    "format": "Long-form video",
+    "metric": "549K views",
+    "publishedAge": "5 years ago",
+    "duration": "9:11",
+    "recorded": "October 8, 2026",
+    "description": "Selected from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/omOpfiMymzA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCva9H778Uze2CEYYmZ0m1WQJwzjw"
+  },
+  {
+    "title": "จำลองการป้อนอาหาร จาก ปาก ไป ตู.. Eating Simulator",
+    "url": "https://www.youtube.com/watch?v=xeDyY2vlzWw",
+    "format": "Long-form video",
+    "metric": "371K views",
+    "publishedAge": "3 years ago",
+    "duration": "10:12",
+    "recorded": "October 8, 2026",
+    "description": "Selected from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/xeDyY2vlzWw/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLA6P8L_KGYfw-xwwpzbS8RIT7jFTg"
+  },
+  {
+    "title": "Minecraft, but you ACTUALLY HURT!",
+    "url": "https://www.youtube.com/watch?v=Toq390KiJ0o",
+    "format": "Long-form video",
+    "metric": "286K views",
+    "publishedAge": "2 years ago",
+    "duration": "19:25",
+    "recorded": "October 8, 2026",
+    "description": "Selected from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/Toq390KiJ0o/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDBuLSLRk6TeFUj66gdWFgDvLE9Ig"
+  },
+  {
+    "title": "โทรศัพท์!! สอนโหลด \"สัตว์เลี้ยง\" Among Us มาบนหน้าจอ โทรศัพท์ Andriod!!! Todsopon",
+    "url": "https://www.youtube.com/watch?v=BgNgx1ozIx0",
+    "format": "Long-form video",
+    "metric": "358K views",
+    "publishedAge": "5 years ago",
+    "duration": "5:11",
+    "recorded": "October 8, 2026",
+    "description": "Selected from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/BgNgx1ozIx0/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBsi8jqF6sg3P2DXRuP03a_-1_WiA"
+  },
+  {
+    "title": "Minecraft, but all the creatures are terrifying!!!",
+    "url": "https://www.youtube.com/watch?v=VoTGeEgBs5g",
+    "format": "Long-form video",
+    "metric": "262K views",
+    "publishedAge": "3 years ago",
+    "duration": "12:22",
+    "recorded": "October 8, 2026",
+    "description": "Selected from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/VoTGeEgBs5g/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCF3rEREnK98Kw3shvZzXWMUndlQg"
+  },
+  {
+    "title": "I Tested 1-Star Fast Food",
+    "url": "https://www.youtube.com/watch?v=ceBkGA7Y-1k",
+    "format": "Long-form video",
+    "metric": "208K views",
+    "publishedAge": "2 years ago",
+    "duration": "18:01",
+    "recorded": "October 8, 2026",
+    "description": "Selected from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/ceBkGA7Y-1k/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLA4vl97LPfZB9iqFBZYIz-CfMzkrA"
+  },
+  {
+    "title": "สุดโหด!! เล่น Roblox โหมด Obby ด้วยคีย์บอร์ด \"ไร้ปุ่ม!!\" 🤩 - Rob Mr. Rich's Mansion EP.1",
+    "url": "https://www.youtube.com/watch?v=lxuTbqeOwp0",
+    "format": "Long-form video",
+    "metric": "290K views",
+    "publishedAge": "5 years ago",
+    "duration": "20:20",
+    "recorded": "October 8, 2026",
+    "description": "Selected from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/lxuTbqeOwp0/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAAm80n1cbcUGNalVReMh379OKW2w"
+  },
+  {
+    "title": "มายคราฟ, แต่ ตาย = ซื้อของแปลก รีวิว (ft.เป็ด)",
+    "url": "https://www.youtube.com/watch?v=xc91AGQUeC8",
+    "format": "Long-form video",
+    "metric": "264K views",
+    "publishedAge": "2 years ago",
+    "duration": "15:43",
+    "recorded": "October 8, 2026",
+    "description": "Selected from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/xc91AGQUeC8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAqt3NCVQGUdRVfqG_R1PmCjM_BLA"
+  },
+  {
+    "title": "มายคราฟ, แต่ คุณ น่ากลัวเกินไป…",
+    "url": "https://www.youtube.com/watch?v=jobo7XDwr6E",
+    "format": "Long-form video",
+    "metric": "157K views",
+    "publishedAge": "1 year ago",
+    "duration": "12:00",
+    "recorded": "October 8, 2026",
+    "description": "Selected from across my channel’s history.",
+    "thumbnail": "https://i.ytimg.com/vi/jobo7XDwr6E/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLC6PyrtH_ac52vyxJN3QWhu18t2iA"
+  }
+],
       tags: ['Content strategy', 'Video storytelling', 'Audience analytics', 'Community'],
       link: { label: 'Visit my YouTube channel', url: 'https://www.youtube.com/@Todsophon' },
       links: [{ label: 'My story in SPU Voices', url: 'https://stories.spu.edu/articles/a-virtual-place-to-belong-with-tod-yansomboon-24' }],

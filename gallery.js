@@ -33,10 +33,21 @@ function button(className, text, label) {
 /** `index` addresses the original content.js videos array; the default is Tod's on-camera film. */
 export function createScreeningRoom({ onOpen, onClose } = {}) {
   const chapter = window.PORTFOLIO?.chapters?.youtube;
-  const videos = (Array.isArray(chapter?.videos) ? chapter.videos : []).flatMap((video, index) => {
+  const youtubeEntries = (Array.isArray(chapter?.videos) ? chapter.videos : []).flatMap((video, index) => {
     const parsed = youtubeVideo(video?.url);
-    return parsed ? [{ ...video, ...parsed, index, short: /short/i.test(video.format || '') }] : [];
+    return parsed ? [{ ...video, ...parsed, index, platform: 'YouTube', poster: video.thumbnail || `https://i.ytimg.com/vi/${parsed.id}/hqdefault.jpg`, recorded: video.recorded || 'September 21, 2026', short: /short/i.test(video.format || '') }] : [];
   });
+  const reels = (window.PORTFOLIO?.chapters?.oto?.reels || []).flatMap((reel, offset) => {
+    try {
+      const url = new URL(reel.url);
+      const match = url.pathname.match(/^\/reel\/([A-Za-z0-9_-]+)\/?$/);
+      if (url.protocol !== 'https:' || !['instagram.com', 'www.instagram.com'].includes(url.hostname) || !match) return [];
+      return [{ ...reel, index: (chapter?.videos?.length || 0) + offset, platform: 'Instagram', short: true,
+        format: 'Instagram Reel', description: reel.note, metric: reel.result, recorded: 'September 22, 2026',
+        embed: `https://www.instagram.com/reel/${match[1]}/embed/` }];
+    } catch { return []; }
+  });
+  const videos = [...youtubeEntries, ...reels];
   // Lead with the personal film, then show the character-led shorts.
   const ordered = [...videos].sort((a, b) => Number(a.short) - Number(b.short) || a.index - b.index);
   const dialog = node('dialog', 'screening-dialog');
@@ -49,14 +60,26 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
   const identityMark = node('span', 'screening-identity-mark', '▶');
   identityMark.setAttribute('aria-hidden', 'true');
   const identityCopy = node('div', 'screening-identity-copy');
-  const heading = node('h2', 'screening-title', 'My videos');
+  const heading = node('h2', 'screening-title', 'A few stories I’ve made.');
   heading.id = 'screening-title';
-  identityCopy.append(heading);
+  const intro = node('p', 'screening-subtitle', 'A little mischief, a little imagination. Pick something to watch.');
+  intro.id = 'screening-intro';
+  identityCopy.append(node('span', 'screening-eyebrow', 'FROM MY CREATIVE DESK'), heading, intro);
   identity.append(identityCopy);
   const closeButton = button('screening-close', '×', 'Close screening room');
   header.append(identity, closeButton);
 
   const body = node('div', 'screening-body');
+  body.hidden = true;
+  const returnToCollection = button('screening-return', '← Back to the collection');
+  returnToCollection.addEventListener('click', () => {
+    stopPlayback();
+    body.hidden = true;
+    collection.hidden = featured.hidden = false;
+    dialog.classList.remove('is-viewing');
+    (viewerSource || filmButtons.get(selected?.index))?.focus({ preventScroll: true });
+    collection.scrollIntoView({ block: 'start', behavior: 'auto' });
+  });
   const stageColumn = node('div', 'screening-stage-column');
   const stage = node('div', 'screening-stage');
   const poster = button('screening-poster', undefined, 'Play selected video');
@@ -75,8 +98,8 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
   curtains.append(node('span'), node('span'));
   stage.append(poster);
   const stageNote = node('p', 'screening-stage-note', 'Sound starts when you press play.');
-  stageNote.id = 'screening-intro';
-  stageColumn.append(stage, stageNote);
+  stageNote.id = 'screening-play-note';
+  stageColumn.append(returnToCollection, stage, stageNote);
 
   const details = node('section', 'screening-details');
   details.setAttribute('aria-labelledby', 'screening-film-title');
@@ -104,34 +127,69 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
   details.append(format, title, description, metric, external, storyButton, navigation);
   body.append(stageColumn, details);
 
+  const featured = node('section', 'screening-featured');
+  featured.setAttribute('aria-labelledby', 'screening-featured-title');
+  const featuredHeading = node('h3', 'screening-collection-title', 'Short-form picks');
+  featuredHeading.id = 'screening-featured-title';
+  const featuredBand = node('div', 'screening-featured-band');
+  // Channel Shorts supply portrait covers for the three featured panels.
+  const featuredEntries = ordered.filter(video => video.short && video.platform === 'YouTube').slice(0, 3)
+    .map(video => ({ video, label: video.title, note: '' }));
+  if (!featuredEntries.length) featuredEntries.push(...ordered.filter(video => video.short).slice(0, 3)
+    .map(video => ({ video, label: video.title, note: '' })));
+  for (const entry of featuredEntries) {
+    if (!entry.video) continue;
+    const panel = button('screening-featured-panel', undefined, `Watch ${entry.video.title}`);
+    const background = node('img', 'screening-featured-background');
+    background.src = entry.video.poster; background.alt = ''; background.loading = 'lazy';
+    const copy = node('span', 'screening-featured-copy');
+    copy.append(node('span', 'screening-featured-platform', [entry.video.platform, entry.video.publishedAge].filter(Boolean).join(' · ')),
+      node('strong', 'screening-featured-name', entry.label), node('span', 'screening-featured-note', entry.note));
+    panel.append(background, node('span', 'screening-featured-shade'), copy,
+      node('span', 'screening-featured-play', `▶ ${entry.video.metric || 'Watch story'}`));
+    panel.addEventListener('click', () => showViewer(entry.video.index, panel));
+    featuredBand.append(panel);
+  }
+  featured.append(featuredHeading, featuredBand);
+
   const collection = node('section', 'screening-collection');
   collection.setAttribute('aria-labelledby', 'screening-collection-title');
   const collectionHeader = node('div', 'screening-collection-header');
-  const collectionHeading = node('h3', 'screening-collection-title', 'Pick another');
+  const collectionHeading = node('h3', 'screening-collection-title', 'The collection');
   collectionHeading.id = 'screening-collection-title';
   const filters = node('div', 'screening-filters');
   filters.setAttribute('role', 'group');
   filters.setAttribute('aria-label', 'Filter videos by format');
   const filterButtons = new Map();
-  for (const [key, label] of [['all', 'All films'], ['shorts', 'Shorts'], ['long-form', 'Long-form']]) {
+  for (const [key, label] of [['all', 'All videos'], ['shorts', 'Short-form'], ['long-form', 'Long-form']]) {
     const item = button('screening-filter', label);
     item.dataset.filter = key;
     item.setAttribute('aria-pressed', 'false');
     filterButtons.set(key, item);
     filters.append(item);
   }
-  // Three videos don't need format filters; the buttons stay built so links can still request a filter.
-  collectionHeader.append(collectionHeading);
+  collectionHeader.append(collectionHeading, filters);
   const filmstrip = node('div', 'screening-filmstrip');
+  const bands = [];
   const filmButtons = new Map();
   for (const video of ordered) {
+    const formatGroup = video.short ? 'short' : 'long';
+    if (bands.at(-1)?.dataset.format !== formatGroup) {
+      const band = node('div', 'screening-card-group');
+      band.dataset.format = formatGroup;
+      band.setAttribute('aria-label', video.short ? 'Short-form videos' : 'Long-form videos');
+      band.heading = node('h4', 'screening-group-title', video.short ? 'More short-form' : 'Long-form videos');
+      bands.push(band);
+      filmstrip.append(band.heading, band);
+    }
     const item = button('screening-film');
+    item.dataset.format = formatGroup;
     item.dataset.videoIndex = String(video.index);
     item.setAttribute('aria-label', `Select ${video.title}`);
     item.setAttribute('aria-pressed', 'false');
     const imageWrap = node('span', 'screening-film-image-wrap');
     const image = node('img', 'screening-film-image');
-    image.src = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
+    image.src = video.poster;
     image.alt = '';
     image.width = 480;
     image.height = 360;
@@ -140,28 +198,24 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
     const selectionMark = node('span', 'screening-film-selection', '▶');
     selectionMark.setAttribute('aria-hidden', 'true');
     imageWrap.append(image, selectionMark);
+    if (video.duration) imageWrap.append(node('span', 'screening-film-duration', video.duration));
     const copy = node('span', 'screening-film-copy');
-    copy.append(node('span', 'screening-film-format', video.format), node('strong', 'screening-film-name', video.title));
+    copy.append(node('span', 'screening-film-format', `${video.platform} · ${video.short ? 'Short-form' : 'Long-form'}`),
+      node('strong', 'screening-film-name', video.title), node('span', 'screening-film-result', [video.metric, video.publishedAge].filter(Boolean).join(' · ')));
     item.append(imageWrap, copy);
     item.addEventListener('click', () => {
-      selectVideo(video.index);
-      const stageBounds = stage.getBoundingClientRect();
-      const headerBounds = header.getBoundingClientRect();
-      const dialogBounds = dialog.getBoundingClientRect();
-      if (stageBounds.top < headerBounds.bottom || stageBounds.bottom > dialogBounds.bottom) {
-        stage.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-      }
+      showViewer(video.index, item);
     });
     filmButtons.set(video.index, item);
-    filmstrip.append(item);
+    bands.at(-1).append(item);
   }
-  const sourceNote = node('p', 'screening-source-note', 'View counts were recorded on September 21, 2026, so they’re out of date by now.');
+  const sourceNote = node('p', 'screening-source-note', 'YouTube video counts recorded October 8, 2026; Instagram counts September 22, 2026. These are dated snapshots.');
   collection.append(collectionHeader, filmstrip, sourceNote);
   const status = node('p', 'screening-sr-only');
   status.setAttribute('role', 'status');
   status.setAttribute('aria-live', 'polite');
   status.setAttribute('aria-atomic', 'true');
-  shell.append(header, body, collection, status);
+  shell.append(header, featured, collection, body, status);
   dialog.append(shell);
   document.body.append(dialog);
 
@@ -173,6 +227,17 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
   let wasOpen = false;
   let pointerBeganOutside = false;
   let openingFrame = 0;
+  let viewerSource = null;
+
+  function showViewer(index, source) {
+    viewerSource = source;
+    body.hidden = false;
+    collection.hidden = featured.hidden = true;
+    dialog.classList.add('is-viewing');
+    selectVideo(index);
+    dialog.scrollTop = 0;
+    poster.focus({ preventScroll: true });
+  }
 
   function visibleVideos() {
     return ordered.filter(video => filter === 'all' || (filter === 'shorts' ? video.short : !video.short));
@@ -200,8 +265,11 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
     format.textContent = next.format || 'YouTube video';
     metricValue.textContent = next.metric || '';
     metric.hidden = !next.metric;
+    metricNote.textContent = `Recorded ${next.recorded}`;
     external.href = next.url;
-    posterImage.src = `https://i.ytimg.com/vi/${next.id}/hqdefault.jpg`;
+    external.textContent = `Watch on ${next.platform} ↗`;
+    storyButton.textContent = next.platform === 'Instagram' ? 'Insights & experiments ↗' : 'Creator story ↗';
+    posterImage.src = next.poster;
     poster.setAttribute('aria-label', `Play ${next.title}`);
     stage.classList.toggle('is-short', next.short);
     dialog.dataset.videoIndex = String(next.index);
@@ -217,6 +285,12 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
     const visible = visibleVideos();
     for (const [key, item] of filterButtons) item.setAttribute('aria-pressed', String(key === filter));
     for (const video of videos) filmButtons.get(video.index).hidden = !visible.includes(video);
+    for (const band of bands) {
+      const shown = [...band.children].filter(item => !item.hidden);
+      band.hidden = !shown.length;
+      band.heading.hidden = band.hidden;
+      band.classList.toggle('has-single', shown.length === 1);
+    }
     if (!preserveSelection || !visible.includes(selected)) selectVideo(visible[0]?.index, dialog.open);
     else selectVideo(selected?.index, false);
   }
@@ -232,20 +306,20 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
     if (!selected || !dialog.open || document.hidden) return;
     stopPlayback();
     iframe = node('iframe', 'screening-player');
-    iframe.title = `${selected.title}: YouTube video player`;
+    iframe.title = `${selected.title}: ${selected.platform} video player`;
     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     iframe.allowFullscreen = true;
     iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-    iframe.src = `https://www.youtube-nocookie.com/embed/${selected.id}?autoplay=1&playsinline=1&rel=0`;
+    iframe.src = selected.embed || `https://www.youtube-nocookie.com/embed/${selected.id}?autoplay=1&playsinline=1&rel=0`;
     stage.append(iframe);
     poster.hidden = true;
     stage.classList.add('is-playing');
-    const fallback = node('a', 'screening-playback-fallback', 'watch on YouTube ↗');
+    const fallback = node('a', 'screening-playback-fallback', `watch on ${selected.platform} ↗`);
     fallback.href = selected.url;
     fallback.target = '_blank';
     fallback.rel = 'noopener noreferrer';
     stageNote.replaceChildren('If the player doesn’t load, ', fallback, '.');
-    status.textContent = `Opening the player for ${selected.title}. If the player is unavailable, use Watch on YouTube.`;
+    status.textContent = `Opening the player for ${selected.title}. If the player is unavailable, use Watch on ${selected.platform}.`;
     iframe.focus();
   }
 
@@ -278,6 +352,9 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
     }
     selected = videos.find(video => video.index === index) || ordered[0];
     applyFilter(requestedFilter);
+    body.hidden = true;
+    collection.hidden = featured.hidden = false;
+    dialog.classList.remove('is-viewing');
     if (!alreadyOpen) {
       dialog.showModal();
       onOpen?.();
@@ -290,6 +367,7 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
       openingFrame = requestAnimationFrame(() => closeButton.focus({ preventScroll: true }));
     }
     dialog.scrollTop = 0;
+    if (source?.dataset?.videoIndex !== undefined) showViewer(index, source);
   }
 
   closeButton.addEventListener('click', close);
@@ -298,10 +376,14 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
   nextButton.addEventListener('click', () => step(1));
   for (const [key, item] of filterButtons) item.addEventListener('click', () => applyFilter(key));
   storyButton.addEventListener('click', () => {
+    const chapter = selected?.platform === 'Instagram' ? 'oto' : 'youtube';
     close();
-    document.dispatchEvent(new CustomEvent('portfolio:show-video-case', { detail: { chapter: 'youtube' } }));
+    document.dispatchEvent(new CustomEvent('portfolio:show-video-case', { detail: { chapter, section: chapter === 'oto' ? 'experiments' : '' } }));
   });
-  dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });
+  dialog.addEventListener('cancel', event => {
+    event.preventDefault();
+    if (!body.hidden) returnToCollection.click(); else close();
+  });
   dialog.addEventListener('close', () => { if (!dialog.open) finishClose(); });
   dialog.addEventListener('pointerdown', event => { pointerBeganOutside = event.target === dialog && outsideDialog(event); });
   dialog.addEventListener('click', event => {
