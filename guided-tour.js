@@ -11,6 +11,8 @@ export function createGuidedTour({ stage, guide, keyboard }) {
   const STORIES = [
     { id: 'oto', name: 'Oto desk', selector: '[data-furniture="oto"]', beacon: 'oto', color: '#68cbf5', anim: 'talking', chapter: 'frisson',
       title: 'Oto at Frisson Labs', line: `Tod’s current role: community growth and hands-on product work on Oto’s apps and games. ${value('oto', 0) || '15K'} people brought to Discord.` },
+    { id: 'built', name: 'Things I built chest', selector: '[data-furniture="plant"]', beacon: 'plant', color: '#b58ae8', anim: 'happy', chapter: 'oto',
+      title: 'Things I built', line: 'This is where Tod keeps the things he’s built: AI video automation, a character creator, games, and more. Open the chest to explore them.' },
     { id: 'youtube', name: 'Paired YouTube awards', selector: '.wall-award', color: '#f4c967', anim: 'happy', chapter: 'youtube',
       title: 'From 100K to a million', line: `${value('youtube', 0) || '1.81M'} subscribers and ${value('youtube', 1) || '455M'} views. The play buttons on the wall mark the milestones.` },
     { id: 'videos', name: 'Video desk', selector: '[data-furniture="youtube"], [data-furniture="bookshelf"], [data-furniture="tiktok"]', beacon: 'youtube', color: '#f1bd76', anim: 'talking', screening: true,

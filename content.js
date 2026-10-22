@@ -254,7 +254,7 @@ window.PORTFOLIO = {
         { id: 'home', type: 'COMPANION PRODUCT', title: 'Oto Home', description: 'Oto Home, companion behavior, and cross-platform interaction work.', image: 'assets/pin-app.webp', imageAlt: 'Oto companion app preview' }
       ],
       number: '01', label: 'THE COMPANION LAB', kicker: '',
-      title: 'Oto Projects',
+      title: 'Things I built',
       role: 'Social Media Analyst at Frisson Labs since October 2025.',
       lead: 'At Frisson Labs, I connect content and community with the product experience—from introducing Oto through short videos to helping new users get started, discover games, and continue playing.',
       recentWork: {
@@ -463,3 +463,97 @@ window.PORTFOLIO.chapters.contact = {
   lead: 'Have a role, a collaboration, or an idea in mind? I’d love to hear what you’re working on.',
   sections: [{ title: 'A good place to start', text: 'Tell me a little about yourself, what you have in mind, and how I can get back to you.' }]
 };
+
+const aiContentStory = {
+  id: 'content', type: 'AI CONTENT + AUTOMATION', title: 'AI videos, from experiments to Fibi Daily',
+  description: 'Fibi Daily: a Claude morning routine, five account workflows, and performance tracking—built from lessons in making AI videos.',
+  image: 'assets/fibi-daily-cover.svg', imageAlt: 'Fibi Daily cover with the actual review interface and the create, review, publish, and learn workflow across five accounts',
+  text: 'I build tools that turn creative experiments into repeatable content workflows—from AI presenter videos to daily drafts across five accounts.',
+  contribution: 'Creative direction, AI video tooling, the reusable production guide, and daily video draft automation.',
+  screenshots: [{ src: 'assets/seedance-studio-real.png', label: 'The video creation tool I built · actual interface capture without account data' }]
+};
+aiContentStory.dailyOperation = {
+  title: 'Fibi Daily — the content operation I built',
+  screenshot: 'assets/fibi-daily-real.jpg',
+  screenshotCaption: 'Actual Fibi Daily interface rendered from the repository. This capture shows its signed-out state; the Claude-hosted draft queue is not loaded.',
+  intro: 'A Claude morning routine prepares drafts for five accounts. I review the videos and captions, choose what to publish, and track performance.',
+  accounts: ['@tod_desu', '@fibi.chupi.daily', '@zzz.chibi.daily', '@teto.miku.daily', '@frieren.chibi.daily'],
+  stages: [
+    { title: 'Morning routine', detail: 'Claude starts the daily draft workflow.' },
+    { title: 'Create for each account', detail: 'Prepare source material, generated remakes or recuts, captions, and CTA variations.' },
+    { title: 'Review in Fibi Daily', detail: 'Filter by account, preview drafts, edit captions, trim, skip, and choose what to post.' },
+    { title: 'Track and learn', detail: 'Record post links and available views, shares, likes, saves, watch time, and skip rates.' }
+  ]
+};
+aiContentStory.storySections = [
+  { title: 'Before Fibi Daily: could an AI presenter perform my videos?', text: 'An earlier personal prototype explored replacing me with an AI person while using my recorded performance as the starting point. I built a four-step interface: upload a video, generate or upload a replacement face, choose or convert the voice, and generate the new video. The implementation connects Gemini image editing, ElevenLabs voice conversion, and Kling motion control, with audio extraction and final assembly. It was a separate experiment in automating content production, not an Oto release or a measured growth result.', steps: ['My recorded performance', 'AI replacement person', 'Voice selection or conversion', 'Motion-controlled video output'] },
+  { title: 'The first videos weren’t where I wanted them to be', text: 'My early creative review focused on three things: keeping the characters consistent, making the lighting believable, and giving each clip a clear story. Rather than start from scratch every time, I began writing down what failed and what I would change in the next take.', image: 'assets/reel-earlier-clip.webp', imageAlt: 'Cover of an early AI character video used in Tod’s creative review', imageCaption: 'An early example from my original case study. This is my creative critique, not a controlled before-and-after test.', url: 'https://www.instagram.com/p/DWC1VYzj_VI/', linkLabel: 'Watch the early example' },
+  { title: 'Turn each failure into a reusable rule', text: 'I maintain a creative guide with character descriptions, visual rules, prompt formats, and a failure log. Overloaded choreography could produce barely any movement; one rule became “Three beats per clip, four sub-times total.” The current guide also records how to avoid a sticker-like lighting halo, preserve character proportions, and keep the action moving between beats. The guide is a playbook I use alongside the tools, not a claim that every rule is automatically applied.' },
+  { title: 'Build the tool around the work', text: 'I built a video interface to choose the model, write a prompt, attach reference media, and set duration, resolution, and aspect ratio together. The screenshot above shows the actual interface. The tool supports production; reviewing the generated result and deciding what works remains part of the creative process.' },
+  { title: 'Test the next action, not only the view count', text: 'I used Claude to make an end-of-video CTA pointing people to the bio link. That video recorded 153 bio-link clicks, 187 profile visits, and 18 follows; a different character video recorded 12 bio-link clicks, 979 profile visits, and about 1,900 follows. The comparison made the different goals visible. These were different videos, not an A/B test, and clicks were not confirmed signups.', image: 'assets/cta-instagram-analytics.png', imageAlt: 'Instagram insights showing 153 bio-link clicks, 187 profile visits, and 18 follows for the CTA video', imageCaption: 'The CTA video’s Instagram insights, preserved from the original case study.' },
+  { title: 'Make the workflow repeatable each morning', text: 'I extended the production work into daily video draft automation. The repository includes preparation, AI-assisted planning, generation or recutting, caption and CTA assembly, and draft ledgers, with a separate publishing tool. It also includes a daily statistics script for watch time, skips, shares, and other performance signals. Different paths create generated remakes or recuts, so I describe the output as daily drafts rather than claiming every video is an original generation or automatically published. The morning schedule is my current workflow; no time-saving or growth uplift is claimed without measurement.' }
+];
+aiContentStory.storySections[0].image = 'assets/ai-person-replacer-faces-real.jpg';
+aiContentStory.storySections[0].imageAlt = 'Actual AI Video Person Replacer interface showing the replacement face controls';
+aiContentStory.storySections[0].imageCaption = 'Actual prototype UI, rendered locally from the original template. Face selection controls shown before any generation; no API call or AI output was produced for this capture.';
+aiContentStory.storySections[0].image = null;
+aiContentStory.storySections[0].captures = [
+  { src: 'assets/ai-person-replacer-real.jpg', title: '1. Upload the original performance', caption: 'The real upload screen. No video is loaded in this capture.' },
+  { src: 'assets/ai-person-replacer-faces-real.jpg', title: '2. Choose a replacement person', caption: 'Generate faces or upload references. Controls shown before generation.' },
+  { src: 'assets/ai-person-replacer-voice-real.jpg', title: '3. Assign voices and edit audio', caption: 'Voice assignment and audio controls. No faces or audio are loaded in this preview.' },
+  { src: 'assets/ai-person-replacer-generate-real.jpg', title: '4. Generate the replacement video', caption: 'Motion-control generation setup. This shows the interface, not a completed result.' }
+];
+aiContentStory.storySections[0].videoExamples = [
+  { id: 'DVr2s8tCRi7', title: 'AI person replacement — example 1', src: 'assets/person-replacer-DVr2s8tCRi7.mp4', url: 'https://www.instagram.com/reel/DVr2s8tCRi7/' },
+  { id: 'DVuFfeuktGJ', title: 'AI person replacement — example 2', src: 'assets/person-replacer-DVuFfeuktGJ.mp4', url: 'https://www.instagram.com/reel/DVuFfeuktGJ/' }
+];
+aiContentStory.dailyOperation.screenshot = null;
+Object.assign(aiContentStory.dailyOperation.stages[0], { image: 'assets/fibi-daily-live-real.jpg', imageAlt: 'Fibi Daily populated queue and account filters', imageCaption: 'The real review queue where the routine’s drafts arrive; this is not the routine settings screen.' });
+Object.assign(aiContentStory.dailyOperation.stages[1], { image: 'assets/fibi-daily-live-real.jpg', imageAlt: 'Fibi Daily account filters and account-specific draft queue', imageCaption: 'Real account-specific drafts in Fibi Daily, with the Fibi account selected.' });
+Object.assign(aiContentStory.storySections.find(section => section.title === 'Build the tool around the work'), { image: 'assets/seedance-studio-real.png', imageAlt: 'The video tool I built with model selection, prompt, references, and output settings', imageCaption: 'Actual video creation interface, shown without account data.' });
+aiContentStory.screenshots = [];
+Object.assign(aiContentStory.dailyOperation.stages[2], { image: 'assets/fibi-daily-review-real.jpg', imageAlt: 'Fibi Daily caption editing and trim controls', imageCaption: 'Actual draft review controls in the signed-in artifact.' });
+Object.assign(aiContentStory.dailyOperation.stages[3], { image: 'assets/fibi-daily-publish-real.jpg', imageAlt: 'Fibi Daily approval and post link tracking controls', imageCaption: 'Approval and post-status tracking. Performance statistics are collected separately.' });
+aiContentStory.dailyOperation.captures = [
+  { src: 'assets/fibi-daily-live-real.jpg', title: '1. Find the account and draft', caption: 'Actual signed-in Fibi Daily artifact, October 21, 2026. Five account filters and the populated Fibi queue.' },
+  { src: 'assets/fibi-daily-review-real.jpg', title: '2. Review the caption and trim', caption: 'Real draft notes, editable caption, download option, and trim controls. No edits were made for the capture.' },
+  { src: 'assets/fibi-daily-publish-real.jpg', title: '3. Approve or track the post', caption: 'Actual approval, posted-status, and post-link controls. Nothing was approved or posted during capture.' }
+];
+// Keep the project focused; the screenshots carry the detailed walkthrough.
+aiContentStory.storySections = aiContentStory.storySections.filter(section => !['Turn each failure into a reusable rule', 'Make the workflow repeatable each morning'].includes(section.title));
+Object.assign(aiContentStory.storySections[0], {
+  title: 'An early experiment: the AI presenter',
+  text: 'Could an AI person perform my recorded videos? I built a prototype combining face replacement, voice conversion, and motion control. These are two examples, followed by the four real setup screens.'
+});
+Object.assign(aiContentStory.storySections.find(section => section.title === 'The first videos weren’t where I wanted them to be'), {
+  title: 'Learn from the early videos',
+  text: 'The first clips needed more consistent characters, believable lighting, and clearer stories. I kept a failure log and reused the lessons—for example, limiting each clip to three story beats instead of overloading the choreography.',
+  imageCaption: 'An early example from my creative review; not a controlled before-and-after comparison.'
+});
+Object.assign(aiContentStory.storySections.find(section => section.title === 'Build the tool around the work'), {
+  title: 'Build a tool for the process',
+  text: 'I built an interface for model selection, prompts, references, and output settings, with a creative guide beside it. The tool streamlines setup; I still review the results.'
+});
+Object.assign(aiContentStory.storySections.find(section => section.title === 'Test the next action, not only the view count'), {
+  title: 'A CTA example: 153 bio-link clicks',
+  text: 'One CTA video recorded 153 bio-link clicks; a different character video recorded 12. That pushed me to look beyond views. This was not an A/B test, and clicks were not confirmed signups.',
+  optional: false
+});
+const earlyVideoStory = aiContentStory.storySections.find(section => section.title === 'Learn from the early videos');
+earlyVideoStory.videoExamples = [{ id: 'DWC1VYzj_VI', title: 'An early character video', src: 'assets/early-character-DWC1VYzj_VI.mp4', url: 'https://www.instagram.com/p/DWC1VYzj_VI/' }];
+earlyVideoStory.image = null;
+window.PORTFOLIO.chapters.frisson.overallResults = {
+  title: 'Content reach and product traction',
+  summary: 'From building an audience on @tod_desu to running content across five accounts and contributing to Oto’s product. Social figures show the scope of the content work; app figures describe team traction during my time at Frisson.',
+  entries: [
+    { value: '≈8.6M', label: 'Views across 355 @tod_desu Reels', detail: 'Surviving Reel history · November 2025–October 2026' },
+    { value: '16,058', label: 'Shares across 38 tracked Reels', detail: 'Five accounts · October 20, 2026 snapshot' },
+    { value: '16,681', label: '@tod_desu followers', detail: 'Verified on Instagram · October 21, 2026' },
+    { value: '8.16K', label: 'iOS first-time downloads', detail: 'October 20, 2025–October 8, 2026' },
+    { value: '4,421', label: 'Android active testers', detail: 'Google Play Console · October 2026 snapshot' },
+    { value: 'About 15K', label: 'People I brought to Discord', detail: 'Milestone reported September 2026' }
+  ],
+  note: 'Reel views were reconstructed from 355 unique Instagram grid counts on October 21, 2026. The total is approximate because Instagram rounds counts; deleted content, Stories, and non-Reel views are excluded. Shares cover a separate 38-Reel tracker sample across five accounts. iOS downloads and Android active testers are different measures. These results do not establish an uplift caused by automation or attribute product traction solely to my work.'
+};
+window.PORTFOLIO.chapters.oto.collection.unshift(aiContentStory);
+window.PORTFOLIO.chapters.frisson.sections = window.PORTFOLIO.chapters.frisson.sections.filter(section => section.title !== 'Marketing that makes the companion feel real');

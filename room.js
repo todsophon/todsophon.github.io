@@ -21,7 +21,7 @@ const SCENE_WIDTH = 1000;
 const SCENE_HEIGHT = 2000 / 3;
 const artWidths = { youtube: 290, oto: 290, bookshelf: 180, plant: 130, chair: 165, tiktok: 60 };
 // The projected tile center meets the center of the feet, not the frontmost foot.
-const groundAnchors = { youtube: 78, oto: 77, bookshelf: 80, plant: 95, chair: 86, tiktok: 94 };
+const groundAnchors = { youtube: 78, oto: 77, bookshelf: 80, plant: 78, chair: 86, tiktok: 94 };
 const groundCenters = { youtube: 51.3, oto: 49.1, bookshelf: 56, plant: 54, chair: 50, tiktok: 50 };
 // Match both ground-plane directions to the room's 2:1 projection while keeping
 // upright edges vertical. Each source illustration has a different camera angle.
@@ -43,7 +43,7 @@ const spriteSources = {
   plant: ['assets/oto-project-chest.png', 1288, 1221],
   tiktok: ['assets/ring-light.webp?v=3', 267, 817],
 };
-const labels = { youtube: 'Videos', oto: 'Oto / Frisson', bookshelf: 'Record cabinet', tiktok: 'Ring light', plant: 'Oto projects', chair: '' };
+const labels = { youtube: 'Videos', oto: 'Oto / Frisson', bookshelf: 'Record cabinet', tiktok: 'Ring light', plant: 'Things I built', chair: '' };
 const accessibleLabel = (item, arranging = false) => arranging ? `Move ${item.label}` : item.action === 'screening' ? 'Watch films from the screening chair' : item.href ? 'Read the Frisson Labs case study' : `Explore ${item.label}`;
 const pieces = new Map();
 let layout = clone(DEFAULT_LAYOUT);

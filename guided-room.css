@@ -529,3 +529,61 @@ body{min-height:100dvh}
 .contact-message-send:hover{background:#543669}
 .contact-message-honeypot{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 @media(max-width:600px){.contact-message-form{padding:20px}.contact-message-fields{grid-template-columns:1fr}}
+.ai-content-story{padding:28px;border:1px solid #d7c6e7;border-radius:22px;background:#faf7fd;margin:30px 0 42px}
+.ai-content-story h3{font-size:clamp(25px,3vw,34px);line-height:1.2}
+.ai-content-story figure{margin:24px 0}
+.ai-content-story img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 30px #35234514}
+.ai-content-story figcaption{font-size:12px;color:#6b6074;margin-top:10px}
+@media(max-width:600px){.ai-content-story{padding:18px}}
+/* A persistent caption makes the chest’s purpose clear before interaction. */
+.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant] .furniture-label{display:block;opacity:1;visibility:visible;position:absolute;left:50%;top:100%;transform:translate(-50%,8px);width:auto;height:auto;padding:5px 9px;border:1px solid #d8c9e6;border-radius:999px;background:#fffaf3f5;color:#493553;font-size:11px;font-weight:650;line-height:1.25;white-space:nowrap;box-shadow:0 2px 8px #30213c20;pointer-events:none}
+.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant] .furniture-label{padding:3px 7px;font-size:10px;font-weight:650;line-height:1.25;box-shadow:0 2px 7px #3a2a2f1c}
+.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant] .furniture-label:after,.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant] .furniture-label:before{content:none}
+.ai-story-evidence{margin:24px 0}.ai-story-evidence img{display:block;max-width:100%;width:auto;max-height:520px;margin:0 auto;border-radius:12px;border:1px solid var(--line)}.ai-story-evidence figcaption{margin-top:12px;font-size:12px;line-height:1.6;color:#6b6074}
+.daily-operation{margin:28px 0;padding:28px;border:1px solid #d8c8e6;border-radius:22px;background:linear-gradient(135deg,#f6efff,#f0f6ff)}
+.daily-operation h3{font-size:clamp(24px,3vw,34px);line-height:1.2;margin:10px 0 16px}
+.daily-account-list{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0}
+.daily-account-list span{padding:9px 12px;border:1px solid #d4c4e4;border-radius:999px;background:#fff;font-size:12px;color:#503468;font-weight:600}
+.daily-operation-flow{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:0;margin:24px 0}
+.daily-operation-flow li{padding:22px;border:1px solid #ded4e8;border-radius:15px;background:#ffffffdf}
+.daily-step-number{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#634181;color:#fff;font-size:14px;font-weight:700}
+.daily-operation-flow h4{font-size:19px;margin:16px 0 10px}.daily-operation-flow p{font-size:14px;line-height:1.65;margin:0}
+.daily-metric-strip{display:flex;flex-wrap:wrap;gap:10px;border-top:1px solid #d8c8e6;padding-top:20px;margin-bottom:18px}
+.daily-metric-strip span{font-size:12px;font-weight:600;padding:6px 10px;background:#e8def2;border-radius:6px}
+@media(max-width:600px){.daily-operation{padding:18px}.daily-operation-flow{grid-template-columns:1fr}}
+.daily-real-capture{margin:24px 0}.daily-real-capture img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid #d4c4e4}.daily-real-capture figcaption{font-size:12px;line-height:1.6;color:#6b6074;margin-top:10px}
+.capture-walkthrough{display:grid;gap:28px;margin:24px 0}.capture-walkthrough figure{margin:0;min-width:0}.capture-walkthrough h4{font-size:20px;margin:0 0 14px}.capture-walkthrough img{display:block;width:100%;max-height:640px;object-fit:contain;object-position:left;background:#101323;border:1px solid #d4c4e4;border-radius:12px}.capture-walkthrough figcaption{margin-top:10px;color:#6b6074;font-size:12px;line-height:1.6}
+.daily-step-image{display:block;width:100%;height:220px;object-fit:contain;background:#101323;border:1px solid #d4c4e4;border-radius:9px;margin:14px 0 8px}.daily-step-caption{display:block;color:#6b6074;font-size:11px;line-height:1.5;margin-bottom:12px}
+.person-video-examples{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin:26px 0}.person-video-examples h4{font-size:18px}.person-video-player{aspect-ratio:9/16;max-height:580px;background:#101323;border-radius:14px;overflow:hidden;margin:14px 0}.person-video-player button,.person-video-player iframe{display:block;width:100%;height:100%;border:0}.person-video-player button{background:#171324;color:#fff;font:inherit;cursor:pointer;padding:24px}.person-video-player button:focus-visible{outline:3px solid #bfa1e0;outline-offset:-5px}@media(max-width:600px){.person-video-examples{grid-template-columns:1fr}}
+.person-video-player video{display:block;width:100%;height:100%;object-fit:contain;background:#101323}
+/* Shorter reading flow, with the full step images still available. */
+.capture-walkthrough{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.capture-walkthrough h4{font-size:16px}.capture-walkthrough img{max-height:300px}.project-section details>summary{cursor:pointer;font-size:18px;font-weight:650;padding:12px 0}.daily-operation-flow li{padding:16px}.daily-step-caption{font-size:10px}@media(max-width:650px){.capture-walkthrough{grid-template-columns:1fr}}
+.content-results{padding:24px;border:1px solid #d8c8e6;border-radius:18px;background:#faf7fd}.content-result-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:24px 0}.content-result-grid article{padding:18px;background:#fff;border:1px solid var(--line);border-radius:12px}.content-result-grid strong{font-size:25px;color:#49315e;line-height:1.2}.content-result-grid p{font-size:13px;line-height:1.6}.person-video-examples:has(>article:only-child){grid-template-columns:minmax(0,380px);justify-content:center}@media(max-width:700px){.content-result-grid{grid-template-columns:1fr}}
+/* Keep the room captions quiet and consistent, including while arranging. */
+.cozy-room .furniture-piece .furniture-label,.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant] .furniture-label{width:auto;height:auto;min-width:0;padding:3px 8px;border:1px solid #e1d7c9;border-radius:999px;background:#fffaf3ed!important;color:#4a3a35;font-size:11px;font-weight:600;line-height:1.25;white-space:nowrap;box-shadow:0 2px 6px #3a2a2f14;animation:none;pointer-events:none;transform:translate(-50%,-100%)}
+.cozy-room .furniture-piece .furniture-label:after,.cozy-room .furniture-piece .furniture-label:before{content:none!important}
+.cozy-room .furniture-piece[data-furniture=oto] .furniture-label{left:53%;top:24%}
+.cozy-room .furniture-piece[data-furniture=plant] .furniture-label,.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant] .furniture-label{display:block;left:48%;top:6%;opacity:1;visibility:visible;transform:translate(-50%,-100%)}
+.cozy-room .furniture-piece[data-furniture=bookshelf] .furniture-label{display:none}
+.cozy-room .furniture-piece[data-furniture=plant] .furniture-art:before{content:'';position:absolute;left:17%;top:88%;width:73%;height:10%;border-radius:50%;background:#39291e55;filter:blur(2px);transform:rotate(-5deg);pointer-events:none}
+@media(max-width:760px){.cozy-room .furniture-piece .furniture-label,.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant] .furniture-label{font-size:8.5px;padding:2px 6px}}
+/* Anchor the cube at the centre of its bottom diamond, not its front corner. */
+.cozy-room .furniture-piece[data-furniture=plant] .furniture-art:before{left:15%;top:71%;width:77%;height:25%;background:#39291e40;filter:blur(1px);transform:scaleY(.65)}
+/* Frisson follows the Videos gallery’s width, type scale, and visual rhythm. */
+.project-dialog[data-chapter=frisson]{width:min(1120px,calc(100% - 40px));max-width:none;border:1px solid #d4c6e8;border-radius:15px;background:var(--white)}
+.project-dialog[data-chapter=frisson] .dialog-topbar{padding:24px 36px 0;border:0;background:transparent}
+.project-dialog[data-chapter=frisson] .dialog-topbar .eyebrow{font-size:11px;letter-spacing:2px;color:var(--violet);text-transform:uppercase}
+.project-dialog[data-chapter=frisson] .dialog-content{padding:12px 36px 32px}
+.project-dialog[data-chapter=frisson] #dialog-title{font-family:var(--font,sans-serif);font-size:clamp(29px,4vw,38px);font-weight:650;letter-spacing:-1.5px;line-height:1.12;margin:10px 0 16px;max-width:850px}
+.project-dialog[data-chapter=frisson] .dialog-lead{font-size:14px;line-height:1.7;color:var(--muted);max-width:850px;margin:14px 0}
+.frisson-section-nav{margin:24px 0 28px}
+.project-dialog[data-chapter=frisson] .screening-featured{padding:0;margin:26px 0 38px}
+.project-dialog[data-chapter=frisson] h3{font-size:20px;font-weight:650;letter-spacing:-.3px}
+.project-dialog[data-chapter=frisson] .project-section>p{font-size:14px;line-height:1.75;color:var(--muted)}
+.frisson-story-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:32px 0}
+.frisson-story-grid>.project-section{margin:0;padding:22px;border:1px solid var(--line);border-radius:18px;background:var(--white)}
+.frisson-story-grid>.project-section h3{margin:0 0 12px}
+.project-dialog[data-chapter=frisson] .content-results{background:var(--white);border-color:var(--line);border-radius:18px;margin-top:36px}
+.project-dialog[data-chapter=frisson] .dialog-footer{padding:20px 36px;border-top:1px solid var(--line);background:transparent}
+.project-dialog[data-chapter=frisson] [id^=frisson-]{scroll-margin-top:24px}
+@media(max-width:720px){.project-dialog[data-chapter=frisson]{width:calc(100% - 20px)}.project-dialog[data-chapter=frisson] .dialog-topbar{padding:22px 20px 0}.project-dialog[data-chapter=frisson] .dialog-content{padding:12px 20px 28px}.frisson-story-grid{grid-template-columns:1fr}.project-dialog[data-chapter=frisson] .dialog-footer{padding:20px}}

@@ -6,7 +6,7 @@ const scene = document.querySelector('#scene');
 const listView = document.querySelector('#list-view');
 const viewToggle = document.querySelector('#view-toggle');
 const chapterOrder = ['frisson', 'oto', 'youtube', 'about'];
-const chapterNames = { youtube: 'YouTube', tiktok: 'TikTok', oto: 'Oto Projects', frisson: 'Frisson Labs / Oto', contact: 'Get in touch', analytics: 'Analytics', about: 'About', resume: 'Résumé' };
+const chapterNames = { youtube: 'YouTube', tiktok: 'TikTok', oto: 'Things I built', frisson: 'Frisson Labs / Oto', contact: 'Get in touch', analytics: 'Analytics', about: 'About', resume: 'Résumé' };
 const baseTitle = document.title;
 const historyKey = 'todPortfolioRoute';
 let currentChapter = 'oto';
@@ -164,7 +164,7 @@ function initCreatorPreview() {
 }
 
 function otoCollectionHTML(item) {
-  const featured = ['animation', 'discord', 'wiki'].map(id => item.collection.find(project => project.id === id));
+  const featured = ['content', 'animation', 'discord', 'wiki'].map(id => item.collection.find(project => project.id === id));
   return `<p class="dialog-lead">Explore the tools and experiences I worked on around Oto’s companions: character creation, games, Discord, and community discovery.</p><p><a class="oto-inline-link" href="#work/frisson" data-open="frisson">Read my Frisson Labs case study →</a></p>
     <section class="oto-featured" aria-label="Featured Oto projects"><div class="oto-featured-band">${featured.map((project, index) => `<button class="oto-featured-panel" type="button" data-oto-project="${project.id}">
       <img class="oto-featured-background" src="${escapeHTML(project.image)}" alt="${escapeHTML(project.imageAlt)}"><span class="oto-featured-shade" aria-hidden="true"></span>
@@ -174,10 +174,12 @@ function otoCollectionHTML(item) {
       <div class="oto-card-media"><img src="${escapeHTML(project.image)}" alt="${escapeHTML(project.imageAlt)}" loading="lazy"></div>
       <span class="oto-card-copy"><small>${escapeHTML(project.type)}</small><strong>${escapeHTML(project.title)}</strong><span>${escapeHTML(project.description)}</span><span class="oto-card-action">Explore project →</span></span>
     </button>`).join('')}</div>
-    <section class="project-section oto-traction"><h3>Product traction</h3><dl class="oto-traction-metrics">${item.traction.metrics.map(metric => `<div><dt>${escapeHTML(metric.label)}</dt><dd>${escapeHTML(metric.value)}</dd><small>${escapeHTML(metric.detail)}</small></div>`).join('')}</dl><p class="source-note">${escapeHTML(item.traction.note)}</p><details class="oto-analytics"><summary>View analytics</summary>${item.traction.evidence.map(entry => `<figure><a href="${escapeHTML(entry.src)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHTML(entry.src)}" alt="${escapeHTML(entry.alt)}" loading="lazy"></a><figcaption>${escapeHTML(entry.label)}</figcaption></figure>`).join('')}</details></section>
     <p class="source-note">Descriptions draw on my Oto and Chibi Wiki repositories and my contributions within the Frisson Labs team. Creator and Discord captures show the real interfaces in local repo previews; Wiki captures show the live site.</p>`;
 }
 
+function captureWalkthroughHTML(captures) {
+  return `<div class="capture-walkthrough">${asArray(captures).map(capture => `<figure><h4>${escapeHTML(capture.title)}</h4><a href="${escapeHTML(capture.src)}" target="_blank" rel="noopener noreferrer" aria-label="Open screenshot: ${escapeHTML(capture.title)}"><img src="${escapeHTML(capture.src)}" alt="${escapeHTML(capture.title)}" loading="lazy"></a><figcaption>${escapeHTML(capture.caption)}</figcaption></figure>`).join('')}</div>`;
+}
 function openOtoProject(id) {
   stopCreatorPreview();
   const item = config.chapters.oto;
@@ -192,12 +194,14 @@ function openOtoProject(id) {
     return;
   }
   host.dataset.previousProject = id;
-  const back = '<button class="oto-project-back" type="button" data-oto-project="collection">← All Oto projects</button>';
+  const back = '<button class="oto-project-back" type="button" data-oto-project="collection">← All things I built</button>';
     const gameRows = id === 'games' ? item.projects.filter(entry => entry.kind === 'GAME').map(game => `<article class="oto-work has-video"><video class="loop-preview" src="${escapeHTML(game.video)}" poster="${escapeHTML(game.image)}" controls playsinline preload="metadata" aria-label="${escapeHTML(game.title)} gameplay demo"></video><div><h4>${escapeHTML(game.title)}</h4><p>${escapeHTML(game.text)}</p><p>${escapeHTML(game.contribution)}</p><small>${escapeHTML(game.status)}</small>${linkHTML(game.link, 'oto-inline-link')}</div></article>`).join('') : '';
     const home = id === 'home' ? `<div class="oto-shots">${item.productShowcase.screenshots.map(shot => `<figure><img src="${escapeHTML(shot.src)}" alt="${escapeHTML(shot.alt)}" width="314" height="680" loading="lazy"><figcaption>${escapeHTML(shot.label)}</figcaption></figure>`).join('')}</div><h3>What I contributed</h3><p>${escapeHTML(item.workSamples[0].text)}</p><p>${escapeHTML(item.projects[0].contribution)}</p>${linkHTML(item.projects[0].link, 'oto-inline-link')}` : '';
     host.innerHTML = `${back}<section class="oto-project-detail"><p class="oto-detail-type">${escapeHTML(project.type)}</p><h3 tabindex="-1" class="oto-detail-title">${escapeHTML(project.title)}</h3><p class="dialog-lead">${escapeHTML(project.description)}</p>
+      ${project.dailyOperation ? `<section class="daily-operation"><p class="eyebrow">CLAUDE ROUTINE + FIVE ACCOUNTS</p><h3>${escapeHTML(project.dailyOperation.title)}</h3><p>${escapeHTML(project.dailyOperation.intro)}</p>${project.dailyOperation.screenshot ? `<figure class="daily-real-capture"><a href="${escapeHTML(project.dailyOperation.screenshot)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHTML(project.dailyOperation.screenshot)}" alt="Actual Fibi Daily interface with five account handles and posting instructions" loading="lazy"></a><figcaption>${escapeHTML(project.dailyOperation.screenshotCaption)}</figcaption></figure>` : ''}<div class="daily-account-list" aria-label="Accounts in the shared review workflow">${project.dailyOperation.accounts.map(account => `<span>${escapeHTML(account)}</span>`).join('')}</div><ol class="daily-operation-flow">${project.dailyOperation.stages.map((stage, index) => `<li><span class="daily-step-number">0${index + 1}</span><h4>${escapeHTML(stage.title)}</h4>${stage.image ? `<a href="${escapeHTML(stage.image)}" target="_blank" rel="noopener noreferrer"><img class="daily-step-image" src="${escapeHTML(stage.image)}" alt="${escapeHTML(stage.imageAlt)}" loading="lazy"></a><small class="daily-step-caption">${escapeHTML(stage.imageCaption)}</small>` : ''}<p>${escapeHTML(stage.detail)}</p></li>`).join('')}</ol><div class="daily-metric-strip"><span>Views</span><span>Shares</span><span>Watch time</span><span>Skip rate</span><span>Draft & post status</span></div><p class="source-note">Actual interface captures; queue sizes are dated snapshots. Account activity and metric availability vary. Content metrics do not establish app-install attribution.</p></section>` : ''}
       ${project.screenshots ? `<div class="oto-project-captures">${project.screenshots.map(shot => `<figure><a href="${escapeHTML(shot.src)}" target="_blank" rel="noopener noreferrer" aria-label="Open full-size screenshot: ${escapeHTML(shot.label)}"><img src="${escapeHTML(shot.src)}" alt="${escapeHTML(shot.label)}" loading="lazy"></a><figcaption>${escapeHTML(shot.label)}</figcaption></figure>`).join('')}</div>` : ''}
       ${project.text ? `<p>${escapeHTML(project.text)}</p>` : ''}
+      ${asArray(project.storySections).map(section => `<section class="project-section">${section.optional ? `<details><summary>${escapeHTML(section.title)}</summary>` : `<h3>${escapeHTML(section.title)}</h3>`}<p>${escapeHTML(section.text)}</p>${section.videoExamples ? `<div class="person-video-examples">${section.videoExamples.map(video => `<article><h4>${escapeHTML(video.title)}</h4><div class="person-video-player"><video src="${escapeHTML(video.src)}" controls playsinline preload="metadata" aria-label="${escapeHTML(video.title)}">Your browser cannot play this video.</video></div></article>`).join('')}</div><p class="source-note">Examples selected by Tod. Press play to watch.</p>` : ''}${captureWalkthroughHTML(section.captures)}${section.steps && !section.captures ? `<ol class="daily-operation-flow">${section.steps.map((step, index) => `<li><span class="daily-step-number">0${index + 1}</span><h4>${escapeHTML(step)}</h4></li>`).join('')}</ol>` : ''}${section.image ? `<figure class="ai-story-evidence"><a href="${escapeHTML(section.image)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHTML(section.image)}" alt="${escapeHTML(section.imageAlt)}" loading="lazy"></a><figcaption>${escapeHTML(section.imageCaption)}</figcaption></figure>` : ''}${section.url ? linkHTML({ url: section.url, label: section.linkLabel }, 'oto-inline-link') : ''}${section.optional ? '</details>' : ''}</section>`).join('')}
       ${project.contribution ? `<h4>What I built</h4><p>${escapeHTML(project.contribution)}</p>` : ''}
       ${gameRows}${home}${project.link ? `<p>${linkHTML(project.link, 'oto-inline-link')}</p>` : ''}
       ${id === 'discord' ? '<p class="source-note">The Activity supports guest play and linked Oto accounts. Which path is available depends on the player’s session.</p>' : ''}
@@ -243,7 +247,7 @@ function renderChapter(key) {
     ${key === 'resume' ? resumeContactHTML() : ''}
     ${fromAward ? milestonesHTML(item) : ''}
     ${item.cover && safeURL(item.cover.image, 'image') ? `<figure class="chapter-cover"><img src="${escapeHTML(safeURL(item.cover.image, 'image'))}" alt="${escapeHTML(item.cover.alt)}" width="1280" height="211"><figcaption>${escapeHTML(item.cover.caption)}</figcaption></figure>` : ''}
-    <p class="dialog-lead">${escapeHTML(item.lead)}</p>
+    <p class="dialog-lead">${escapeHTML(item.lead)}</p>${key === 'frisson' ? `<nav class="frisson-section-nav screening-filters" aria-label="Frisson sections"><button type="button" class="screening-filter" data-oto-section="frisson-videos-title">Videos</button><button type="button" class="screening-filter" data-oto-section="frisson-product">The product</button><button type="button" class="screening-filter" data-oto-section="frisson-story">My contribution</button><button type="button" class="screening-filter" data-oto-section="frisson-results">Results</button></nav>${frissonVideosHTML(item)}` : ''}
     ${key === 'contact' ? `<form class="contact-message-form" action="https://formsubmit.co/${encodeURIComponent(config.contact.email)}" method="POST" target="_blank" rel="noopener noreferrer" aria-labelledby="contact-form-heading">
       <h3 id="contact-form-heading">Leave me a message</h3>
       <input type="hidden" name="_subject" value="A new message from Tod’s portfolio">
@@ -255,14 +259,14 @@ function renderChapter(key) {
       <button class="contact-message-send" type="submit">Send message ↗</button>
     </form><section class="project-section"><h3>Or say hello another way</h3><p><a class="oto-inline-link" href="${escapeHTML(config.contact.linkedin)}" target="_blank" rel="noopener noreferrer">Message me on LinkedIn ↗</a></p><p>Email: <span>${escapeHTML(config.contact.email)}</span> <button type="button" class="oto-project-back" data-copy-contact>Copy email</button></p><p class="source-note" id="contact-copy-status" role="status"></p></section>` : ''}
     ${fromAward ? '' : milestonesHTML(item)}
-    ${key === 'frisson' ? `<section class="project-section"><h3>A home for your companion</h3><div class="oto-shots">${config.chapters.oto.productShowcase.screenshots.map(shot => `<figure><img src="${escapeHTML(shot.src)}" alt="${escapeHTML(shot.alt)}" width="314" height="680" loading="lazy"><figcaption>${escapeHTML(shot.label)}</figcaption></figure>`).join('')}</div><p class="source-note">Official Oto app screenshots. These show the companion experience; my contributions are described below.</p></section>` : ''}
-    ${asArray(item.sections).map(section => `<section class="project-section"><h3>${escapeHTML(section.title)}</h3>${section.text ? `<p>${escapeHTML(section.text)}</p>` : ''}${asArray(section.bullets).length ? `<ul class="project-bullets">${section.bullets.map(bullet => `<li>${escapeHTML(bullet)}</li>`).join('')}</ul>` : ''}</section>`).join('')}
-    ${key === 'frisson' ? frissonVideosHTML(item) : reelsHTML(item.reels, { heading: 'Three Reels I made for Oto', intro: item.reelIntro || '', note: item.reelSource?.note })}
+    ${key === 'frisson' ? `<section class="project-section" id="frisson-product"><h3>A home for your companion</h3><div class="oto-shots">${config.chapters.oto.productShowcase.screenshots.map(shot => `<figure><img src="${escapeHTML(shot.src)}" alt="${escapeHTML(shot.alt)}" width="314" height="680" loading="lazy"><figcaption>${escapeHTML(shot.label)}</figcaption></figure>`).join('')}</div><p class="source-note">Official Oto app screenshots. These show the companion experience; my contributions are described below.</p></section>` : ''}
+    ${key === 'frisson' ? '<div class="frisson-story-grid" id="frisson-story">' : ''}${asArray(item.sections).map(section => `<section class="project-section"><h3>${escapeHTML(section.title)}</h3>${section.text ? `<p>${escapeHTML(section.text)}</p>` : ''}${asArray(section.bullets).length ? `<ul class="project-bullets">${section.bullets.map(bullet => `<li>${escapeHTML(bullet)}</li>`).join('')}</ul>` : ''}</section>`).join('')}
+    ${key === 'frisson' ? '</div>' : reelsHTML(item.reels, { heading: 'Three Reels I made for Oto', intro: item.reelIntro || '', note: item.reelSource?.note })}
     ${videosHTML(item.videos)}
     ${resumeHTML(item)}
     ${item.quote ? `<blockquote class="featured-quote">${escapeHTML(item.quote)}</blockquote><p class="source-note">${escapeHTML(item.quoteCredit)}</p>` : ''}
     ${chapterLinksHTML(item, key)}
-    ${key === 'frisson' ? '<p><a class="oto-inline-link" href="#work/oto" data-open="oto">Explore Oto projects →</a></p>' : ''}${sourceHTML(item.source)}
+    ${key === 'frisson' && item.overallResults ? `<section class="project-section content-results" id="frisson-results"><h3>${escapeHTML(item.overallResults.title)}</h3><p>${escapeHTML(item.overallResults.summary)}</p><div class="content-result-grid">${item.overallResults.entries.map(entry => `<article><strong>${escapeHTML(entry.value)}</strong><p><b>${escapeHTML(entry.label)}</b><br>${escapeHTML(entry.detail)}</p></article>`).join('')}</div><p class="source-note">${escapeHTML(item.overallResults.note)}</p><details><summary>View product analytics</summary>${config.chapters.oto.traction.evidence.map(entry => `<figure class="ai-story-evidence"><a href="${escapeHTML(entry.src)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHTML(entry.src)}" alt="${escapeHTML(entry.alt)}" loading="lazy"></a><figcaption>${escapeHTML(entry.label)}</figcaption></figure>`).join('')}</details></section>` : ''}${key === 'frisson' ? '<p><a class="oto-inline-link" href="#work/oto" data-open="oto">Explore things I built →</a></p>' : ''}${sourceHTML(item.source)}
     ${item.pending ? `<p class="pending-note">${escapeHTML(item.pending)}</p>` : ''}
   `;
   startPreviews();
@@ -324,6 +328,8 @@ function startPreviews() {
 
 function hideChapter() {
   stopCreatorPreview();
+  dialogContent.querySelectorAll('iframe[data-person-video]').forEach(frame => frame.remove());
+  dialogContent.querySelectorAll('.person-video-player video').forEach(video => video.pause());
   closing = false;
   if (!dialog.open) return;
   dialog.close();
@@ -394,6 +400,17 @@ function setView(showList) {
 }
 
 document.addEventListener('click', event => {
+  const instagramExample = event.target.closest?.('[data-instagram-example]');
+  if (instagramExample && /^[A-Za-z0-9_-]{11}$/.test(instagramExample.dataset.instagramExample)) {
+    const frame = document.createElement('iframe');
+    frame.dataset.personVideo = 'true';
+    frame.src = `https://www.instagram.com/reel/${instagramExample.dataset.instagramExample}/embed/`;
+    frame.title = instagramExample.getAttribute('aria-label').replace(/^Load /, '');
+    frame.allow = 'fullscreen; encrypted-media; picture-in-picture';
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    instagramExample.replaceWith(frame);
+    return;
+  }
   if (event.target.closest?.('[data-copy-contact]')) {
     navigator.clipboard.writeText(config.contact.email).then(() => { document.querySelector('#contact-copy-status').textContent = 'Email address copied.'; }).catch(() => { document.querySelector('#contact-copy-status').textContent = 'Select the email address above to copy it.'; });
     return;
