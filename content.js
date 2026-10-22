@@ -473,10 +473,18 @@ const aiContentStory = {
   screenshots: [{ src: 'assets/seedance-studio-real.png', label: 'The video creation tool I built · actual interface capture without account data' }]
 };
 aiContentStory.dailyOperation = {
-  title: 'Fibi Daily — the content operation I built',
+  title: 'Fibi Daily — from daily drafts to reviewed posts',
   screenshot: 'assets/fibi-daily-real.jpg',
   screenshotCaption: 'Actual Fibi Daily interface rendered from the repository. This capture shows its signed-out state; the Claude-hosted draft queue is not loaded.',
   intro: 'A Claude morning routine prepares drafts for five accounts. I review the videos and captions, choose what to publish, and track performance.',
+  overview: [
+    { title: 'The problem', text: 'Running content across five accounts means keeping track of different drafts, captions, and posting decisions. I wanted a repeatable morning workflow and one place to review what was ready.' },
+    { title: 'What I built', text: 'I built Fibi Daily’s review interface and the workflow around daily video drafts: account filters, video previews, caption editing, trim controls, and approval and post-status tracking.' },
+    { title: 'What runs automatically', text: 'A Claude morning routine starts draft preparation for the five accounts. The workflow prepares source material, generated remakes or recuts, captions, and CTA variations.' },
+    { title: 'Where I make the decisions', text: 'I review the video and caption, edit or trim when needed, skip drafts that do not work, and choose what to publish. Publishing uses a separate tool; performance statistics are collected separately.' }
+  ],
+  walkthroughTitle: 'Follow a draft through the workflow',
+  walkthroughIntro: 'Start with an account’s prepared draft, review the video and caption, then decide whether it is ready to post. The screenshots below show the real controls at each stage, rather than a recording of one draft moving through every step.',
   accounts: ['@tod_desu', '@fibi.chupi.daily', '@zzz.chibi.daily', '@teto.miku.daily', '@frieren.chibi.daily'],
   stages: [
     { title: 'Morning routine', detail: 'Claude starts the daily draft workflow.' },
