@@ -476,15 +476,10 @@ aiContentStory.dailyOperation = {
   title: 'Fibi Daily — from daily drafts to reviewed posts',
   screenshot: 'assets/fibi-daily-real.jpg',
   screenshotCaption: 'Actual Fibi Daily interface rendered from the repository. This capture shows its signed-out state; the Claude-hosted draft queue is not loaded.',
-  intro: 'A Claude morning routine prepares drafts for five accounts. I review the videos and captions, choose what to publish, and track performance.',
-  overview: [
-    { title: 'The problem', text: 'Running content across five accounts means keeping track of different drafts, captions, and posting decisions. I wanted a repeatable morning workflow and one place to review what was ready.' },
-    { title: 'What I built', text: 'I built Fibi Daily’s review interface and the workflow around daily video drafts: account filters, video previews, caption editing, trim controls, and approval and post-status tracking.' },
-    { title: 'What runs automatically', text: 'A Claude morning routine starts draft preparation for the five accounts. The workflow prepares source material, generated remakes or recuts, captions, and CTA variations.' },
-    { title: 'Where I make the decisions', text: 'I review the video and caption, edit or trim when needed, skip drafts that do not work, and choose what to publish. Publishing uses a separate tool; performance statistics are collected separately.' }
-  ],
-  walkthroughTitle: 'Follow a draft through the workflow',
-  walkthroughIntro: 'Start with an account’s prepared draft, review the video and caption, then decide whether it is ready to post. The screenshots below show the real controls at each stage, rather than a recording of one draft moving through every step.',
+  intro: 'Claude prepares the drafts. I review, edit, and choose what gets posted.',
+  overview: [],
+  walkthroughTitle: 'Five accounts. One review workflow.',
+  walkthroughIntro: 'The problem: drafts and captions spread across five accounts. I built the daily draft workflow and review interface to keep the decisions together.',
   accounts: ['@tod_desu', '@fibi.chupi.daily', '@zzz.chibi.daily', '@teto.miku.daily', '@frieren.chibi.daily'],
   stages: [
     { title: 'Morning routine', detail: 'Claude starts the daily draft workflow.' },
@@ -565,3 +560,27 @@ window.PORTFOLIO.chapters.frisson.overallResults = {
 };
 window.PORTFOLIO.chapters.oto.collection.unshift(aiContentStory);
 window.PORTFOLIO.chapters.frisson.sections = window.PORTFOLIO.chapters.frisson.sections.filter(section => section.title !== 'Marketing that makes the companion feel real');
+
+// A visual walkthrough leads the Fibi Daily story; prototype experiments follow it.
+Object.assign(aiContentStory.dailyOperation.stages[0], {
+  title: 'Five accounts to keep moving',
+  detail: 'Automated: a Claude morning routine starts draft preparation.',
+  image: 'assets/fibi-daily-five-accounts.svg',
+  imageAlt: 'Five account queues feed into one Fibi Daily review workflow',
+  imageCaption: 'Workflow diagram · five accounts, one place to review.'
+});
+Object.assign(aiContentStory.dailyOperation.stages[1], {
+  title: 'Drafts arrive in one place',
+  detail: 'I built the account filters and draft queue for videos, captions, and CTAs.',
+  imageCaption: 'Actual account filters and prepared drafts.'
+});
+Object.assign(aiContentStory.dailyOperation.stages[2], {
+  title: 'I review and edit',
+  detail: 'My decision: preview, change the caption, trim, or skip.',
+  imageCaption: 'Actual caption and trim controls.'
+});
+Object.assign(aiContentStory.dailyOperation.stages[3], {
+  title: 'I choose what gets posted',
+  detail: 'My decision: approve and track the post. Publishing uses a separate tool.',
+  imageCaption: 'Actual approval and post-link controls.'
+});
