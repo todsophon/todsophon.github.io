@@ -268,7 +268,7 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
     metricNote.textContent = `Recorded ${next.recorded}`;
     external.href = next.url;
     external.textContent = `Watch on ${next.platform} ↗`;
-    storyButton.textContent = next.platform === 'Instagram' ? 'Insights & experiments ↗' : 'Creator story ↗';
+    storyButton.textContent = next.platform === 'Instagram' ? 'Oto projects ↗' : 'Creator story ↗';
     posterImage.src = next.poster;
     poster.setAttribute('aria-label', `Play ${next.title}`);
     stage.classList.toggle('is-short', next.short);
@@ -378,7 +378,7 @@ export function createScreeningRoom({ onOpen, onClose } = {}) {
   storyButton.addEventListener('click', () => {
     const chapter = selected?.platform === 'Instagram' ? 'oto' : 'youtube';
     close();
-    document.dispatchEvent(new CustomEvent('portfolio:show-video-case', { detail: { chapter, section: chapter === 'oto' ? 'experiments' : '' } }));
+    document.dispatchEvent(new CustomEvent('portfolio:show-video-case', { detail: { chapter } }));
   });
   dialog.addEventListener('cancel', event => {
     event.preventDefault();

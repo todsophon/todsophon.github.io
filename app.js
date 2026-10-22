@@ -5,8 +5,8 @@ const character = document.querySelector('#character');
 const scene = document.querySelector('#scene');
 const listView = document.querySelector('#list-view');
 const viewToggle = document.querySelector('#view-toggle');
-const chapterOrder = ['oto', 'youtube', 'about'];
-const chapterNames = { youtube: 'YouTube', tiktok: 'TikTok', oto: 'Oto', analytics: 'Analytics', about: 'About', resume: 'Résumé' };
+const chapterOrder = ['frisson', 'oto', 'youtube', 'about'];
+const chapterNames = { youtube: 'YouTube', tiktok: 'TikTok', oto: 'Oto Projects', frisson: 'Frisson Labs / Oto', contact: 'Get in touch', analytics: 'Analytics', about: 'About', resume: 'Résumé' };
 const baseTitle = document.title;
 const historyKey = 'todPortfolioRoute';
 let currentChapter = 'oto';
@@ -77,7 +77,7 @@ function resumeHTML(item) {
     ${skills.length ? `<section aria-labelledby="skills-title"><h3 id="skills-title">Skills & tools</h3><p class="skills-line">${skills.map(escapeHTML).join(', ')}</p></section>` : ''}`;
 }
 
-function routeFor(key) { return key === 'about' || key === 'resume' ? `#${key}` : `#work/${key}`; }
+function routeFor(key) { return ['about', 'resume', 'contact'].includes(key) ? `#${key}` : `#work/${key}`; }
 function chapterFromHash(hash = window.location.hash) {
   return Object.keys(config.chapters).find(key => routeFor(key) === hash) || null;
 }
@@ -126,40 +126,84 @@ function reelsHTML(reels, { heading = '', intro = '', note = '' } = {}) {
 
 /** The Oto chapter: real screenshots first, then the work in varied rows and plain prose. */
 function otoHTML(item) {
-  const projects = asArray(item.projects).filter(project => project.kind !== 'AI VIDEO');
-  const [app, ...rest] = projects;
-  const shots = asArray(item.productShowcase?.screenshots).map(shot => ({ ...shot, src: safeURL(shot.src, 'image') })).filter(shot => shot.src);
-  const row = project => {
-    const image = safeURL(project.image, 'image');
-    const video = safeURL(project.video, 'video');
-    const media = video
-      ? `<video class="loop-preview" src="${escapeHTML(video)}"${image ? ` poster="${escapeHTML(image)}"` : ''} muted loop playsinline preload="metadata" aria-label="${escapeHTML(`A few seconds of ${project.title} being played`)}"></video>`
-      : image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(project.imageAlt || '')}" loading="lazy" decoding="async">` : '';
-    return `<article class="oto-work${project.kind === 'AI VIDEO' ? ' is-portrait' : ''}${video ? ' has-video' : ''}">
-      ${media}
-      <div><h4>${escapeHTML(project.title)}</h4><p>${escapeHTML(project.text)}</p><p>${escapeHTML(project.contribution)}</p>
-      <small>${escapeHTML(project.status)}${project.link ? ` · ${linkHTML(project.link, 'oto-inline-link')}` : ''}</small></div>
-    </article>`;
+  return `<div class="oto-collection-host">${otoCollectionHTML(item)}</div>`;
+}
+
+function frissonVideosHTML(item) {
+  const firstReelIndex = config.chapters.youtube.videos.length;
+  return `<section class="screening-featured project-section" aria-labelledby="frisson-videos-title"><h3 id="frisson-videos-title">Stories I made for Oto</h3><p>Character stories and an on-camera product demo. Open the screening room to watch.</p><div class="screening-featured-band">${item.reels.map((reel, index) => `<button type="button" class="screening-featured-panel" data-screening data-screening-filter="shorts" data-video-index="${firstReelIndex + index}" aria-label="Open ${escapeHTML(reel.title)} in the screening room"><img class="screening-featured-background" src="${escapeHTML(reel.poster)}" alt="" loading="lazy"><span class="screening-featured-shade" aria-hidden="true"></span><span class="screening-featured-copy"><span class="screening-featured-platform">Instagram · ${escapeHTML(reel.type)}</span><strong class="screening-featured-name">${escapeHTML(reel.title)}</strong><span class="screening-featured-note">${escapeHTML(reel.note)}</span></span><span class="screening-featured-play">▶ ${escapeHTML(reel.result)}</span></button>`).join('')}</div><p class="source-note">Instagram like counts recorded September 22, 2026.</p><button type="button" class="oto-project-back" data-screening data-screening-filter="shorts">Open the short-form screening room →</button></section>`;
+}
+
+let creatorPreviewCleanup = () => {};
+function stopCreatorPreview() { creatorPreviewCleanup(); creatorPreviewCleanup = () => {}; }
+function initCreatorPreview() {
+  const panel = dialogContent.querySelector('[data-oto-project="animation"]');
+  const sprite = panel?.querySelector('.oto-creator-sprite');
+  if (!sprite) return;
+  const animation = config.character.animations.happy;
+  const page = animation.pages[0];
+  sprite.style.backgroundImage = `url("${page.image}")`;
+  sprite.style.backgroundSize = `${page.columns * 100}% ${page.rows * 100}%`;
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  const controller = new AbortController();
+  let request = 0, started = 0;
+  const draw = time => {
+    const frame = Math.floor((time - started) * animation.fps / 1000) % page.frames;
+    sprite.style.backgroundPosition = `${frame % page.columns / (page.columns - 1) * 100}% ${Math.floor(frame / page.columns) / (page.rows - 1) * 100}%`;
+    request = requestAnimationFrame(draw);
   };
-  const channel = item.channel;
-  const notes = [item.source?.note, channel?.note].filter(Boolean).join(' ');
-  return `
-    ${item.role ? `<p class="oto-role">${escapeHTML(item.role)}</p>` : ''}
-    <p class="dialog-lead">${escapeHTML(item.lead)}</p>
-    ${app ? `<section class="oto-app" aria-labelledby="oto-app-title">
-      <h3 id="oto-app-title">${escapeHTML(app.title)}</h3>
-      <p>${escapeHTML(app.text)} ${escapeHTML(app.contribution)}</p>
-      ${shots.length ? `<div class="oto-shots">${shots.map(shot => `<figure><img src="${escapeHTML(shot.src)}" alt="${escapeHTML(shot.alt)}" width="314" height="680" loading="lazy" decoding="async"><figcaption>${escapeHTML(shot.label)}</figcaption></figure>`).join('')}</div>` : ''}
-      <small class="oto-app-meta">${escapeHTML(app.status)}${app.link ? ` · ${linkHTML(app.link, 'oto-inline-link')}` : ''}</small>
-    </section>` : ''}
-    <nav class="oto-links" aria-label="Oto sections"><a class="oto-inline-link" href="#oto-app-title" data-oto-section="oto-app-title">Products & games</a> · <a class="oto-inline-link" href="#oto-experiments" data-oto-section="oto-experiments">Insights & experiments</a></nav>
-    ${rest.length ? `<section class="oto-more" aria-labelledby="oto-more-title"><h3 id="oto-more-title">Games</h3>${rest.map(row).join('')}</section>` : ''}
-    <section class="project-section"><h3>Stories with Otomates</h3><p>I make character stories and product demos, then use audience response to plan the next one.</p><a class="oto-inline-link" href="#videos" data-screening data-screening-filter="shorts">Watch short-form in the video gallery ↗</a></section>
-    <section class="project-section" id="oto-experiments"><h3>Insights & experiments</h3><p>A character video brought 1.9K follows and 12 bio-link clicks. A video with a call to action recorded 18 follows and 153 bio-link clicks. These posts show different audience responses; they do not isolate the effect of the CTA.</p><a class="oto-inline-link" href="frisson-case-study.html">See the comparison, workflow, and evidence ↗</a></section>
-    ${item.community ? `<section class="project-section"><h3>The community</h3><p>${escapeHTML(item.community)}</p></section>` : ''}
-    ${asArray(item.sections).map(section => `<section class="project-section"><h3>${escapeHTML(section.title)}</h3><p>${escapeHTML(section.text)}</p></section>`).join('')}
-    <p class="oto-links">${[item.link, ...asArray(item.links), channel && { label: channel.handle, url: channel.url }].filter(Boolean).map(link => linkHTML(link, 'oto-inline-link')).join('<span aria-hidden="true"> · </span>')}</p>
-    ${notes ? `<p class="source-note">${escapeHTML(notes)}</p>` : ''}`;
+  const stop = () => { cancelAnimationFrame(request); request = 0; };
+  const start = () => { if (request || motion.matches) return; started = performance.now(); request = requestAnimationFrame(draw); };
+  panel.addEventListener('pointerenter', start, { signal: controller.signal });
+  panel.addEventListener('pointerleave', () => { if (document.activeElement !== panel) stop(); }, { signal: controller.signal });
+  panel.addEventListener('focus', start, { signal: controller.signal });
+  panel.addEventListener('blur', () => { if (!panel.matches(':hover')) stop(); }, { signal: controller.signal });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else if (panel.matches(':hover, :focus')) start(); }, { signal: controller.signal });
+  motion.addEventListener('change', () => { stop(); if (panel.matches(':hover, :focus')) start(); }, { signal: controller.signal });
+  creatorPreviewCleanup = () => { stop(); controller.abort(); };
+}
+
+function otoCollectionHTML(item) {
+  const featured = ['animation', 'discord', 'wiki'].map(id => item.collection.find(project => project.id === id));
+  return `<p class="dialog-lead">Explore the tools and experiences I worked on around Oto’s companions: character creation, games, Discord, and community discovery.</p><p><a class="oto-inline-link" href="#work/frisson" data-open="frisson">Read my Frisson Labs case study →</a></p>
+    <section class="oto-featured" aria-label="Featured Oto projects"><div class="oto-featured-band">${featured.map((project, index) => `<button class="oto-featured-panel" type="button" data-oto-project="${project.id}">
+      <img class="oto-featured-background" src="${escapeHTML(project.image)}" alt="${escapeHTML(project.imageAlt)}"><span class="oto-featured-shade" aria-hidden="true"></span>
+      <span class="oto-featured-tag">${index === 0 ? 'Start here' : 'Explore project'} ↗</span><span class="oto-featured-copy"><small>${escapeHTML(project.type)}</small><strong>${escapeHTML(project.title)}</strong><span>${escapeHTML(project.description)}</span></span>
+    </button>`).join('')}</div></section>
+    <div class="oto-project-grid">${item.collection.filter(project => !featured.includes(project)).map(project => `<button class="oto-project-card" type="button" data-oto-project="${project.id}">
+      <div class="oto-card-media"><img src="${escapeHTML(project.image)}" alt="${escapeHTML(project.imageAlt)}" loading="lazy"></div>
+      <span class="oto-card-copy"><small>${escapeHTML(project.type)}</small><strong>${escapeHTML(project.title)}</strong><span>${escapeHTML(project.description)}</span><span class="oto-card-action">Explore project →</span></span>
+    </button>`).join('')}</div>
+    <section class="project-section oto-traction"><h3>Product traction</h3><dl class="oto-traction-metrics">${item.traction.metrics.map(metric => `<div><dt>${escapeHTML(metric.label)}</dt><dd>${escapeHTML(metric.value)}</dd><small>${escapeHTML(metric.detail)}</small></div>`).join('')}</dl><p class="source-note">${escapeHTML(item.traction.note)}</p><details class="oto-analytics"><summary>View analytics</summary>${item.traction.evidence.map(entry => `<figure><a href="${escapeHTML(entry.src)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHTML(entry.src)}" alt="${escapeHTML(entry.alt)}" loading="lazy"></a><figcaption>${escapeHTML(entry.label)}</figcaption></figure>`).join('')}</details></section>
+    <p class="source-note">Descriptions draw on my Oto and Chibi Wiki repositories and my contributions within the Frisson Labs team. Creator and Discord captures show the real interfaces in local repo previews; Wiki captures show the live site.</p>`;
+}
+
+function openOtoProject(id) {
+  stopCreatorPreview();
+  const item = config.chapters.oto;
+  const host = dialogContent.querySelector('.oto-collection-host');
+  if (!host) return;
+  const project = item.collection.find(entry => entry.id === id);
+  if (!project) {
+    host.innerHTML = otoCollectionHTML(item);
+    initCreatorPreview();
+    dialog.scrollTop = 0;
+    host.querySelector(`[data-oto-project="${host.dataset.previousProject || 'animation'}"]`)?.focus({ preventScroll: true });
+    return;
+  }
+  host.dataset.previousProject = id;
+  const back = '<button class="oto-project-back" type="button" data-oto-project="collection">← All Oto projects</button>';
+    const gameRows = id === 'games' ? item.projects.filter(entry => entry.kind === 'GAME').map(game => `<article class="oto-work has-video"><video class="loop-preview" src="${escapeHTML(game.video)}" poster="${escapeHTML(game.image)}" controls playsinline preload="metadata" aria-label="${escapeHTML(game.title)} gameplay demo"></video><div><h4>${escapeHTML(game.title)}</h4><p>${escapeHTML(game.text)}</p><p>${escapeHTML(game.contribution)}</p><small>${escapeHTML(game.status)}</small>${linkHTML(game.link, 'oto-inline-link')}</div></article>`).join('') : '';
+    const home = id === 'home' ? `<div class="oto-shots">${item.productShowcase.screenshots.map(shot => `<figure><img src="${escapeHTML(shot.src)}" alt="${escapeHTML(shot.alt)}" width="314" height="680" loading="lazy"><figcaption>${escapeHTML(shot.label)}</figcaption></figure>`).join('')}</div><h3>What I contributed</h3><p>${escapeHTML(item.workSamples[0].text)}</p><p>${escapeHTML(item.projects[0].contribution)}</p>${linkHTML(item.projects[0].link, 'oto-inline-link')}` : '';
+    host.innerHTML = `${back}<section class="oto-project-detail"><p class="oto-detail-type">${escapeHTML(project.type)}</p><h3 tabindex="-1" class="oto-detail-title">${escapeHTML(project.title)}</h3><p class="dialog-lead">${escapeHTML(project.description)}</p>
+      ${project.screenshots ? `<div class="oto-project-captures">${project.screenshots.map(shot => `<figure><a href="${escapeHTML(shot.src)}" target="_blank" rel="noopener noreferrer" aria-label="Open full-size screenshot: ${escapeHTML(shot.label)}"><img src="${escapeHTML(shot.src)}" alt="${escapeHTML(shot.label)}" loading="lazy"></a><figcaption>${escapeHTML(shot.label)}</figcaption></figure>`).join('')}</div>` : ''}
+      ${project.text ? `<p>${escapeHTML(project.text)}</p>` : ''}
+      ${project.contribution ? `<h4>What I built</h4><p>${escapeHTML(project.contribution)}</p>` : ''}
+      ${gameRows}${home}${project.link ? `<p>${linkHTML(project.link, 'oto-inline-link')}</p>` : ''}
+      ${id === 'discord' ? '<p class="source-note">The Activity supports guest play and linked Oto accounts. Which path is available depends on the player’s session.</p>' : ''}
+    </section>`;
+  dialog.scrollTop = 0;
+  (host.querySelector('.oto-detail-title') || host.querySelector('.oto-project-back'))?.focus({ preventScroll: true });
 }
 
 function milestonesHTML(item) {
@@ -181,6 +225,8 @@ function chapterLinksHTML(item, key) {
 }
 
 function renderChapter(key) {
+  stopCreatorPreview();
+  clearMilestoneSpotlight();
   const item = config.chapters[key];
   if (!item) return;
   currentChapter = key;
@@ -198,17 +244,29 @@ function renderChapter(key) {
     ${fromAward ? milestonesHTML(item) : ''}
     ${item.cover && safeURL(item.cover.image, 'image') ? `<figure class="chapter-cover"><img src="${escapeHTML(safeURL(item.cover.image, 'image'))}" alt="${escapeHTML(item.cover.alt)}" width="1280" height="211"><figcaption>${escapeHTML(item.cover.caption)}</figcaption></figure>` : ''}
     <p class="dialog-lead">${escapeHTML(item.lead)}</p>
+    ${key === 'contact' ? `<form class="contact-message-form" action="https://formsubmit.co/${encodeURIComponent(config.contact.email)}" method="POST" target="_blank" rel="noopener noreferrer" aria-labelledby="contact-form-heading">
+      <h3 id="contact-form-heading">Leave me a message</h3>
+      <input type="hidden" name="_subject" value="A new message from Tod’s portfolio">
+      <input type="hidden" name="_template" value="table">
+      <div class="contact-message-fields"><label>Your name<input type="text" name="name" autocomplete="name" maxlength="120" required></label><label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label></div>
+      <label>What’s on your mind?<textarea name="message" rows="6" minlength="10" maxlength="5000" placeholder="Tell me about your team, an idea, or what you’d like to make together…" required></textarea></label>
+      <div class="contact-message-honeypot" aria-hidden="true"><label>Leave this empty<input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
+      <p class="source-note">Your name, email, and message are sent through FormSubmit to my inbox. Sending opens its spam check and confirmation in a new tab.</p>
+      <button class="contact-message-send" type="submit">Send message ↗</button>
+    </form><section class="project-section"><h3>Or say hello another way</h3><p><a class="oto-inline-link" href="${escapeHTML(config.contact.linkedin)}" target="_blank" rel="noopener noreferrer">Message me on LinkedIn ↗</a></p><p>Email: <span>${escapeHTML(config.contact.email)}</span> <button type="button" class="oto-project-back" data-copy-contact>Copy email</button></p><p class="source-note" id="contact-copy-status" role="status"></p></section>` : ''}
     ${fromAward ? '' : milestonesHTML(item)}
-    ${reelsHTML(item.reels, { heading: 'Three Reels I made for Oto', intro: item.reelIntro || '', note: item.reelSource?.note })}
+    ${key === 'frisson' ? `<section class="project-section"><h3>A home for your companion</h3><div class="oto-shots">${config.chapters.oto.productShowcase.screenshots.map(shot => `<figure><img src="${escapeHTML(shot.src)}" alt="${escapeHTML(shot.alt)}" width="314" height="680" loading="lazy"><figcaption>${escapeHTML(shot.label)}</figcaption></figure>`).join('')}</div><p class="source-note">Official Oto app screenshots. These show the companion experience; my contributions are described below.</p></section>` : ''}
     ${asArray(item.sections).map(section => `<section class="project-section"><h3>${escapeHTML(section.title)}</h3>${section.text ? `<p>${escapeHTML(section.text)}</p>` : ''}${asArray(section.bullets).length ? `<ul class="project-bullets">${section.bullets.map(bullet => `<li>${escapeHTML(bullet)}</li>`).join('')}</ul>` : ''}</section>`).join('')}
+    ${key === 'frisson' ? frissonVideosHTML(item) : reelsHTML(item.reels, { heading: 'Three Reels I made for Oto', intro: item.reelIntro || '', note: item.reelSource?.note })}
     ${videosHTML(item.videos)}
     ${resumeHTML(item)}
     ${item.quote ? `<blockquote class="featured-quote">${escapeHTML(item.quote)}</blockquote><p class="source-note">${escapeHTML(item.quoteCredit)}</p>` : ''}
     ${chapterLinksHTML(item, key)}
-    ${sourceHTML(item.source)}
+    ${key === 'frisson' ? '<p><a class="oto-inline-link" href="#work/oto" data-open="oto">Explore Oto projects →</a></p>' : ''}${sourceHTML(item.source)}
     ${item.pending ? `<p class="pending-note">${escapeHTML(item.pending)}</p>` : ''}
   `;
   startPreviews();
+  initCreatorPreview();
   resetShareFeedback();
   document.title = `${chapterNames[key] || item.label} · ${config.name}`;
   document.dispatchEvent(new CustomEvent('portfolio:chapter-open', { detail: { chapter: key } }));
@@ -222,6 +280,37 @@ function renderChapter(key) {
   if (!dialog.open) { dialog.showModal(); document.body.style.overflow = 'hidden'; }
   dialog.scrollTop = 0;
   document.querySelector('#dialog-close').focus({ preventScroll: true });
+  if (fromAward) {
+    const section = dialogContent.querySelector(`[data-metal="${dialog.dataset.award}"]`);
+    spotlightSection(section);
+  }
+}
+
+function spotlightSection(section) {
+    clearMilestoneSpotlight();
+    if (!section) return;
+    section.scrollIntoView({ block: section.offsetHeight > dialog.clientHeight * .65 ? 'start' : 'center', behavior: 'instant' });
+    section.classList.add('is-spotlight');
+    dialogContent.classList.add('has-milestone-spotlight');
+    const initialScroll = dialog.scrollTop;
+    const controller = new AbortController();
+    milestoneSpotlight = controller;
+    dialog.addEventListener('scroll', () => {
+      if (Math.abs(dialog.scrollTop - initialScroll) > 2) clearMilestoneSpotlight();
+    }, { signal: controller.signal });
+    dialog.addEventListener('wheel', clearMilestoneSpotlight, { passive: true, signal: controller.signal });
+    dialog.addEventListener('touchmove', clearMilestoneSpotlight, { passive: true, signal: controller.signal });
+    dialog.addEventListener('keydown', event => {
+      if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) clearMilestoneSpotlight();
+    }, { signal: controller.signal });
+}
+
+let milestoneSpotlight;
+function clearMilestoneSpotlight() {
+  milestoneSpotlight?.abort();
+  milestoneSpotlight = null;
+  dialogContent.classList.remove('has-milestone-spotlight');
+  dialogContent.querySelector('.is-spotlight')?.classList.remove('is-spotlight');
 }
 
 /** Game clips loop quietly; with reduced motion they stay still and get controls instead. */
@@ -234,6 +323,7 @@ function startPreviews() {
 }
 
 function hideChapter() {
+  stopCreatorPreview();
   closing = false;
   if (!dialog.open) return;
   dialog.close();
@@ -254,6 +344,7 @@ function pushChapter(key) {
 }
 
 function openChapter(key, { replace = false, source = document.activeElement } = {}) {
+  const otoProject = key === 'oto' ? source?.dataset?.otoEntry || { product: 'home', community: 'games', games: 'games' }[source?.dataset?.note] : null;
   if (!config.chapters[key]) return;
   const origin = source?.getBoundingClientRect?.();
   closing = false;
@@ -265,6 +356,7 @@ function openChapter(key, { replace = false, source = document.activeElement } =
   } else pushChapter(key);
   dialog.dataset.award = key === 'youtube' && ['silver', 'gold'].includes(source?.dataset?.milestone) ? source.dataset.milestone : '';
   renderChapter(key);
+  if (otoProject) openOtoProject(otoProject);
   if (origin) {
     const bounds = dialog.getBoundingClientRect();
     dialog.style.setProperty('--entry-x', `${Math.max(0, Math.min(bounds.width, origin.left + origin.width / 2 - bounds.left))}px`);
@@ -302,6 +394,12 @@ function setView(showList) {
 }
 
 document.addEventListener('click', event => {
+  if (event.target.closest?.('[data-copy-contact]')) {
+    navigator.clipboard.writeText(config.contact.email).then(() => { document.querySelector('#contact-copy-status').textContent = 'Email address copied.'; }).catch(() => { document.querySelector('#contact-copy-status').textContent = 'Select the email address above to copy it.'; });
+    return;
+  }
+  const projectLink = event.target.closest?.('[data-oto-project]');
+  if (projectLink) { event.preventDefault(); openOtoProject(projectLink.dataset.otoProject); return; }
   const sectionLink = event.target.closest?.('[data-oto-section]');
   if (sectionLink) {
     event.preventDefault();
@@ -324,10 +422,6 @@ document.addEventListener('click', event => {
   if (!config.chapters[trigger.dataset.open]) return;
   event.preventDefault();
   openChapter(trigger.dataset.open, { source: trigger });
-  if (trigger.dataset.note) {
-    const section = { product: '#oto-app-title', community: '#oto-more-title', films: '#oto-experiments', experiments: '#oto-experiments' }[trigger.dataset.note];
-    requestAnimationFrame(() => dialog.querySelector(section)?.scrollIntoView({ block: 'start', behavior: 'instant' }));
-  }
 });
 document.addEventListener('room:open-chapter', event => {
   const chapter = event.detail.chapter;
@@ -338,7 +432,6 @@ document.addEventListener('room:open-chapter', event => {
     document.dispatchEvent(new CustomEvent('portfolio:request-screening', { detail: { filter: 'shorts', source } }));
   } else {
     openChapter(chapter, { source });
-    if (event.detail.section === 'experiments') document.getElementById('oto-experiments')?.scrollIntoView({ block: 'start', behavior: 'instant' });
   }
 });
 document.addEventListener('portfolio:hide-case-for-screening', () => {
@@ -349,7 +442,6 @@ document.addEventListener('portfolio:hide-case-for-screening', () => {
 });
 document.addEventListener('portfolio:show-video-case', event => {
   openChapter(event.detail?.chapter || 'youtube', { source: document.querySelector('[data-furniture="youtube"] .furniture-hit') });
-  if (event.detail?.section === 'experiments') document.getElementById('oto-experiments')?.scrollIntoView({ block: 'start', behavior: 'instant' });
 });
 document.querySelector('#tour-button')?.addEventListener('click', event => { event.preventDefault(); openChapter('oto', { source: event.currentTarget }); });
 document.querySelector('#dialog-close').addEventListener('click', closeChapter);

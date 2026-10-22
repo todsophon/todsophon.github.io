@@ -9,7 +9,7 @@ export function createGuidedTour({ stage, guide, keyboard }) {
   const value = (chapter, index) => config.chapters[chapter]?.metrics?.[index]?.value;
   // Each story: what belongs to it, where its single glow sits, and what Fibi says there.
   const STORIES = [
-    { id: 'oto', name: 'Oto desk', selector: '[data-furniture="oto"], .wall-pinboard', beacon: 'oto', color: '#68cbf5', anim: 'talking', chapter: 'oto',
+    { id: 'oto', name: 'Oto desk', selector: '[data-furniture="oto"]', beacon: 'oto', color: '#68cbf5', anim: 'talking', chapter: 'frisson',
       title: 'Oto at Frisson Labs', line: `Tod’s current role: community growth and hands-on product work on Oto’s apps and games. ${value('oto', 0) || '15K'} people brought to Discord.` },
     { id: 'youtube', name: 'Paired YouTube awards', selector: '.wall-award', color: '#f4c967', anim: 'happy', chapter: 'youtube',
       title: 'From 100K to a million', line: `${value('youtube', 0) || '1.81M'} subscribers and ${value('youtube', 1) || '455M'} views. The play buttons on the wall mark the milestones.` },
@@ -17,8 +17,6 @@ export function createGuidedTour({ stage, guide, keyboard }) {
       title: 'My video desk', line: 'YouTube films, Shorts, and Instagram character stories. Choose short-form or long-form inside the gallery.' },
     { id: 'about', name: 'Portrait', selector: '.wall-portrait', color: '#d9b6e9', anim: 'hello', chapter: 'about',
       title: 'Meet Tod', line: 'From Thailand to Seattle, with a camera along the way.' },
-    { id: 'analytics', name: 'Insights easel', selector: '[data-furniture="plant"]', beacon: 'plant', color: '#b3d98c', anim: 'thinking', chapter: 'oto', note: 'experiments',
-      title: 'The Frisson Labs case study', line: 'How Tod builds AI video workflows that carry each lesson into the next clip, plus a call-to-action video that got 153 bio-link clicks.' },
   ];
   const byId = Object.fromEntries(STORIES.map(story => [story.id, story]));
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -41,7 +39,8 @@ export function createGuidedTour({ stage, guide, keyboard }) {
     const furniture = target.closest('.furniture-piece')?.dataset.furniture;
     if (target.closest('.wall-portrait')) return byId.about;
     if (target.closest('.wall-award')) return byId.youtube;
-    if (target.closest('.board-note, .wall-pinboard')) return byId.oto;
+
+    if (furniture === 'plant') return byId.oto;
     return STORIES.find(story => story.beacon === furniture) || (furniture === 'bookshelf' ? byId.videos : null);
   }
   function save() { try { localStorage.setItem(SEEN_KEY, JSON.stringify([...awake])); } catch { /* Progress lasts for this visit. */ } }

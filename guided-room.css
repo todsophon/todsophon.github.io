@@ -144,10 +144,10 @@ body{min-height:100dvh}
 .pinboard-frame{position:absolute;inset:0;padding:0;border:0;background:none;cursor:grab;touch-action:none}
 .pinboard-frame:focus-visible{outline:2px solid #e9b44c;outline-offset:2px}
 .is-wall-dragging .pinboard-frame{cursor:grabbing}
-.cozy-room .wall-pinboard .board-note{position:absolute;width:17%;height:52%;padding:0;border:0;background:none;cursor:grab;touch-action:none;transform:none;scale:1}
-.cozy-room .wall-pinboard .board-note:hover,.cozy-room .wall-pinboard .board-note:focus-visible{outline:none;scale:1.05;filter:drop-shadow(0 2px 3px #402c3359)}
+.cozy-room .wall-pinboard .board-note{position:absolute;width:21%;height:60%;padding:0;border:0;background:none;cursor:grab;touch-action:none;transform:none;scale:1}
+.cozy-room .wall-pinboard .board-note:hover,.cozy-room .wall-pinboard .board-note:focus-visible{outline:none;scale:1.09;filter:drop-shadow(0 3px 5px #402c3380)}
 .cozy-room .wall-pinboard .board-note:after{content:none}
-.board-note .note-photo{position:absolute;inset:0;display:flex;flex-direction:column;gap:4%;padding:7% 7% 0;box-sizing:border-box;background:#fbf8f1;box-shadow:1px 2px 3px #402c3359;transform:rotate(var(--tilt,0deg));pointer-events:none}
+.board-note .note-photo{position:absolute;inset:0;display:flex;flex-direction:column;gap:4%;padding:7% 7% 0;box-sizing:border-box;background:#fffdf5;box-shadow:1px 3px 5px #402c3370;transform:rotate(var(--tilt,0deg));pointer-events:none}
 .board-note .note-photo img{display:block;width:100%;aspect-ratio:9/10;height:auto;object-fit:cover}
 .board-note .note-photo span{display:block;transform:none;padding:0;color:#4b3c43;font-size:9px;font-weight:900;letter-spacing:.06em;line-height:1;text-align:center;text-shadow:none}
 .board-note .note-photo:before{content:'';position:absolute;left:50%;top:-4%;width:10%;aspect-ratio:1;border-radius:50%;background:#d23a2c;box-shadow:0 1px 2px #0005;transform:translateX(-50%)}
@@ -183,7 +183,7 @@ body{min-height:100dvh}
   .wall-tag{transform:translate(-50%,calc(-100% - 2px))}
   .cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label,.cozy-room.reveal-active .wall-portrait:not(.is-painted):after{width:17px;height:17px;min-width:17px;font-size:10px;box-shadow:0 0 0 3px #fff4e266,0 0 12px 4px #f7c27e99}
   .cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label:after{font-size:10px}
-  .board-note .note-photo span{display:none}
+  .board-note .note-photo span{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){
   .cozy-room.reveal-active .furniture-piece:not(.is-painted) .furniture-label{animation:none}
@@ -193,6 +193,76 @@ body{min-height:100dvh}
 /* Chapter pages: plain headings, real images, and prose instead of labels, stat cards and pills. */
 .dialog-topbar .eyebrow{font-size:13px;font-weight:650;letter-spacing:0;text-transform:none}
 .oto-role{margin:10px 0 0;color:#7a6c83;font-size:14px}
+.project-dialog[data-chapter=oto]{width:min(1120px,calc(100% - 40px))}
+.oto-project-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:28px 0 36px}
+.oto-featured{margin:28px 0 20px}
+.oto-featured-band{display:flex;height:400px;overflow:hidden;border-radius:16px;background:#eee7f5}
+.oto-featured-panel{position:relative;isolation:isolate;flex:1;min-width:0;margin-left:-30px;padding:0;border:0;overflow:hidden;text-align:left;background:#211735;color:#fff;clip-path:polygon(50px 0,100% 0,calc(100% - 50px) 100%,0 100%);transition:flex .45s ease}
+.oto-featured-panel:first-child{margin-left:0;clip-path:polygon(0 0,100% 0,calc(100% - 50px) 100%,0 100%)}
+.oto-featured-panel:last-child{clip-path:polygon(50px 0,100% 0,100% 100%,0 100%)}
+.oto-featured-panel:hover,.oto-featured-panel:focus-visible{flex:1}
+.oto-featured-background,.oto-featured-preview{position:absolute;inset:56px 0 auto;display:block;width:100%;height:190px;max-width:none;object-fit:contain;object-position:center;background:#eee7f5;transition:transform .45s ease,opacity .4s ease}
+.oto-featured-preview{opacity:0}
+.oto-featured-panel:hover .oto-featured-background,.oto-featured-panel:focus-visible .oto-featured-background{transform:scale(1.04)}
+.oto-featured-panel:hover .oto-featured-preview,.oto-featured-panel:focus-visible .oto-featured-preview{opacity:1;transform:scale(1.04)}
+.oto-featured-shade{position:absolute;inset:0;background:linear-gradient(0deg,#211735 0%,#211735 37%,transparent 55%)}
+.oto-featured-copy{position:absolute;z-index:2;left:50px;right:32px;bottom:24px;display:grid;gap:8px}
+.oto-featured-panel:first-child .oto-featured-copy{left:24px;right:45px}
+.oto-featured-copy small{font-size:10px;letter-spacing:1px;color:#ffffffd9}
+.oto-featured-copy strong{font-size:clamp(22px,2.4vw,29px);font-weight:650;letter-spacing:-.6px;line-height:1.1;color:#fff}
+.oto-featured-copy>span{font-size:12px;line-height:1.6;color:#ffffffe8;max-width:30ch}
+.oto-featured-tag{position:absolute;z-index:2;left:50px;top:20px;padding:7px 11px;border-radius:24px;background:#211735bd;border:1px solid #ffffff66;font-size:11px;color:#fff}
+.oto-featured-panel:first-child .oto-featured-tag{left:24px;background:var(--yellow);border-color:var(--yellow);color:var(--ink)}
+.oto-featured-panel:focus-visible{outline:3px solid var(--yellow);outline-offset:-7px}
+.oto-project-captures{display:grid;gap:24px;margin:28px 0}
+.oto-project-captures figure{margin:0}
+.oto-project-captures img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px}
+.oto-project-captures figcaption{margin-top:8px;font-size:11px;color:var(--muted);line-height:1.6}
+.oto-card-media img{transition:transform .35s ease}
+.oto-project-card:hover .oto-card-media img,.oto-project-card:focus-visible .oto-card-media img{transform:scale(1.04)}
+@media(max-width:720px){.oto-featured-band{height:auto;display:block}.oto-featured-panel,.oto-featured-panel:first-child,.oto-featured-panel:last-child{display:block;width:100%;height:260px;margin:-6px 0 0;clip-path:polygon(0 14px,100% 0,100% calc(100% - 14px),0 100%)}.oto-featured-panel:first-child{margin:0;clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),0 100%)}.oto-featured-panel:last-child{clip-path:polygon(0 14px,100% 0,100% 100%,0 100%)}.oto-featured-copy,.oto-featured-panel:first-child .oto-featured-copy{left:22px;right:24px;bottom:26px}.oto-featured-tag,.oto-featured-panel:first-child .oto-featured-tag{left:22px;top:25px}.oto-featured-background,.oto-featured-preview{object-position:50% 25%}}
+@media(prefers-reduced-motion:reduce){.oto-featured-panel,.oto-featured-background,.oto-featured-preview,.oto-card-media img{transition:none}.oto-featured-panel:hover .oto-featured-background,.oto-featured-panel:focus-visible .oto-featured-background,.oto-featured-panel:hover .oto-featured-preview,.oto-featured-panel:focus-visible .oto-featured-preview,.oto-project-card:hover .oto-card-media img,.oto-project-card:focus-visible .oto-card-media img{transform:none}}
+.oto-project-card{display:flex;flex-direction:column;min-width:0;padding:10px;border:1px solid var(--line);border-radius:18px;background:var(--white);text-align:left;color:var(--ink);overflow:hidden}
+.oto-project-card:hover{border-color:#b49bd8;box-shadow:0 6px 20px #21173512}
+.oto-project-card:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+.oto-project-card.is-featured{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;background:#f7f3fd;border-color:#c6b5db}
+.oto-card-media{position:relative;display:grid;place-items:center;aspect-ratio:16/9;background:#eee7f5;border-radius:12px;overflow:hidden}
+.oto-card-media img{display:block;width:100%;height:100%;object-fit:cover}
+.oto-card-media.is-character img{object-fit:contain;padding:16px}
+.oto-project-card.is-featured .oto-card-media{aspect-ratio:auto;min-height:220px}
+.oto-card-badge{position:absolute;top:12px;left:12px;padding:5px 10px;border-radius:20px;background:var(--yellow);color:var(--ink);font-size:11px;font-weight:650}
+.oto-card-copy{display:flex;flex-direction:column;gap:8px;padding:16px 8px 8px}
+.oto-card-copy small,.oto-detail-type{font-size:10px;letter-spacing:1px;color:var(--violet)}
+.oto-card-copy strong{font-size:20px;line-height:1.25;letter-spacing:-.4px;font-weight:650}
+.oto-card-copy>span{font-size:13px;line-height:1.6;color:var(--muted)}
+.oto-card-copy .oto-card-action{margin-top:auto;padding-top:14px;color:var(--violet);font-size:12px}
+.oto-card-path{font-size:20px;text-align:center;font-weight:650;line-height:1.4;color:#655080}
+.oto-project-back{display:block;min-height:44px;padding:8px 0;margin:16px 0;color:var(--violet);font-size:13px}
+.dialog-content .oto-detail-title{font-size:32px;line-height:1.15;letter-spacing:-1px;margin:12px 0 18px;max-width:700px}
+.oto-project-detail>p{max-width:760px;font-size:15px;line-height:1.7}
+.oto-project-detail h4{margin:28px 0 8px;font-size:18px}
+.oto-process{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;list-style:none;counter-reset:step;padding:0;margin:28px 0 8px}
+.oto-process li{counter-increment:step;border:1px solid var(--line);border-radius:14px;padding:18px;font-size:14px;background:#f7f3fd}
+.oto-process li:before{content:counter(step,decimal-leading-zero);display:block;color:var(--violet);font-size:11px;margin-bottom:12px}
+.oto-character-example{margin:28px 0;background:#f7f3fd;border-radius:16px;padding:24px;text-align:center}
+.oto-character-example img{max-width:220px;width:100%;height:auto}
+.oto-character-example figcaption{font-size:12px;color:var(--muted)}
+.cozy-room .oto-board-link.room-tag{pointer-events:auto;cursor:pointer;opacity:1!important;visibility:visible!important;white-space:nowrap;z-index:30}
+.cozy-room .oto-board-link.room-tag:hover,.cozy-room .oto-board-link.room-tag:focus-visible{background:#f0e9fa;outline:2px solid var(--violet);outline-offset:3px}
+.pinboard-frame:after{content:'';position:absolute;inset:-14px;cursor:pointer}
+@media(max-width:760px){.oto-project-grid{grid-template-columns:1fr 1fr}.oto-project-card.is-featured{grid-column:span 2}.oto-process{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.oto-project-grid{grid-template-columns:1fr}.oto-project-card.is-featured{grid-column:auto;grid-template-columns:1fr}.oto-project-card.is-featured .oto-card-media{aspect-ratio:16/9;min-height:0}.oto-card-copy strong{font-size:19px}.project-dialog[data-chapter=oto]{width:calc(100% - 20px)}}
+.oto-traction-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:22px 0}
+.oto-traction-metrics>div{display:flex;flex-direction:column;padding:18px 16px;background:#f4eff7;border:1px solid #e5dce9;border-radius:14px}
+.oto-traction-metrics dt{font-size:13px;line-height:1.4;color:#65566f}
+.oto-traction-metrics dd{order:-1;margin:0 0 6px;font-size:32px;font-weight:700;letter-spacing:-1px;color:#493752}
+.oto-traction-metrics small{margin-top:10px;font-size:11px;line-height:1.5;color:#7a6c83}
+.oto-analytics summary{cursor:pointer;color:#65506f;font-size:14px;padding:10px 0}
+.oto-analytics summary:focus-visible{outline:2px solid #806092;outline-offset:4px}
+.oto-analytics figure{margin:16px 0 24px}
+.oto-analytics img{display:block;width:100%;height:auto;border:1px solid #e5dce9;border-radius:8px}
+.oto-analytics figcaption{margin-top:8px;font-size:12px;color:#7a6c83}
+@media(max-width:600px){.oto-traction-metrics{grid-template-columns:1fr;gap:10px}.oto-traction-metrics>div{padding:16px}.oto-traction-metrics dd{font-size:30px}}
 .project-dialog[data-chapter=oto] .dialog-content h2{max-width:620px;font-size:38px;letter-spacing:-1.4px}
 .project-dialog[data-chapter=oto] .dialog-lead{margin-top:18px}
 .oto-app,.oto-more,.reel-list{margin:40px 0 0}
@@ -284,3 +354,178 @@ body{min-height:100dvh}
 .cozy-room .character.is-held .character-button{transform-origin:51.5% 18%;animation:fibi-dangle 1.15s ease-in-out infinite}
 @keyframes fibi-dangle{0%,100%{rotate:-5deg}50%{rotate:5deg}}
 @media(prefers-reduced-motion:reduce){.cozy-room .character.is-held .character-button{animation:none}}
+.oto-creator-animation{position:absolute;inset:0;display:grid;place-items:start center;background:radial-gradient(ellipse at 50% 35%,#fbf5ff,#bba4d2);opacity:0;transition:opacity .4s ease;pointer-events:none}
+.oto-creator-sprite{position:absolute;top:12px;width:280px;height:280px;background-repeat:no-repeat;background-position:0 0;max-width:100%;aspect-ratio:1}
+.oto-creator-animation small{position:absolute;top:75px;left:24px;font-size:10px;color:#5c416f}
+.oto-featured-panel:hover .oto-creator-animation,.oto-featured-panel:focus-visible .oto-creator-animation{opacity:1}
+@media(max-width:720px){.oto-creator-sprite{width:200px;height:200px;top:-5px;right:12px}.oto-creator-animation small{top:65px}}
+@media(prefers-reduced-motion:reduce){.oto-creator-animation{transition:none}.cozy-room .wall-pinboard .board-note:hover,.cozy-room .wall-pinboard .board-note:focus-visible{scale:1}}
+.adventure-note{position:absolute;left:10%;top:12%;width:80%;height:75%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:5px;padding:12px 18px;border-radius:4px;background:#302443;color:#fff9ee;text-decoration:none;transform:rotate(-3deg);box-shadow:3px 4px 6px #402c3359;text-align:left;overflow:hidden}
+.adventure-note:before{content:'';position:absolute;right:19%;top:0;bottom:0;border-left:1px dashed #fff9ee50}
+.adventure-kicker{font-size:7px;letter-spacing:1px;color:#d6c6e6}.adventure-note strong{font-size:34px;line-height:.9;letter-spacing:-1px;font-weight:800;z-index:1}.adventure-note em{font-size:9px;font-style:normal;color:#dfcfe9}.adventure-note b{font-size:10px;color:#f6cc79;letter-spacing:.06em}.adventure-orbit{position:absolute;right:7%;top:37%;font-size:33px;color:#f6cc79;transform:rotate(-10deg)}.adventure-note:hover,.adventure-note:focus-visible{background:#443057;outline:3px solid #f6cc79;outline-offset:2px}
+/* The chest sprite includes its own floor contact shadow. */
+.furniture-piece[data-furniture=plant] .furniture-art::before{content:none}
+.furniture-piece[data-furniture=plant] .furniture-sprite{transform:none}
+.furniture-piece[data-furniture=plant]{--furniture-hit-shape:polygon(10% 24%,55% 4%,94% 24%,94% 76%,54% 97%,10% 76%)}
+/* A rigid chest with a real hinged lid, rather than a tilted image. */
+.furniture-piece[data-furniture=plant] .furniture-art{container-type:size}
+.furniture-piece[data-furniture=plant] .furniture-sprite{display:none}
+.project-chest{position:absolute;left:22%;top:46%;width:64cqw;height:42cqw;transform-style:preserve-3d;transform:rotateX(-35.264deg) rotateY(-45deg);pointer-events:none}
+.chest-body,.chest-lid{position:absolute;inset:0;transform-style:preserve-3d}
+.chest-face{position:absolute;display:block;box-sizing:border-box;border:5cqw solid #503620;background-color:#bc812e;background-image:repeating-linear-gradient(0deg,transparent 0 8cqw,#e3aa4440 8cqw 16cqw),repeating-linear-gradient(90deg,#8d572533 0 9cqw,transparent 9cqw 18cqw);backface-visibility:hidden}
+.chest-front,.chest-back{width:64cqw;height:42cqw}
+.chest-front{transform:translateZ(21cqw)}.chest-back{transform:rotateY(180deg) translateZ(21cqw)}
+.chest-right,.chest-left{left:11cqw;width:42cqw;height:42cqw;background-color:#8c5b27}
+.chest-right{transform:rotateY(90deg) translateZ(32cqw)}.chest-left{transform:rotateY(-90deg) translateZ(32cqw)}
+.chest-top,.chest-bottom{width:64cqw;height:42cqw;background-color:#d59d40}
+.chest-top{transform:rotateX(90deg) translateZ(21cqw)}.chest-bottom{transform:rotateX(-90deg) translateZ(21cqw)}
+.chest-body .chest-top{background:#271b16;border-color:#76502b}
+.chest-lid{top:-9cqw;height:10cqw;transform-origin:50% 50% -21cqw;transition:transform .7s linear(0,.4,.8,1.06,1.12,1.03,.98,1);z-index:2}
+.chest-lid .chest-front,.chest-lid .chest-back{height:10cqw;border-width:3cqw}
+.chest-lid .chest-left,.chest-lid .chest-right{height:10cqw;border-width:3cqw}
+.chest-lid .chest-top,.chest-lid .chest-bottom{top:-16cqw}
+.chest-lid .chest-top{transform:rotateX(90deg) translateZ(5cqw)}.chest-lid .chest-bottom{transform:rotateX(-90deg) translateZ(5cqw)}
+.chest-lid .chest-front:after{content:'';position:absolute;left:42%;top:1cqw;width:8cqw;height:16cqw;background:linear-gradient(90deg,#ddd,#aaa);border:1cqw solid #797979;box-shadow:1cqw 1cqw 0 #392b25}
+.chest-glow{position:absolute;inset:-15cqw -5cqw;background:radial-gradient(ellipse,#ffe497aa,transparent 68%);opacity:0;transition:opacity .3s;transform:translateZ(0);pointer-events:none}
+.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant]:is(:hover,:focus-within) .chest-lid,.furniture-piece[data-furniture=plant]:has(.is-awaiting-fibi) .chest-lid{transform:rotateX(105deg)}
+.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant]:is(:hover,:focus-within) .chest-glow{opacity:.7}
+.furniture-piece[data-furniture=plant] .furniture-art:before{content:'';position:absolute;left:15%;top:83%;width:80%;height:15%;border-radius:50%;background:#4d291d30;filter:blur(3px)}
+@media(prefers-reduced-motion:reduce){.chest-lid,.chest-glow{transition:none}}
+
+/* Square voxel proportions and crisp 16-pixel wooden panels. */
+.project-chest{left:25%;top:43%;width:56cqw}
+.chest-face{border:4cqw solid #382817;background:#a7732e url('assets/chest-wood-pixels.svg') center/100% 100%;image-rendering:pixelated;box-shadow:inset 0 0 0 2cqw #78511f}
+.chest-front,.chest-back{width:56cqw;transform:translateZ(28cqw)}
+.chest-back{transform:rotateY(180deg) translateZ(28cqw)}
+.chest-left,.chest-right{left:0;width:56cqw;filter:brightness(.72)}
+.chest-right{transform:rotateY(90deg) translateZ(28cqw)}.chest-left{transform:rotateY(-90deg) translateZ(28cqw)}
+.chest-top,.chest-bottom{top:-7cqw;width:56cqw;height:56cqw}
+.chest-body .chest-top{background:#24170d;box-shadow:inset 0 0 0 2cqw #99672b}
+.chest-lid{top:-14cqw;height:14cqw;transform-origin:50% 50% -28cqw}
+.chest-lid .chest-front,.chest-lid .chest-back,.chest-lid .chest-left,.chest-lid .chest-right{height:14cqw;border-width:3cqw}
+.chest-lid .chest-top,.chest-lid .chest-bottom{top:-21cqw;filter:brightness(1.15)}
+.chest-lid .chest-top{transform:rotateX(90deg) translateZ(7cqw)}.chest-lid .chest-bottom{transform:rotateX(-90deg) translateZ(7cqw)}
+.chest-lid .chest-front:after{left:calc(50% - 4cqw);top:6cqw;width:8cqw;height:15cqw;border:0;background:linear-gradient(90deg,#a4a4a4 0 25%,#e0e0e0 25% 75%,#909090 75%);box-shadow:0 -2cqw #eee,0 2cqw #626262}
+/* Original Mojang Bedrock chest textures, split at the lid seam. */
+.chest-face{border:0;box-shadow:none;background-repeat:no-repeat;background-color:#70491f;image-rendering:pixelated}
+.chest-body .chest-front{height:35cqw;background-image:url('assets/minecraft-chest_front.png');background-size:100% 160%;background-position:bottom}
+.chest-body .chest-back,.chest-body .chest-left,.chest-body .chest-right{height:35cqw;background-image:url('assets/minecraft-chest_side.png');background-size:100% 160%;background-position:bottom}
+.chest-body .chest-top,.chest-body .chest-bottom{top:-10.5cqw;box-shadow:none}
+.chest-body .chest-top{transform:rotateX(90deg) translateZ(17.5cqw);background:#38270f;border:3cqw solid #795527}
+.chest-body .chest-bottom{transform:rotateX(-90deg) translateZ(17.5cqw);background-image:url('assets/minecraft-chest_top.png');background-size:100% 100%}
+.chest-lid{top:-21cqw;height:21cqw}
+.chest-lid .chest-front,.chest-lid .chest-back,.chest-lid .chest-left,.chest-lid .chest-right{height:21cqw;border:0;background-image:url('assets/minecraft-chest_side.png');background-size:100% 266.667%;background-position:top}
+.chest-lid .chest-front{background-image:url('assets/minecraft-chest_front.png')}
+.chest-lid .chest-front:after{content:none}
+.chest-lid .chest-top,.chest-lid .chest-bottom{top:-17.5cqw;border:0;background-image:url('assets/minecraft-chest_top.png');background-size:100% 100%;filter:none}
+.chest-lid .chest-top{transform:rotateX(90deg) translateZ(10.5cqw)}.chest-lid .chest-bottom{transform:rotateX(-90deg) translateZ(10.5cqw)}
+/* Match the reference's 14×14 chest and 5-pixel lid. */
+.chest-body .chest-front,.chest-body .chest-back,.chest-body .chest-left,.chest-body .chest-right{height:36cqw}
+.chest-body .chest-top,.chest-body .chest-bottom{top:-10cqw}
+.chest-body .chest-top{transform:rotateX(90deg) translateZ(18cqw)}
+.chest-body .chest-bottom{transform:rotateX(-90deg) translateZ(18cqw)}
+.chest-lid{top:-20cqw;height:20cqw}
+.chest-lid .chest-front,.chest-lid .chest-back,.chest-lid .chest-left,.chest-lid .chest-right{height:20cqw;background-size:100% 320%}
+.chest-lid .chest-top,.chest-lid .chest-bottom{top:-18cqw}
+.chest-lid .chest-top{transform:rotateX(90deg) translateZ(10cqw)}
+.chest-lid .chest-bottom{transform:rotateX(-90deg) translateZ(10cqw)}
+/* The silver clasp is a small cuboid attached to the moving lid. */
+.chest-latch{position:absolute;left:24cqw;top:15cqw;width:8cqw;height:16cqw;transform:translateZ(30cqw);transform-style:preserve-3d}
+.chest-latch i{position:absolute;display:block;background:#c3c3c3;image-rendering:pixelated}
+.chest-latch-front{inset:0;transform:translateZ(2cqw);background:linear-gradient(90deg,#b5b5b5 50%,#d0d0d0 50%)!important}
+.chest-latch-right{left:2cqw;top:0;width:4cqw;height:16cqw;transform:rotateY(90deg) translateZ(4cqw);background:#888!important}
+.chest-latch-left{left:2cqw;top:0;width:4cqw;height:16cqw;transform:rotateY(-90deg) translateZ(4cqw);background:#aaa!important}
+.chest-latch-top{left:0;top:6cqw;width:8cqw;height:4cqw;transform:rotateX(90deg) translateZ(8cqw);background:#e0e0e0!important}
+/* Ender chest variant using Mojang's original face textures. */
+.chest-body .chest-front,.chest-lid .chest-front{background-image:url('assets/minecraft-ender_chest_front.png')}
+.chest-body .chest-back,.chest-body .chest-left,.chest-body .chest-right,.chest-lid .chest-back,.chest-lid .chest-left,.chest-lid .chest-right{background-image:url('assets/minecraft-ender_chest_side.png')}
+.chest-lid .chest-top,.chest-lid .chest-bottom,.chest-body .chest-bottom{background-image:url('assets/minecraft-ender_chest_top.png')}
+.chest-body .chest-top{background:#071719;border-color:#263d3f}
+.chest-latch-front{background:linear-gradient(90deg,#b89b2b 50%,#e5ce55 50%)!important}
+.chest-latch-right{background:#8f7520!important}.chest-latch-left{background:#cab03d!important}.chest-latch-top{background:#f4e580!important}
+.chest-glow{background:radial-gradient(ellipse,#cc77ffaa,transparent 68%)}
+/* A pocket portal rests inside the chest; treasures rise only while open. */
+.chest-magic{position:absolute;inset:0;transform-style:preserve-3d;opacity:0;transition:opacity .25s;pointer-events:none}
+.chest-portal{position:absolute;left:7cqw;top:-4cqw;width:42cqw;height:42cqw;transform:rotateX(90deg);border-radius:50%;background:repeating-radial-gradient(ellipse,#f4d6ff 0 1cqw,#a257d0 2cqw 4cqw,#402864 5cqw 7cqw);box-shadow:0 0 8cqw #ad62ff,inset 0 0 8cqw #3a1565;animation:portal-pulse 2.6s ease-in-out infinite}
+.magic-shard{position:absolute;font-style:normal;color:#f4d8ff;font-size:15cqw;text-shadow:0 0 4cqw #c377ff;transform:translateZ(18cqw);animation:magic-rise 2.8s ease-in-out infinite}
+.shard-one{left:12cqw;top:-12cqw}.shard-two{left:30cqw;top:-22cqw;font-size:11cqw;animation-delay:-1s;color:#8ce5e8}.shard-three{left:39cqw;top:-4cqw;font-size:7cqw;animation-delay:-1.8s}
+.magic-spark{position:absolute;width:2cqw;height:2cqw;background:#ddb2ff;box-shadow:0 0 4cqw #cc6aff;transform:translateZ(24cqw);animation:magic-rise 2s ease-in-out infinite}
+.spark-one{left:8cqw;top:-5cqw}.spark-two{left:34cqw;top:-33cqw;animation-delay:-.6s}.spark-three{left:23cqw;top:-28cqw;animation-delay:-1.2s}.spark-four{left:45cqw;top:-16cqw;animation-delay:-1.6s}
+.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant]:is(:hover,:focus-within) .chest-magic,.furniture-piece[data-furniture=plant]:has(.is-awaiting-fibi) .chest-magic{opacity:1;transition-delay:.18s}
+@keyframes portal-pulse{50%{filter:brightness(1.5);box-shadow:0 0 12cqw #bc74ff,inset 0 0 5cqw #63289a}}
+@keyframes magic-rise{0%,100%{translate:0 2cqw;opacity:.65}50%{translate:0 -6cqw;opacity:1}}
+@media(prefers-reduced-motion:reduce){.chest-magic{transition:none}.chest-portal,.magic-shard,.magic-spark{animation:none}}
+.chest-portal{top:-22cqw}
+.chest-magic{transition:visibility .25s;opacity:1;visibility:hidden}
+.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant]:is(:hover,:focus-within) .chest-magic,.furniture-piece[data-furniture=plant]:has(.is-awaiting-fibi) .chest-magic{visibility:visible}
+/* Screen-facing particles escape the opening, clear of the lid's 3D plane. */
+.chest-particles{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;transition:opacity .2s}
+.chest-particles i{position:absolute;left:var(--particle-x);top:57%;width:var(--particle-size);height:var(--particle-size);background:#ddb3ff;box-shadow:0 0 3cqw #c961ff,0 0 7cqw #ad44ff;animation:chest-particle-escape 2.6s linear infinite;animation-delay:var(--particle-delay);animation-play-state:paused}
+.chest-particles i:nth-child(3n){background:#b965ff;rotate:45deg}
+.chest-particles i:nth-child(4n){border-radius:50%;background:#f1d7ff}
+.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant]:is(:hover,:focus-within) .chest-particles,.furniture-piece[data-furniture=plant]:has(.is-awaiting-fibi) .chest-particles{opacity:1;transition-delay:.2s}
+.cozy-room:not(.is-arranging) .furniture-piece[data-furniture=plant]:is(:hover,:focus-within) .chest-particles i,.furniture-piece[data-furniture=plant]:has(.is-awaiting-fibi) .chest-particles i{animation-play-state:running}
+@keyframes chest-particle-escape{0%{transform:translate(0,0) scale(.3);opacity:0}15%{opacity:1}70%{opacity:.9}100%{transform:translate(var(--particle-drift),-85cqw) scale(.5);opacity:0}}
+@media(prefers-reduced-motion:reduce){.chest-particles{transition:none}.chest-particles i{animation:none;top:30%;opacity:.8}}
+.chest-particles i{width:calc(var(--particle-size) + 2cqw);height:calc(var(--particle-size) + 2cqw);top:60%;background:#edcaff;box-shadow:0 0 4cqw 1cqw #c668ff,0 0 10cqw #ae35ff}
+@keyframes chest-particle-escape{0%{transform:translate(0,0) scale(.5);opacity:0}12%{opacity:1}75%{opacity:1}100%{transform:translate(var(--particle-drift),-115cqw) scale(.7);opacity:0}}
+/* Project screenshots need their full interface visible inside the angled cards. */
+@media(min-width:721px){
+  .oto-featured-panel{margin-left:-12px;clip-path:polygon(28px 0,100% 0,calc(100% - 28px) 100%,0 100%)}
+  .oto-featured-panel:first-child{clip-path:polygon(0 0,100% 0,calc(100% - 28px) 100%,0 100%)}
+  .oto-featured-panel:last-child{clip-path:polygon(28px 0,100% 0,100% 100%,0 100%)}
+  .oto-featured-copy,.oto-featured-panel:first-child .oto-featured-copy{left:34px;right:30px}
+  .oto-featured-copy strong{font-size:24px;line-height:1.18}
+  .oto-featured-tag,.oto-featured-panel:first-child .oto-featured-tag{left:34px;top:16px;font-size:10px}
+  .oto-creator-animation{bottom:155px}
+  .oto-creator-sprite{width:190px;height:190px;top:45px}
+  .oto-creator-animation small{top:28px;left:34px}
+}
+@media(max-width:720px){
+  .oto-featured-panel,.oto-featured-panel:first-child,.oto-featured-panel:last-child{height:370px}
+  .oto-featured-background,.oto-featured-preview{inset:58px 12px auto;width:calc(100% - 24px);height:170px;object-fit:contain}
+  .oto-featured-copy,.oto-featured-panel:first-child .oto-featured-copy{bottom:24px}
+  .oto-creator-animation{bottom:145px}
+  .oto-creator-sprite{top:40px}
+}
+/* Interface projects use readable, uncropped previews rather than video-style slashes. */
+.oto-featured-band{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;height:auto;overflow:visible;border-radius:0;background:transparent}
+.oto-featured-panel,.oto-featured-panel:first-child,.oto-featured-panel:last-child{display:flex;flex-direction:column;isolation:isolate;min-width:0;width:100%;height:auto;margin:0;padding:12px;border:1px solid var(--line);border-radius:18px;clip-path:none;background:var(--white);color:var(--ink);transition:border-color .2s ease,box-shadow .2s ease}
+.oto-featured-panel:hover,.oto-featured-panel:focus-visible{border-color:#b49bd8;box-shadow:0 8px 24px #21173512}
+.oto-featured-background{position:relative;inset:auto;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;object-position:center;border-radius:10px;background:#f2eef7}
+.oto-featured-panel:hover .oto-featured-background,.oto-featured-panel:focus-visible .oto-featured-background{transform:none}
+.oto-featured-preview,.oto-featured-shade,.oto-creator-animation{display:none}
+.oto-featured-copy,.oto-featured-panel:first-child .oto-featured-copy{position:static;display:grid;gap:10px;margin:18px 6px 8px;text-align:left}
+.oto-featured-copy small{color:#70598a;font-size:10px;letter-spacing:1px}
+.oto-featured-copy strong{color:var(--ink);font-size:24px;line-height:1.2;letter-spacing:-.4px}
+.oto-featured-copy>span{color:var(--muted);font-size:13px;line-height:1.6;max-width:none}
+.oto-featured-tag,.oto-featured-panel:first-child .oto-featured-tag{position:static;order:3;align-self:flex-start;margin:auto 6px 6px;padding:12px 0 0;border:0;border-radius:0;background:transparent;color:#70598a;font-size:12px;font-weight:600}
+.oto-featured-panel:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+@media(max-width:850px){.oto-featured-band{grid-template-columns:1fr}.oto-featured-panel,.oto-featured-panel:first-child,.oto-featured-panel:last-child{height:auto}.oto-featured-background{aspect-ratio:16/9;max-height:300px}.oto-featured-copy,.oto-featured-panel:first-child .oto-featured-copy{margin:18px 8px 12px}}
+@media(prefers-reduced-motion:reduce){.oto-featured-panel{transition:none}}
+/* Give interface screenshots a large stage, with copy alongside rather than over them. */
+.oto-featured-band{grid-template-columns:1fr;gap:28px}
+.oto-featured-panel,.oto-featured-panel:first-child,.oto-featured-panel:last-child{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(220px,1fr);grid-template-rows:1fr auto;column-gap:30px;padding:22px;border-radius:22px;background:#faf8fd;align-items:center}
+.oto-featured-background{grid-column:1;grid-row:1 / 3;aspect-ratio:4/3;max-height:none;width:100%;height:auto;padding:14px;box-sizing:border-box;object-fit:contain;background:#e9e1f2;border-radius:14px;box-shadow:0 8px 24px #3523451a}
+.oto-featured-copy,.oto-featured-panel:first-child .oto-featured-copy{grid-column:2;grid-row:1;align-self:end;margin:18px 4px 12px;gap:14px}
+.oto-featured-copy strong{font-size:clamp(25px,3vw,34px);line-height:1.12}
+.oto-featured-copy>span{font-size:15px;line-height:1.7;color:#594e65}
+.oto-featured-tag,.oto-featured-panel:first-child .oto-featured-tag{grid-column:2;grid-row:2;align-self:start;margin:0 4px 20px;padding:12px 0}
+@media(max-width:700px){
+ .oto-featured-panel,.oto-featured-panel:first-child,.oto-featured-panel:last-child{grid-template-columns:1fr;grid-template-rows:auto auto auto;gap:0;padding:14px}
+ .oto-featured-background{grid-column:1;grid-row:1;aspect-ratio:4/3;padding:8px}
+ .oto-featured-copy,.oto-featured-panel:first-child .oto-featured-copy{grid-column:1;grid-row:2;margin:22px 8px 12px}
+ .oto-featured-tag,.oto-featured-panel:first-child .oto-featured-tag{grid-column:1;grid-row:3;margin:0 8px 8px}
+}
+.contact-message-form{display:grid;gap:20px;margin:28px 0;padding:28px;border:1px solid var(--line);border-radius:20px;background:#faf8fd}
+.contact-message-form h3{margin:0;font-size:24px}
+.contact-message-fields{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.contact-message-form label{display:grid;gap:9px;font-size:14px;font-weight:600;color:var(--ink)}
+.contact-message-form input,.contact-message-form textarea{box-sizing:border-box;width:100%;min-width:0;padding:13px 15px;border:1px solid #d4cbdc;border-radius:10px;background:#fff;color:var(--ink);font:inherit;line-height:1.5}
+.contact-message-form textarea{resize:vertical;min-height:150px}
+.contact-message-form input:focus-visible,.contact-message-form textarea:focus-visible,.contact-message-send:focus-visible{outline:3px solid #9772bc;outline-offset:3px}
+.contact-message-form .source-note{margin:0}
+.contact-message-send{justify-self:start;padding:14px 23px;border:0;border-radius:999px;background:#382546;color:#fff;font:inherit;font-weight:600;cursor:pointer}
+.contact-message-send:hover{background:#543669}
+.contact-message-honeypot{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media(max-width:600px){.contact-message-form{padding:20px}.contact-message-fields{grid-template-columns:1fr}}

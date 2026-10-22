@@ -246,11 +246,27 @@ window.PORTFOLIO = {
       position: [63, 73]
     },
     oto: {
+      collection: [
+        { id: 'animation', type: 'CREATION SYSTEM', title: 'Otomate Creator', description: 'The character creation and automatic animation workflow I built.', image: 'assets/oto-animation-creator.png', imageAlt: 'The actual Otomate Creator setup interface', previewImage: 'assets/oto-animation-pack.png', screenshots: [{ src: 'assets/oto-animation-creator.png', label: 'Character setup · actual repo interface in local preview mode' }, { src: 'assets/oto-animation-pack.png', label: 'Starter animation pack · preview account and test credits; no generation was run' }], contribution: 'I built the character creation and automatic animation system.', steps: ['Prepare a full-body image', 'Create the character cutout', 'Queue the starter animations', 'Preview and review the loops'], text: 'The guided creator prepares the image, queues an animation pack, shows progress for individual actions, and lets people preview the generated loops. Job links let people return to work in progress, rather than starting from a blank form.', link: { label: 'Explore the character creator', url: 'https://www.oto.chat/generate' } },
+        { id: 'games', type: 'GAME DISCOVERY + DESIGN', title: 'Oto Arcade', description: 'The games page, with Word Guess and Bridge Walk as playable examples.', image: 'assets/bridge-walk-card.webp', imageAlt: 'Bridge Walk game artwork', contribution: 'I built the games page and worked on companion-led game experiences.', text: 'The games hub brings the catalog, search, and recently played games together. It also handles the path from a game link into the mobile app or web experience.', link: { label: 'Explore the games hub', url: 'https://www.oto.chat/games' } },
+        { id: 'discord', image: 'assets/oto-discord-hub.png', imageAlt: 'Oto Discord Activity game library rendered from the repository', screenshots: [{ src: 'assets/oto-discord-hub.png', label: 'Discord Activity game library · actual repo UI with the bundled catalog, running locally outside Discord' }], type: 'COMMUNITY PRODUCT', title: 'Oto in Discord', description: 'The Discord feature connects the community with Oto’s games and companions.', contribution: 'I built Oto’s Discord feature.', steps: ['Open the Activity', 'Choose a game', 'Play with a companion'], text: 'The repository includes the Discord Activity hub, game launch routing, and linked-account and guest flows. These connect a Discord entry point to the companion and game experience without treating every player as a new account.' },
+        { id: 'wiki', type: 'CHARACTERS + DISCOVERY', title: 'Chibi Wiki', description: 'A home for character stories, outfits, creator clips, and community discovery.', image: 'assets/oto-wiki-home.png', imageAlt: 'Chibi Wiki home with search, series filters and character discovery', previewImage: 'assets/oto-wiki-character.png', screenshots: [{ src: 'assets/oto-wiki-home.png', label: 'Chibi Wiki · live home page, captured October 2026' }, { src: 'assets/oto-wiki-character.png', label: 'Fibi Chubi · live character page with creator clips and outfits' }], contribution: 'I built the wiki website.', text: 'Chibi Wiki brings character profiles, game and series browsing, outfits, and creator pages into one place. Character pages connect the written profile with clips, fan art, and comments; the site also includes search and community contribution prompts.', link: { label: 'Visit Chibi Wiki', url: 'https://www.chibiwiki.com/' } },
+        { id: 'home', type: 'COMPANION PRODUCT', title: 'Oto Home', description: 'Oto Home, companion behavior, and cross-platform interaction work.', image: 'assets/pin-app.webp', imageAlt: 'Oto companion app preview' }
+      ],
       number: '01', label: 'THE COMPANION LAB', kicker: '',
-      title: 'I help build Oto, an app where you raise a little AI companion.',
+      title: 'Oto Projects',
       role: 'Social Media Analyst at Frisson Labs since October 2025.',
-      lead: 'My job sits between the community and the product. I make the videos that bring people in, watch what they do once they arrive, and help turn that into changes in the app, the games and our Discord.',
-      community: 'So far I’ve brought about 15,000 people into Oto’s Discord, and the app has passed 10,000 downloads. Those are two separate milestones. I’m not claiming the videos caused the downloads.',
+      lead: 'At Frisson Labs, I connect content and community with the product experience—from introducing Oto through short videos to helping new users get started, discover games, and continue playing.',
+      recentWork: {
+        title: 'From discovering Oto to playing again',
+        note: 'Recent implementation work in the Oto staging branch, reviewed October 20, 2026. These examples describe what I built; release status and conversion or retention impact are not yet confirmed.',
+        stories: [
+          { title: 'Helping new users get started', text: 'I reworked the Home opening around Fibi’s wordless first-run story: clearer character reactions, a guided food interaction, and a transition into a first game. The aim was to let people learn through playing and caring for their companion.', contribution: 'First-run flow, onboarding animation clips, and interaction refinement.' },
+          { title: 'Connecting content to product actions', text: 'I added web analytics that connect a visitor’s incoming link with game activity, sign-in, and the app handoff. This creates a way to investigate what happens after someone clicks through from content, beyond counting views or link clicks.', contribution: 'Acquisition context and event tracking across the web journey.' },
+          { title: 'Helping players continue on mobile', text: 'I built a “Keep playing anywhere” prompt for mobile web visitors returning from a game. It offers the app, an external-browser option where relevant, or continued web play, and carries campaign context into store links. The prompt also records which option people choose.', contribution: 'Mobile app handoff, campaign-aware store links, and choice tracking.' }
+        ]
+      },
+      community: 'So far I’ve brought about 15,000 people into Oto’s Discord. I support the product through character videos, community building, and product feedback.',
       shortForm: 'I also run @tod_desu on Instagram ({followers} followers). Otomates show up there in little stories, and sometimes I demo the app on camera myself. Three I’m happy with:',
       meta: [
         { label: 'My role', value: 'Social Media Analyst' },
@@ -259,9 +275,23 @@ window.PORTFOLIO = {
       ],
       metrics: [
         { value: '15K', label: 'people brought to Discord' },
-        { value: '10K+', label: 'product downloads' }
+        { value: '8.16K', label: 'iOS first-time downloads' },
+        { value: '4,421', label: 'Android active testers' }
       ],
-      source: { note: 'Community and download milestones provided by Tod, September 2026. Selected work below reflects contributions within the Frisson Labs team.' },
+      source: { note: 'Community milestone provided by Tod, September 2026. Product figures from App Store Connect and Google Play Console screenshots supplied October 2026. Selected work reflects contributions within the Frisson Labs team.' },
+      traction: {
+        intro: 'I support Oto’s growth through character videos, community building, and product feedback.',
+        metrics: [
+          { value: '8.16K', label: 'iOS first-time downloads', detail: 'Oct 20, 2025–Oct 8, 2026' },
+          { value: '4,421', label: 'Android active testers', detail: 'Play Console snapshot · supplied Oct 2026' },
+          { value: '178', label: 'Android countries / regions', detail: 'Testing availability' }
+        ],
+        note: 'These figures show product traction during my time on the team. Downloads and active testers are separate measures; countries / regions describes testing availability.',
+        evidence: [
+          { src: 'assets/oto-ios-analytics.png', label: 'App Store Connect · iOS first-time downloads', alt: 'App Store Connect reports 8.16K first-time downloads from October 20, 2025 to October 8, 2026, with a daily download chart.' },
+          { src: 'assets/oto-android-analytics.png', label: 'Google Play Console · Android testing', alt: 'Google Play Console track summary shows 4,421 active testers and availability in 178 countries and regions.' }
+        ]
+      },
       channel: {
         handle: '@tod_desu',
         followers: '16.1K',
@@ -408,4 +438,28 @@ window.PORTFOLIO = {
       ]
     }
   }
+};
+
+// The employer case study and project gallery have separate, shareable destinations.
+window.PORTFOLIO.chapters.frisson = {
+  label: 'FRISSON LABS / OTO', title: 'Building an AI companion people want to spend time with.',
+  role: window.PORTFOLIO.chapters.oto.role,
+  lead: 'At Frisson Labs, we’re building Oto: an AI companion that can talk with you, play games with you, and respond to what’s happening on your screen. I help connect the whole experience—from the videos that introduce it to the community, onboarding, and product people come back to.',
+  reels: frissonReels,
+  sections: [
+    { title: 'A companion beyond the chat window', text: 'Oto is built around a character you can spend time with. Across its app, desktop, web, and Discord experiences, that means conversation, screen-aware reactions, games together, and a home where you can care for your companion. The features vary by platform, but the idea connects them: a companion that takes part in what you’re doing.' },
+    { title: 'My role across marketing, growth, and product', text: 'My title is Social Media Analyst, but my work reaches from introducing Oto to improving the experience itself. I create character videos and product demos, build community, examine what people do after they arrive, and work with the team on the product. That lets me connect the promise in a video with what someone actually experiences when they try Oto.' },
+    { title: 'Marketing that makes the companion feel real', text: 'I come up with short-video ideas, animate characters with Seedance and Kling, edit in CapCut, and publish the work. Some videos give the characters small stories in everyday settings; others put me on camera showing the product. I review hooks, pacing, comments, and calls to action to decide what to try next.' },
+    { title: 'Growth beyond getting views', text: 'I’ve brought about 15,000 people into Oto’s Discord, a milestone recorded in September 2026. More recently, I added web tracking that connects incoming links with game activity, sign-in, and app handoff, and built a mobile “Keep playing anywhere” prompt. The goal is to understand which introductions lead people into the experience and help them continue after their first game.' },
+    { title: 'Helping shape the product people arrive in', text: 'I contribute to Oto Home’s companion behavior, room interactions, and Android experience. My recent work reworked Fibi’s first-run opening around clearer reactions, caring for her, and moving into a first game. I also built the character creation and animation workflow, the games page, Oto’s Discord feature, and Chibi Wiki. The project gallery shows those individual pieces in more detail.' },
+    { title: 'Connecting the work', text: 'The questions carry across everything I do: what makes someone care about the character, what helps them understand the product, and where does the experience lose them? Content and community help me see what resonates; product work lets me act on it. Recent onboarding, web tracking, and mobile handoff examples are implemented in staging as of October 20, 2026; their release status and impact on conversion or retention are not yet confirmed.' },
+    { title: 'What I learned from a call to action', text: 'An end-of-video CTA example recorded 153 bio-link clicks, 187 profile visits, and 18 follows. A different character video recorded 12 bio-link clicks, 979 profile visits, and about 1,900 follows. They served different goals: this was a comparison of different videos, not an A/B test, and clicks were not confirmed signups.' }
+  ],
+  source: window.PORTFOLIO.chapters.oto.source
+};
+
+window.PORTFOLIO.chapters.contact = {
+  label: 'LET’S TALK', title: 'What should we make next?',
+  lead: 'Have a role, a collaboration, or an idea in mind? I’d love to hear what you’re working on.',
+  sections: [{ title: 'A good place to start', text: 'Tell me a little about yourself, what you have in mind, and how I can get back to you.' }]
 };

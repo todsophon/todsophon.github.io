@@ -3,7 +3,7 @@ import { WALL_ITEMS, WALL_STORAGE_KEY, wallMatrix, sceneToWall, wallToScene, wal
 const SCENE_WIDTH = 1000;
 const SCENE_HEIGHT = 2000 / 3;
 const DRAG_START = { mouse: 5, touch: 9 };
-const TAGS = { silver: '100K', gold: '1M', pinboard: 'Oto projects', portrait: 'Meet Tod' };
+const TAGS = { silver: '100K', gold: '1M', portrait: 'Meet Tod' };
 
 /**
  * The awards, the portrait and the pinboard hang on the walls with the walls' own
@@ -25,10 +25,14 @@ export function createWallDecor({ stage, onChange = () => {} }) {
     elements.set(item.id, element);
     // A name tag that sits above the piece without taking on the wall's perspective.
     if (TAGS[item.id]) {
-      const tag = document.createElement('span');
+      const tag = document.createElement(item.id === 'pinboard' ? 'button' : 'span');
       tag.className = 'room-tag wall-tag';
       tag.textContent = TAGS[item.id];
-      tag.setAttribute('aria-hidden', 'true');
+      if (item.id === 'pinboard') {
+        tag.type = 'button';
+        tag.classList.add('oto-board-link');
+        tag.dataset.open = 'oto';
+      } else tag.setAttribute('aria-hidden', 'true');
       stage.append(tag);
       tags.set(item.id, tag);
     }

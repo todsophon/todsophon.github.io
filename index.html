@@ -32,7 +32,6 @@
     <div class="room-menu">
       <button class="room-menu-button" id="room-menu-button" type="button" aria-expanded="false" aria-controls="room-menu" aria-label="Menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
       <div class="room-menu-list" id="room-menu" hidden>
-        <a data-open="oto" data-note="experiments" href="#work/oto">Insights & experiments</a>
         <a href="#about" data-open="about">About Tod</a>
         <a href="#resume" data-open="resume">Résumé</a>
         <a href="mailto:todsopon@hotmail.com">Email Tod</a>
@@ -60,7 +59,7 @@
           <p class="intro-copy"><strong>Hey, I'm Tod.</strong>I turn audience insights into content and product experiences.</p>
         </div>
         <div class="intro-actions"><button class="tour-button" id="tour-button">Explore my work <span aria-hidden="true">↗</span></button><button class="watch-reel" data-screening aria-label="Open my video gallery" title="Watch my videos"><span aria-hidden="true">▶</span></button></div>
-        <a class="current-role" data-open="oto" href="#work/oto"><span aria-hidden="true"></span> Currently at <strong>Frisson Labs / Oto</strong></a>
+        <a class="current-role" data-open="frisson" href="#work/frisson"><span aria-hidden="true"></span> Currently at <strong>Frisson Labs / Oto</strong></a>
       </div>
 
       <div class="scene-section" id="scene-section">
@@ -71,10 +70,8 @@
             <button class="wall-item wall-award wall-award-silver" type="button" data-wall-item="silver" data-w="75" data-h="100" data-open="youtube" data-milestone="silver" aria-label="Silver YouTube award: the first 100,000 subscribers. Drag along the wall, or tap to read the story"><img src="assets/wall-silver.webp" alt="" width="150" height="200" draggable="false"></button>
             <button class="wall-item wall-award wall-award-gold" type="button" data-wall-item="gold" data-w="75" data-h="100" data-open="youtube" data-milestone="gold" aria-label="Gold YouTube award: one million subscribers. Drag along the wall, or tap to read the story"><img src="assets/wall-gold.webp" alt="" width="150" height="200" draggable="false"></button>
             <div class="wall-item wall-pinboard" data-wall-item="pinboard" data-w="320" data-h="174">
-              <button class="pinboard-frame" type="button" data-open="oto" aria-label="Oto project pinboard. Drag along the wall, or tap to explore"><img src="assets/wall-corkboard.webp" alt="" width="640" height="348" draggable="false"></button>
-              <button class="board-note board-note-product" type="button" data-note="product" data-open="oto" aria-label="Oto app project: drag this photo on the board or tap to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-app.webp" alt="" width="180" height="200" draggable="false"><span>APP</span></span></button>
-              <button class="board-note board-note-community" type="button" data-note="community" data-open="oto" aria-label="Oto game projects: drag this photo or tap to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-games.webp" alt="" width="180" height="200" draggable="false"><span>GAMES</span></span></button>
-              <button class="board-note board-note-films" type="button" data-note="films" data-open="oto" aria-label="Oto AI video projects: drag this photo or tap to explore"><span class="note-photo" aria-hidden="true"><img src="assets/pin-films.webp" alt="" width="180" height="200" draggable="false"><span>FILMS</span></span></button>
+              <button class="pinboard-frame" type="button" aria-label="Adventure corkboard. Drag along the wall to rearrange"><img src="assets/wall-corkboard.webp" alt="" width="640" height="348" draggable="false"></button>
+              <a class="adventure-note" href="#contact" data-open="contact" aria-label="Hire Tod: get in touch"><span class="adventure-kicker">OPEN TO THE UNEXPECTED</span><strong>What’s<br>next?</strong><span class="adventure-orbit" aria-hidden="true">✦</span><em>Your team. Our next adventure.</em><b>LET’S TALK ↗</b></a>
             </div>
             <button class="wall-item wall-portrait" type="button" data-wall-item="portrait" data-w="150" data-h="172" data-open="about" aria-label="Meet Tod Yansomboon. Drag along the wall, or tap to read his story"><img src="assets/wall-frame.webp" alt="" width="300" height="345" draggable="false"></button>
           </div>
@@ -105,22 +102,21 @@
           <p id="placement-feedback" class="placement-feedback" role="status" aria-live="polite" aria-atomic="true">Choose a piece to start.</p>
         </div>
         <div class="list-view" id="list-view" hidden>
-          <a class="list-item" data-open="oto" href="#work/oto"><span class="list-number">01</span><span><strong>Oto / Frisson Labs</strong><small>Current role · Product, content & audience insights</small></span><span class="list-arrow">↗</span></a>
+          <a class="list-item" data-open="oto" href="#work/oto"><span class="list-number">01</span><span><strong>Oto Projects</strong><small>Current role · Product, content & audience insights</small></span><span class="list-arrow">↗</span></a>
           <a class="list-item" data-open="youtube" href="#work/youtube"><span class="list-number">02</span><span><strong>Creator story</strong><small>1.81M subscribers · September 2026</small></span><span class="list-arrow">↗</span></a>
           <a class="list-item" data-screening data-screening-filter="shorts" href="#videos"><span class="list-number">03</span><span><strong>Short-form videos</strong><small>YouTube Shorts & Instagram Reels</small></span><span class="list-arrow">↗</span></a>
-          <a class="list-item" data-open="oto" data-note="experiments" href="#work/oto"><span class="list-number">04</span><span><strong>Insights & experiments</strong><small>AI video workflows and a call-to-action test</small></span><span class="list-arrow">↗</span></a>
           <a class="list-item" data-open="about" href="#about"><span class="list-number">05</span><span><strong>The person behind the room</strong><small>From Thailand to Seattle, with a camera along the way</small></span><span class="list-arrow">↗</span></a>
         </div>
         <span class="visually-hidden room-save-status" id="room-save-status" role="status"></span>
         <span class="visually-hidden" id="fibi-instructions">Fibi wanders around the room. Click a spot on the floor to guide her, or focus Fibi and use the arrow keys.</span>
-        <span class="visually-hidden" id="board-instructions">The three pinned notes can be dragged around the Oto board and saved in this browser. Click a note to explore its subject.</span>
+        <span class="visually-hidden" id="board-instructions">Explore Oto in the treasure chest, or get in touch through the corkboard note.</span>
         <span class="visually-hidden" id="fibi-status" role="status" aria-live="polite"></span>
       </div>
     </section>
 
     <section class="work-strip" id="work-navigation" aria-label="Explore my work">
       <div class="strip-intro"><span class="eyebrow">SELECTED WORK</span><span>A few things<br>I've put into the world.</span></div>
-      <a class="work-button" data-open="oto" href="#work/oto"><span class="work-number">01</span><span class="work-copy"><strong>Oto <span class="work-company">/ Frisson Labs</span></strong><small>Current role · Product & content</small></span><span class="work-arrow" aria-hidden="true">↗</span></a>
+      <a class="work-button" data-open="frisson" href="#work/frisson"><span class="work-number">01</span><span class="work-copy"><strong>Oto <span class="work-company">/ Frisson Labs</span></strong><small>Current role · Product & content</small></span><span class="work-arrow" aria-hidden="true">↗</span></a>
       <a class="work-button" data-open="youtube" href="#work/youtube"><span class="work-number">02</span><span class="work-copy"><strong>Creator story</strong><small>1.81M subscribers · September 2026</small></span><span class="work-arrow" aria-hidden="true">↗</span></a>
       <a class="work-button" data-screening data-screening-filter="shorts" href="#videos"><span class="work-number">03</span><span class="work-copy"><strong>Short-form videos</strong><small>YouTube Shorts & Instagram Reels</small></span><span class="work-arrow" aria-hidden="true">↗</span></a>
     </section>

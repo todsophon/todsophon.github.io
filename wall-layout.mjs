@@ -111,6 +111,7 @@ export function defaultWallState() {
 
 /** Validate a saved arrangement as a whole; anything off falls back to the defaults. */
 export function normalizeWallState(input) {
+  if (input?.pinboard?.u === .05 && input.pinboard.v === .03) input = { ...input, pinboard: { u: .05, v: .1 } };
   const state = defaultWallState();
   if (!input || typeof input !== 'object') return state;
   for (const item of WALL_ITEMS) {

@@ -26,6 +26,9 @@ function openScreening({ index = featuredIndex, filter = 'all', source = screeni
   cinema.open({ index, filter, source: source || screeningSource() });
 }
 document.addEventListener('portfolio:request-screening', event => openScreening(event.detail));
+
+// Allow other portfolio pages to link directly back into the video gallery.
+if (window.location.hash === '#videos') openScreening();
 document.addEventListener('click', event => {
   const trigger = event.target.closest?.('[data-screening]');
   if (!trigger || event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;

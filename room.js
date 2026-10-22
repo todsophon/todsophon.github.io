@@ -19,9 +19,9 @@ const NS = 'http://www.w3.org/2000/svg';
 const clone = value => JSON.parse(JSON.stringify(value));
 const SCENE_WIDTH = 1000;
 const SCENE_HEIGHT = 2000 / 3;
-const artWidths = { youtube: 290, oto: 290, bookshelf: 180, plant: 98, chair: 165, tiktok: 60 };
+const artWidths = { youtube: 290, oto: 290, bookshelf: 180, plant: 130, chair: 165, tiktok: 60 };
 // The projected tile center meets the center of the feet, not the frontmost foot.
-const groundAnchors = { youtube: 78, oto: 77, bookshelf: 80, plant: 91, chair: 86, tiktok: 94 };
+const groundAnchors = { youtube: 78, oto: 77, bookshelf: 80, plant: 95, chair: 86, tiktok: 94 };
 const groundCenters = { youtube: 51.3, oto: 49.1, bookshelf: 56, plant: 54, chair: 50, tiktok: 50 };
 // Match both ground-plane directions to the room's 2:1 projection while keeping
 // upright edges vertical. Each source illustration has a different camera angle.
@@ -34,16 +34,16 @@ const artPerspective = {
 // Measured atlas windows preserve each object's silhouette without editing the source.
 const atlasWindows = {
   youtube: [20, 40, 525, 491], oto: [548, 50, 510, 482], bookshelf: [1070, 50, 435, 455],
-  plant: [0, 0, 494, 799], chair: [330, 80, 880, 860], tiktok: [0, 0, 267, 817],
+  plant: [0, 0, 1288, 1221], chair: [330, 80, 880, 860], tiktok: [0, 0, 267, 817],
 };
 // Pieces drawn outside the shared furniture atlas: [image, width, height].
 const spriteSources = {
   chair: ['assets/lounge-chair.png', 1536, 1024],
   oto: ['assets/oto-furniture-atlas-v4.png?v=2', 1536, 1024],
-  plant: ['assets/chart-easel.webp', 494, 799],
+  plant: ['assets/oto-project-chest.png', 1288, 1221],
   tiktok: ['assets/ring-light.webp?v=3', 267, 817],
 };
-const labels = { youtube: 'Videos', oto: 'Oto / Frisson', bookshelf: 'Record cabinet', tiktok: 'Ring light', plant: 'Insights & experiments', chair: '' };
+const labels = { youtube: 'Videos', oto: 'Oto / Frisson', bookshelf: 'Record cabinet', tiktok: 'Ring light', plant: 'Oto projects', chair: '' };
 const accessibleLabel = (item, arranging = false) => arranging ? `Move ${item.label}` : item.action === 'screening' ? 'Watch films from the screening chair' : item.href ? 'Read the Frisson Labs case study' : `Explore ${item.label}`;
 const pieces = new Map();
 let layout = clone(DEFAULT_LAYOUT);
@@ -69,6 +69,8 @@ try {
   const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
   if (saved) layout = normalizeLayout(JSON.parse(saved));
 } catch { status.textContent = 'Layout available for this visit'; status.classList.add('unsaved'); }
+// Apply the requested desk spacing to the earlier saved desk position as well.
+if (layout.oto.x === 4 && layout.oto.y === 0 && canPlace(layout, 'oto', 6, 0)) layout.oto = { x: 6, y: 0 };
 function polygonFor(x, y) {
   return [[x,y],[x+1,y],[x+1,y+1],[x,y+1]].map(([a,b]) => { const p = tileToScreen(a,b); return `${p.x},${p.y}`; }).join(' ');
 }
@@ -284,6 +286,16 @@ for (const item of FURNITURE) {
   const offset = (start, size, total) => total === size ? 0 : start / (total - size) * 100;
   sprite.style.backgroundPosition = `${offset(cropX, cropWidth, sourceWidth)}% ${offset(cropY, cropHeight, sourceHeight)}%`;
   art.append(sprite);
+  if (item.id === 'plant') {
+    sprite.hidden = true;
+    const chest = document.createElement('span'); chest.className = 'project-chest';
+    const faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+    chest.innerHTML = '<span class="chest-body">' + faces.map(face => '<i class="chest-face chest-' + face + '"></i>').join('') + '</span><span class="chest-lid">' + faces.map(face => '<i class="chest-face chest-' + face + '"></i>').join('') + '<span class="chest-latch"><i class="chest-latch-front"></i><i class="chest-latch-right"></i><i class="chest-latch-left"></i><i class="chest-latch-top"></i></span></span><span class="chest-glow"></span><span class="chest-magic"><i class="chest-portal"></i><i class="magic-shard shard-one">✦</i><i class="magic-shard shard-two">✧</i><i class="magic-shard shard-three">✦</i><i class="magic-spark spark-one"></i><i class="magic-spark spark-two"></i><i class="magic-spark spark-three"></i><i class="magic-spark spark-four"></i></span>';
+    art.append(chest);
+    const particles = document.createElement('span'); particles.className = 'chest-particles';
+    particles.innerHTML = Array.from({ length: 12 }, (_, i) => '<i style="--particle-x:' + (20 + (i * 17 % 60)) + '%;--particle-delay:' + (-i * .31) + 's;--particle-drift:' + ((i % 2 ? 1 : -1) * (8 + i % 4 * 3)) + 'cqw;--particle-size:' + (2 + i % 3) + 'cqw"></i>').join('');
+    art.append(particles);
+  }
   const label = document.createElement('span'); label.className = 'furniture-label'; label.textContent = labels[item.id]; label.setAttribute('aria-hidden', 'true');
   if (item.decorative) label.hidden = true;
   hit.append(label); piece.append(hit, art); layer.append(piece); pieces.set(item.id, piece);
