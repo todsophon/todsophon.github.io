@@ -465,18 +465,18 @@ window.PORTFOLIO.chapters.contact = {
 };
 
 const aiContentStory = {
-  id: 'content', type: 'AI CONTENT + AUTOMATION', title: 'AI videos, from experiments to Fibi Daily',
-  description: 'Fibi Daily: a Claude morning routine, five account workflows, and performance tracking—built from lessons in making AI videos.',
+  id: 'content', type: 'AI CONTENT + AUTOMATION', title: 'Content automation system',
+  description: 'I built a system for selecting content, producing videos, and publishing across five accounts—with my review before posting.',
   image: 'assets/fibi-daily-cover.svg', imageAlt: 'Fibi Daily cover with the actual review interface and the create, review, publish, and learn workflow across five accounts',
-  text: 'I build tools that turn creative experiments into repeatable content workflows—from AI presenter videos to daily drafts across five accounts.',
+  text: 'The system connects content preparation, AI video production, review, and publishing. Claude prepares drafts; I review the output and decide what to post. Publishing uses a separate tool.',
   contribution: 'Creative direction, AI video tooling, the reusable production guide, and daily video draft automation.',
   screenshots: [{ src: 'assets/seedance-studio-real.png', label: 'The video creation tool I built · actual interface capture without account data' }]
 };
 aiContentStory.dailyOperation = {
-  title: 'Fibi Daily — from daily drafts to reviewed posts',
+  title: 'I built a content automation system',
   screenshot: 'assets/fibi-daily-real.jpg',
   screenshotCaption: 'Actual Fibi Daily interface rendered from the repository. This capture shows its signed-out state; the Claude-hosted draft queue is not loaded.',
-  intro: 'Claude prepares the drafts. I review, edit, and choose what gets posted.',
+  intro: 'Select content → produce videos and captions → review → publish. Fibi Daily is the review interface I built for this workflow across five accounts.',
   overview: [],
   walkthroughTitle: 'Five accounts. One review workflow.',
   walkthroughIntro: 'The problem: drafts and captions spread across five accounts. I built the daily draft workflow and review interface to keep the decisions together.',
